@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BM25Test {
+public class BM25Test {
     @Test
     public void test(){
         BM25 bm25= new BM25(1.2,0.75);
@@ -38,7 +38,7 @@ class BM25Test {
 
     }
 
-    private static void loadIDFMap(Map<String,Double> map, InputStream in ){
+    public static void loadIDFMap(Map<String, Double> map, InputStream in){
         BufferedReader bufr;
         try
         {

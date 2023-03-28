@@ -70,5 +70,4 @@ public class SearchServiceImpl implements SearchService {
         mp.put("result", datas);
         return mp;
     }
-
 }
