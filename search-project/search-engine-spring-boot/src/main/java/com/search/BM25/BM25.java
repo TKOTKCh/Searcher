@@ -1,18 +1,12 @@
 package com.search.BM25;
 
-//import com.zjf.seo.core.utils.StringUtils;
-
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 /**
  * BM25 相关度算法实现
- * @author zhaojunfu
- *
  * 公式：   Similarity(word|documents)=IDFScore∗(k+1)∗tf / k∗(1.0−b+b∗|D|avgDl)+tf
- *
- *
  */
 public class BM25 {
     //常量k，用来限制TF值的增长极限 默认1.2
@@ -71,7 +65,7 @@ public class BM25 {
     }
 
     private double calAvgLength(List<String> docs) {
-        if(docs==null || docs.size()<=0) {
+        if(docs==null || docs.size() == 0) {
             throw new RuntimeException("给定文档集不能为空");
         }
 
