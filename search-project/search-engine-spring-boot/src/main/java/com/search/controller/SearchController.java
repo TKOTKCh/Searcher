@@ -1,12 +1,14 @@
 package com.search.controller;
 
 import com.search.service.SearchService;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,7 +23,10 @@ public class SearchController {
 
     // 通过分词的方式去搜索
     @GetMapping("/search")
-    public Map<String, Object> searchBySegment(@RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) {
-        return searchService.getDataByKeyword(keyword, resultNumInOnePage, pageNum);
+    public Map<Double, Object> searchBySegment(@RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) {
+        Pair<List<String>, Map<String, Object>> get =
+                searchService.getDataByKeyword(keyword, resultNumInOnePage, pageNum);
+
+        return searchService.getBM25(get.getKey(),get.getValue());
     }
 }
