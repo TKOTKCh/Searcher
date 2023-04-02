@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a462ed50-6cb1-4263-b6e3-3d77ff2cf128" name="默认更改列表" comment="">
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Result.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/controller/SearchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/controller/SearchController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataNoBodyDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataNoBodyDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataSegmentDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataSegmentDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/SegmentDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/SegmentDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Data.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataNoBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataNoBody.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataSegment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Segment.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Segment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataNoBodyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataNoBodyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SearchService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SegmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SegmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataNoBodyServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataNoBodyServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SearchServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SearchServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SegmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SegmentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/BM25.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/BM25.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/TFIDFAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/TFIDFAnalyzer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataNobodyMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataNobodyMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataSegmentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataSegmentMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DatasMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DatasMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/SegmentDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/SegmentDao.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/ApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/DBInitial.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/optimjieTest/OptimjieTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/segmentation/addAllSeg.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/segmentation/test.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/search-engine-spring-boot" />
+  </component>
+  <component name="ProjectId" id="2NlYZGMIdWHKHjRQ7YteXGpBfbb" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="添加" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="模块" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="restartRequiresConfirmation" value="false" />
+  </component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RunManager" selected="JUnit.DBInitial.createDataBase">
+    <configuration name="DBInitial.createDataBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="spring-boot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.searchengine.springboot.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.searchengine.springboot" />
+      <option name="MAIN_CLASS_NAME" value="com.searchengine.springboot.DBInitial" />
+      <option name="METHOD_NAME" value="createDataBase" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="App.vue" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/search-engine-vue/search-engine-vue/src/App.vue" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="spring-boot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="serve" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/search-engine-vue/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="serve" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="JavaScript Debug.App.vue" />
+      <item itemvalue="npm.serve" />
+      <item itemvalue="Spring Boot.Application" />
+      <item itemvalue="JUnit.DBInitial.createDataBase" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.DBInitial.createDataBase" />
+        <item itemvalue="Spring Boot.Application" />
+        <item itemvalue="JavaScript Debug.App.vue" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a462ed50-6cb1-4263-b6e3-3d77ff2cf128" name="默认更改列表" comment="" />
+      <created>1680240189356</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1680240189356</updated>
+      <workItem from="1680240190885" duration="1450000" />
+      <workItem from="1680245760502" duration="2371000" />
+      <workItem from="1680251634236" duration="183000" />
+      <workItem from="1680261676658" duration="941000" />
+      <workItem from="1680421497996" duration="16639000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1680245862378">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1680245862378" />
+    <state width="1493" height="311" key="GridCell.Tab.0.bottom" timestamp="1680444793038">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="311" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1680444793038" />
+    <state width="1493" height="311" key="GridCell.Tab.0.center" timestamp="1680444793038">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="311" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1680444793038" />
+    <state width="1493" height="311" key="GridCell.Tab.0.left" timestamp="1680444793038">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="311" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1680444793038" />
+    <state width="1493" height="311" key="GridCell.Tab.0.right" timestamp="1680444793038">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="311" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1680444793038" />
+    <state width="1493" height="103" key="GridCell.Tab.1.bottom" timestamp="1680444793036">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1680444793036" />
+    <state width="1493" height="103" key="GridCell.Tab.1.center" timestamp="1680444793035">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1680444793035" />
+    <state width="1493" height="103" key="GridCell.Tab.1.left" timestamp="1680444793035">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1680444793035" />
+    <state width="1493" height="103" key="GridCell.Tab.1.right" timestamp="1680444793036">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1680444793036" />
+    <state width="1493" height="103" key="GridCell.Tab.2.bottom" timestamp="1680444793036">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.2.bottom/0.0.1536.824@0.0.1536.824" timestamp="1680444793036" />
+    <state width="1493" height="103" key="GridCell.Tab.2.center" timestamp="1680444793036">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.2.center/0.0.1536.824@0.0.1536.824" timestamp="1680444793036" />
+    <state width="1493" height="103" key="GridCell.Tab.2.left" timestamp="1680444793036">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.2.left/0.0.1536.824@0.0.1536.824" timestamp="1680444793036" />
+    <state width="1493" height="103" key="GridCell.Tab.2.right" timestamp="1680444793036">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.2.right/0.0.1536.824@0.0.1536.824" timestamp="1680444793036" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1680240271044">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1680240271044" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1680444055386">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1680444055386" />
+  </component>
+</project>
