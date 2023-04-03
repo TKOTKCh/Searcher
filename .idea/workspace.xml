@@ -2,38 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a462ed50-6cb1-4263-b6e3-3d77ff2cf128" name="默认更改列表" comment="">
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/common/Result.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/controller/SearchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/controller/SearchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataNoBodyDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataNoBodyDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataSegmentDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/DataSegmentDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/SegmentDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/dao/SegmentDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Data.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataNoBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataNoBody.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/DataSegment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Segment.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/entity/Segment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataNoBodyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataNoBodyService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/DataService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SegmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/SegmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataNoBodyServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataNoBodyServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/DataServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SearchServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SearchServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SegmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/service/impl/SegmentServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/BM25.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/BM25.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/TFIDFAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/java/com/searchengine/utils/jieba/keyword/TFIDFAnalyzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataNobodyMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataNobodyMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataSegmentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DataSegmentMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DatasMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/DatasMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/SegmentDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/search-engine-spring-boot/src/main/resources/mapper/SegmentDao.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/ApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/DBInitial.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/optimjieTest/OptimjieTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/segmentation/addAllSeg.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/search-engine-spring-boot/src/test/java/com/searchengine/springboot/segmentation/test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,6 +137,7 @@
       <workItem from="1680251634236" duration="183000" />
       <workItem from="1680261676658" duration="941000" />
       <workItem from="1680421497996" duration="16639000" />
+      <workItem from="1680448840295" duration="649000" />
     </task>
     <servers />
   </component>
