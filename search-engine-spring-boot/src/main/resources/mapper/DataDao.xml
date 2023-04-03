@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--绑定一个对应的Dao/Map接口-->
+<mapper namespace="com.searchengine.dao.DataDao">
+    <resultMap id="RecordMap" type="com.searchengine.entity.Data">
+        <id column="id" property="id"></id>
+        <result column="url" property="url"></result>
+        <result column="caption" property="caption"></result>
+    </resultMap>
+    <select id="selectAllRecords" resultType="com.searchengine.entity.Data">
+        select * from data
+    </select>
+
+    <select id="selectPartialRecords" resultType="com.searchengine.entity.Data">
+        select * from data limit #{limit} offset #{offset}
+    </select>
+
+    <select id="selectById" resultType="com.searchengine.entity.Data">
+        SELECT * FROM data where id=#{id}
+    </select>
+
+    <select id="selectRecordsByWord" resultType="com.searchengine.entity.Data">
+        select * from data where caption like #{word}
+    </select>
+    <select id="getDataBySplit" resultType="com.searchengine.entity.Data">
+        select url, caption, id
+        from data
+        where id in (
+            select db.data_id
+            from (
+                     select data_id
+                     from (
+                              ${sql}
+                              ) tb1
+                     group by data_id
+                     order by sum(tidif_value) desc limit ${pageSize}
+                     offset ${offset}
+                 ) db
+        )
+    </select>
+
+    <insert id="insertRecord" parameterType="com.searchengine.entity.Data">
+        insert into data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="url != null">
+                url,
+            </if>
+            <if test="caption != null">
+                caption,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="url != null">
+                #{url},
+            </if>
+            <if test="caption != null">
+                #{caption},
+            </if>
+        </trim>
+    </insert>
+</mapper>
