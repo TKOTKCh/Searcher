@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--绑定一个对应的Dao/Map接口-->
+<mapper namespace="com.searchengine.dao.SegmentDao">
+    <resultMap id="segmentationMap" type="com.searchengine.entity.Segment">
+        <id column="id" property="id"></id>
+        <result column="word" property="word"></result>
+
+        <!--        <association property="record" javaType="com.searchengine.entity.Record">-->
+        <!--            <id column="recordid" property="id"></id>-->
+        <!--            <result column="url" property="url"></result>-->
+        <!--            <result column="caption" property="caption"></result>-->
+        <!--        </association>-->
+
+        <!--        <association property="RecordSeg" javaType="com.searchengine.entity.RecordSeg">-->
+        <!--            <id column="id" property="id"></id>-->
+        <!--            <result column="recordid" property="recordId"></result>-->
+        <!--            <result column="segid" property="segId"></result>-->
+        <!--            <result column="tidifvalue" property="tidifValue"></result>-->
+        <!--            <result column="weight" property="weight"></result>-->
+        <!--        </association>-->
+
+    </resultMap>
+
+    <select id="selectAllSeg" resultType="com.searchengine.entity.Segment">
+        select *
+        from segment
+    </select>
+
+    <select id="selectOneById" resultType="com.searchengine.entity.Segment">
+        select *
+        from segment
+        where id = #{id}
+    </select>
+
+    <select id="selectOneSeg" resultType="com.searchengine.entity.Segment" parameterType="java.lang.String">
+        SELECT *
+        FROM segment
+        WHERE word = #{word}
+    </select>
+
+    <insert id="insertSeg" parameterType="java.lang.String">
+        insert into segment (word)
+        values (#{word})
+    </insert>
+
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select ifnull(max(id), 0)
+        from segment
+    </select>
+
+    <insert id="insertBatchSeg" parameterType="list">
+        insert into segment(word)
+        values
+        <foreach collection="segs" item="item" separator=",">
+            (#{item})
+        </foreach>
+
+    </insert>
+
+    <select id="getAllByWords" resultType="com.searchengine.entity.Segment">
+        select *
+        from segment
+        where word LIKE #{word};
+    </select>
+
+    <resultMap id="segmentMap" type="com.searchengine.entity.Segment">
+        <id column="id" property="id"></id>
+        <result column="word" property="word"></result>
+    </resultMap>
+
+    <select id="getAllSegByTableName" resultType="com.searchengine.entity.Segment">
+        select *
+        from ${tableName}
+    </select>
+
+    <select id="getAllSeg" resultType="com.searchengine.entity.Segment">
+        select *
+        from segment
+    </select>
+
+    <select id="getOneSeg" resultType="com.searchengine.entity.Segment">
+        SELECT *
+        FROM ${table}
+        WHERE word = #{word}
+    </select>
+
+    <update id="createSegTable">
+        CREATE TABLE if not exists ${tableName}
+        (
+            `seg_id`
+            int
+            NOT
+            NULL
+            AUTO_INCREMENT,
+            `WORD`
+            varchar
+        (
+            300
+        ) NULL,
+            PRIMARY KEY
+        (
+            `seg_id`
+        ) USING BTREE
+            ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+    </update>
+
+</mapper>
