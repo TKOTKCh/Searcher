@@ -51,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public int register(User user) {
-        user.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+//        user.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         return userDao.insertOne(user);
     }
@@ -73,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             rs.put("username", detailsUser.getUsername());
             rs.put("message", "success");
 
-            redisUtil.set("login" + detailsUser.getId(), jwt, 60 * 60 * 6); //6小时
+//            redisUtil.set("login" + detailsUser.getId(), jwt, 60 * 60 * 6); //6小时
             return rs;
         } else {
             rs.put("message", "failure");

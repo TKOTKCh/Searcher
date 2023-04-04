@@ -18,7 +18,7 @@ public class User {
     //自增
     //主键
     @TableId
-    private String id;
+    private String  id;
 
     private String username;
     private String password;
