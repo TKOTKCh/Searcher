@@ -8,3 +8,6 @@
 # 2023/4/4 DruncBread
 1、实现部分后台管理接口
 2、目前功能：搜索，联系搜索，热门政策
+# 2023/4/4 TKOTKCh
+1、解决了4月2日的问题
+2、添加了最近搜索记录功能，详见usercontroller中的getLastQuery和addUserQuery，并附上user_query的sql文件
