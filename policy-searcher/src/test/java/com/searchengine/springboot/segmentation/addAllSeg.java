@@ -57,93 +57,93 @@ public class addAllSeg {
     @Test
     public void addAllSeg(){
 
-        //-----------------初始化-------------
-        List<Record> records = dataService.queryAllRecord();
-        List<Segment> segments = segmentService.queryAllSeg();
-
-        BloomFilter<String> bf = BloomFilter.create(Funnels.stringFunnel(Charset.forName("UTF-8")),10000000);
-
-        if(stopWordsSet==null) {
-            stopWordsSet=new HashSet<>();
-            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
-        }
-
-        for (Segment seg : segments) {
-            bf.put(seg.getWord());
-        }
-        //----------------初始化结束---------------
-
-
-        //----------------开始加词-----------------
-        for (int loop=0;loop<75;loop++) {
-
-            List<String> segs = new ArrayList<>(10000);
-            List<RecordSeg> relations = new ArrayList<>(10000);
-
-            int segMaxId = segmentDao.getMaxId();  // 获取seg表中最大的id
-
-            for (int i = loop*10000; i < (loop+1)*10000; i++) {  // 10000 15s
-                Record record = records.get(i);
-                String caption = record.getCaption();
-                List<SegToken> segTokens = jiebaSegmenter.process(caption, JiebaSegmenter.SegMode.INDEX);
-                List<Keyword> keywords = tfidfAnalyzer.analyze(caption,5);
-                Map<String,RecordSeg> countMap = new HashMap<>();
-                for (SegToken segToken : segTokens) {
-                    String word = segToken.word;
-                    if (stopWordsSet.contains(word)) continue;//判断是否是停用词
-                    int segId = 0;
-                    boolean exist = false;
-                    if (!bf.mightContain(word)) {  // 不存在是一定不存在
-                        bf.put(word);
-                        segs.add(word);
-                        segId = ++segMaxId;
-                        segments.add(new Segment(segMaxId, word));
-                    } else {  // 但是存在不一定是真的存在，但是这种误报的可能性很小，所以这时全部遍历的时间开销是完全可以接受的。
-                              // https://www.geeksforgeeks.org/bloom-filter-in-java-with-examples/ 误报概率参考，1千万分之一
-                        // 需要检查一下是不是真的存在
-                        for (Segment seg : segments) {
-                            if (word.equals(seg.getWord())) {
-                                segId = seg.getId();
-                                exist = true;
-                                break;
-                            }
-                        }
-                        if (!exist) {  // 和上面的操作相同
-                            bf.put(word);
-                            segs.add(word);
-                            segId = ++segMaxId;
-                            segments.add(new Segment(segMaxId, word));
-                        }
-                    }
-
-                    int dataId = record.getId();
-                    double tf = 0;
-                    for (Keyword v : keywords) {
-                        if (v.getName().equals(word)) {
-                            tf = v.getTfidfvalue();
-                            break;
-                        }
-                    }
-                    //--------------计数--------------
-                    if (!countMap.containsKey(word)){
-                        int count = 1;
-                        countMap.put(word,new RecordSeg(dataId, segId, tf, count));
-                    }else {
-                        RecordSeg t = countMap.get(word);
-                        int count = t.getCount();
-                        t.setCount(++count);
-                        countMap.put(word,t);
-                    }
-                    //--------------------------------
-                }
-                for (RecordSeg t : countMap.values()) {
-                    relations.add(t);
-                }
-            }
-
-            segmentDao.insertBatchSeg(segs);
-            recordSegDao.insertBatch(relations);
-        }
+//        //-----------------初始化-------------
+//        List<Record> records = dataService.queryAllRecord();
+//        List<Segment> segments = segmentService.queryAllSeg();
+//
+//        BloomFilter<String> bf = BloomFilter.create(Funnels.stringFunnel(Charset.forName("UTF-8")),10000000);
+//
+//        if(stopWordsSet==null) {
+//            stopWordsSet=new HashSet<>();
+//            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+//        }
+//
+//        for (Segment seg : segments) {
+//            bf.put(seg.getWord());
+//        }
+//        //----------------初始化结束---------------
+//
+//
+//        //----------------开始加词-----------------
+//        for (int loop=0;loop<75;loop++) {
+//
+//            List<String> segs = new ArrayList<>(10000);
+//            List<RecordSeg> relations = new ArrayList<>(10000);
+//
+//            int segMaxId = segmentDao.getMaxId();  // 获取seg表中最大的id
+//
+//            for (int i = loop*10000; i < (loop+1)*10000; i++) {  // 10000 15s
+//                Record record = records.get(i);
+//                String caption = record.getCaption();
+//                List<SegToken> segTokens = jiebaSegmenter.process(caption, JiebaSegmenter.SegMode.INDEX);
+//                List<Keyword> keywords = tfidfAnalyzer.analyze(caption,5);
+//                Map<String,RecordSeg> countMap = new HashMap<>();
+//                for (SegToken segToken : segTokens) {
+//                    String word = segToken.word;
+//                    if (stopWordsSet.contains(word)) continue;//判断是否是停用词
+//                    int segId = 0;
+//                    boolean exist = false;
+//                    if (!bf.mightContain(word)) {  // 不存在是一定不存在
+//                        bf.put(word);
+//                        segs.add(word);
+//                        segId = ++segMaxId;
+//                        segments.add(new Segment(segMaxId, word));
+//                    } else {  // 但是存在不一定是真的存在，但是这种误报的可能性很小，所以这时全部遍历的时间开销是完全可以接受的。
+//                              // https://www.geeksforgeeks.org/bloom-filter-in-java-with-examples/ 误报概率参考，1千万分之一
+//                        // 需要检查一下是不是真的存在
+//                        for (Segment seg : segments) {
+//                            if (word.equals(seg.getWord())) {
+//                                segId = seg.getId();
+//                                exist = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!exist) {  // 和上面的操作相同
+//                            bf.put(word);
+//                            segs.add(word);
+//                            segId = ++segMaxId;
+//                            segments.add(new Segment(segMaxId, word));
+//                        }
+//                    }
+//
+//                    int dataId = record.getId();
+//                    double tf = 0;
+//                    for (Keyword v : keywords) {
+//                        if (v.getName().equals(word)) {
+//                            tf = v.getTfidfvalue();
+//                            break;
+//                        }
+//                    }
+//                    //--------------计数--------------
+//                    if (!countMap.containsKey(word)){
+//                        int count = 1;
+//                        countMap.put(word,new RecordSeg(dataId, segId, tf, count));
+//                    }else {
+//                        RecordSeg t = countMap.get(word);
+//                        int count = t.getCount();
+//                        t.setCount(++count);
+//                        countMap.put(word,t);
+//                    }
+//                    //--------------------------------
+//                }
+//                for (RecordSeg t : countMap.values()) {
+//                    relations.add(t);
+//                }
+//            }
+//
+//            segmentDao.insertBatchSeg(segs);
+//            recordSegDao.insertBatch(relations);
+//        }
 
     }
 
@@ -192,74 +192,74 @@ public class addAllSeg {
      * @date: 2022-05-23 11:01
      */
     public void addAllSegUseSplit() {
-        List<Segment> segments = segmentService.queryAllSeg();
-        Map<String, Integer> wordToId = new HashMap<>(1000000);
-        for (Segment seg : segments) {
-            wordToId.put(seg.getWord(), seg.getId());
-        }
-        if (stopWordsSet == null) {
-            stopWordsSet = new HashSet<>();
-            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
-        }
-        Map<Integer, List<T>> mp = new HashMap<>(100000);
-        int cnt = 0;
-        for (int loop = 0; loop < 300; loop++) {
-            List<Record> records = dataService.selectPartialRecords(10000, Math.max(0, loop * 10000));
-            for (int i = loop * 10000; i < (loop + 1) * 10000; i++) {
-                Record record = records.get(i % 10000);
-                String caption = record.getCaption();
-                List<SegToken> segTokens = jiebaSegmenter.process(caption, JiebaSegmenter.SegMode.INDEX);
-                List<Keyword> keywords = tfidfAnalyzer.analyze(caption,5);
-                Map<String, T> countMap = new HashMap<>();
-                for (SegToken segToken : segTokens) {
-                    String word = segToken.word;
-                    if (stopWordsSet.contains(word)) continue;  // 判断是否是停用词
-                    int segId = wordToId.get(word);
-                    int dataId = record.getId();
-                    double tf = 0;
-                    for (Keyword v : keywords) {
-                        if (v.getName().equals(word)) {
-                            tf = v.getTfidfvalue();
-                            break;
-                        }
-                    }
-                    if (!countMap.containsKey(word)){
-                        int count = 1;
-                        countMap.put(word, new T(dataId, segId, tf, count));
-                    } else {
-                        T t = countMap.get(word);
-                        int count = t.getCount();
-                        t.setCount(++count);
-                        countMap.put(word,t);
-                    }
-                }
-                for (T t : countMap.values()) {
-                    int segId = t.getSegId();
-                    int idx = segId % 100;
-                    List list = mp.getOrDefault(idx, new ArrayList<>(10000));
-                    list.add(t);
-                    mp.put(idx, list);
-                    cnt++;
-                }
-                if (cnt > 100000) {  // 之所以这么搞，是因为在最后直接insert的话，会爆堆空间，虽然我已经开了4个G但好像还是不行。
-                    cnt = 0;
-                    for (Integer idx : mp.keySet()) {
-                        String tableName = "data_seg_relation_" + idx;
-                        tDao.createNewTable(tableName);
-                        tDao.insert2(mp.get(idx), tableName);
-                    }
-                    mp = new HashMap<>(100000);
-                }
-
-            }
-        }
-        if (cnt > 0) {
-            for (Integer idx : mp.keySet()) {
-                String tableName = "data_seg_relation_" + idx;
-                tDao.createNewTable(tableName);
-                tDao.insert2(mp.get(idx), tableName);
-            }
-        }
+//        List<Segment> segments = segmentService.queryAllSeg();
+//        Map<String, Integer> wordToId = new HashMap<>(1000000);
+//        for (Segment seg : segments) {
+//            wordToId.put(seg.getWord(), seg.getId());
+//        }
+//        if (stopWordsSet == null) {
+//            stopWordsSet = new HashSet<>();
+//            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+//        }
+//        Map<Integer, List<T>> mp = new HashMap<>(100000);
+//        int cnt = 0;
+//        for (int loop = 0; loop < 300; loop++) {
+//            List<Record> records = dataService.selectPartialRecords(10000, Math.max(0, loop * 10000));
+//            for (int i = loop * 10000; i < (loop + 1) * 10000; i++) {
+//                Record record = records.get(i % 10000);
+//                String caption = record.getCaption();
+//                List<SegToken> segTokens = jiebaSegmenter.process(caption, JiebaSegmenter.SegMode.INDEX);
+//                List<Keyword> keywords = tfidfAnalyzer.analyze(caption,5);
+//                Map<String, T> countMap = new HashMap<>();
+//                for (SegToken segToken : segTokens) {
+//                    String word = segToken.word;
+//                    if (stopWordsSet.contains(word)) continue;  // 判断是否是停用词
+//                    int segId = wordToId.get(word);
+//                    int dataId = record.getId();
+//                    double tf = 0;
+//                    for (Keyword v : keywords) {
+//                        if (v.getName().equals(word)) {
+//                            tf = v.getTfidfvalue();
+//                            break;
+//                        }
+//                    }
+//                    if (!countMap.containsKey(word)){
+//                        int count = 1;
+//                        countMap.put(word, new T(dataId, segId, tf, count));
+//                    } else {
+//                        T t = countMap.get(word);
+//                        int count = t.getCount();
+//                        t.setCount(++count);
+//                        countMap.put(word,t);
+//                    }
+//                }
+//                for (T t : countMap.values()) {
+//                    int segId = t.getSegId();
+//                    int idx = segId % 100;
+//                    List list = mp.getOrDefault(idx, new ArrayList<>(10000));
+//                    list.add(t);
+//                    mp.put(idx, list);
+//                    cnt++;
+//                }
+//                if (cnt > 100000) {  // 之所以这么搞，是因为在最后直接insert的话，会爆堆空间，虽然我已经开了4个G但好像还是不行。
+//                    cnt = 0;
+//                    for (Integer idx : mp.keySet()) {
+//                        String tableName = "data_seg_relation_" + idx;
+//                        tDao.createNewTable(tableName);
+//                        tDao.insert2(mp.get(idx), tableName);
+//                    }
+//                    mp = new HashMap<>(100000);
+//                }
+//
+//            }
+//        }
+//        if (cnt > 0) {
+//            for (Integer idx : mp.keySet()) {
+//                String tableName = "data_seg_relation_" + idx;
+//                tDao.createNewTable(tableName);
+//                tDao.insert2(mp.get(idx), tableName);
+//            }
+//        }
     }
 
     private void loadStopWords(Set<String> set, InputStream in){

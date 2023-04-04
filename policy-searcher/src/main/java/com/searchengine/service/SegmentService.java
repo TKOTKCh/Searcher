@@ -27,7 +27,7 @@ public interface SegmentService {
 
     List<String> getAllByWords(@Param("word") String word);
 
-    List<Segment> getAllSeg();
+    List<Segment> getAllSeg(@Param("table") String table);
 
     boolean createSegTable(String tableName);
 }

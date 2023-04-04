@@ -25,20 +25,15 @@
     </resultMap>
 
     <select id="selectAllSeg" resultType="com.searchengine.entity.Segment">
-        select *
-        from segment
+        select * from segment
     </select>
 
     <select id="selectOneById" resultType="com.searchengine.entity.Segment">
-        select *
-        from segment
-        where id = #{id}
+        select * from segment where id = #{id}
     </select>
 
     <select id="selectOneSeg" resultType="com.searchengine.entity.Segment" parameterType="java.lang.String">
-        SELECT *
-        FROM segment
-        WHERE word = #{word}
+        SELECT * FROM segment WHERE word=#{word}
     </select>
 
     <insert id="insertSeg" parameterType="java.lang.String">
@@ -47,8 +42,7 @@
     </insert>
 
     <select id="getMaxId" resultType="java.lang.Integer">
-        select ifnull(max(id), 0)
-        from segment
+        select ifnull(max(id), 0) from segment
     </select>
 
     <insert id="insertBatchSeg" parameterType="list">
@@ -61,9 +55,7 @@
     </insert>
 
     <select id="getAllByWords" resultType="com.searchengine.entity.Segment">
-        select *
-        from segment
-        where word LIKE #{word};
+        select * from segment where word LIKE #{word};
     </select>
 
     <resultMap id="segmentMap" type="com.searchengine.entity.Segment">
@@ -71,14 +63,13 @@
         <result column="word" property="word"></result>
     </resultMap>
 
+    <select id="getAllSeg" resultType="com.searchengine.entity.Segment">
+        select *
+        from ${table}
+    </select>
     <select id="getAllSegByTableName" resultType="com.searchengine.entity.Segment">
         select *
         from ${tableName}
-    </select>
-
-    <select id="getAllSeg" resultType="com.searchengine.entity.Segment">
-        select *
-        from segment
     </select>
 
     <select id="getOneSeg" resultType="com.searchengine.entity.Segment">
@@ -87,24 +78,14 @@
         WHERE word = #{word}
     </select>
 
+
+
     <update id="createSegTable">
         CREATE TABLE if not exists ${tableName}
         (
-            `seg_id`
-            int
-            NOT
-            NULL
-            AUTO_INCREMENT,
-            `WORD`
-            varchar
-        (
-            300
-        ) NULL,
-            PRIMARY KEY
-        (
-            `seg_id`
-        ) USING BTREE
-            ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+            `seg_id` int NOT NULL AUTO_INCREMENT,
+            `WORD` varchar(300) NULL,
+            PRIMARY KEY (`seg_id`) USING BTREE
+        )ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
     </update>
-
 </mapper>

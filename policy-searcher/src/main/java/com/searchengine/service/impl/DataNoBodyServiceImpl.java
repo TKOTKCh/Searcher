@@ -17,7 +17,7 @@ public class DataNoBodyServiceImpl implements DataNoBodyService {
 
     // 搜索Data
     @Override
-    public List<DataNoBody> getAllDataNoBodys() {
-        return dataNoBodyDao.getAllDataNoBodys();
+    public List<DataNoBody> getAllDataNoBodys(String table) {
+        return dataNoBodyDao.getAllDataNoBodys(table);
     }
 }

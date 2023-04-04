@@ -6,7 +6,7 @@
 <mapper namespace="com.searchengine.dao.DataSegmentDao">
 
     <insert id="initSegmentTable" parameterType="list">
-        insert into segment(word)
+        insert into ${table}(word)
         values
         <foreach collection="segs" item="item" separator=",">
             (#{item})
@@ -33,38 +33,38 @@
         CREATE TABLE if not exists ${tableName}
         (
             `data_id`
-            int
-            NOT
-            NULL,
+                int
+                NOT
+                    NULL,
             `seg_id`
-            int
-            NOT
-            NULL,
+                int
+                NOT
+                    NULL,
             `tf`
-            double
-            NULL
-            DEFAULT
-            NULL,
+                double
+                NULL
+                DEFAULT
+                    NULL,
             `idf`
-            double
-            NULL
-            DEFAULT
-            NULL,
+                double
+                NULL
+                DEFAULT
+                    NULL,
             `bm25`
-            double
-            NULL
-            DEFAULT
-            NULL,
+                double
+                NULL
+                DEFAULT
+                    NULL,
             `count`
-            int
-            NULL
-            DEFAULT
-            NULL,
+                int
+                NULL
+                DEFAULT
+                    NULL,
             INDEX
-            `index`
-        (
-            `seg_id`
-        ) USING BTREE
-            )
+                `index`
+                (
+                 `seg_id`
+                    ) USING BTREE
+        )
     </update>
 </mapper>

@@ -42,40 +42,71 @@ public class DBInitial {
     Double totallength;
 
     @Test
+    public void createDataBase() throws IOException {
+        createtable("datatitle");
+        createtable("databody");
+    }
+
+    public void createtable(String table) throws IOException {
+//        initSegmentTable(table);
+        String fileName="target/classes/jieba/"+table+".txt";
+        File file =new File(fileName);
+
+        if(!file.exists()){
+            createIDF(table);
+        }
+        calTotalLength(table);
+        TFIDFAnalyzer.idfMap=null;
+        initDataSegRelationTable(table);
+    }
+
     //计算totallength
-    public void calTotalLength(){
+    public void calTotalLength(String table){
         // 获取所有的datanobody数据
-        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys();
+        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys(table);
         totallength=0.0;
         for(DataNoBody dnb:dnbs){
+            String word=dnb.getWord();
+            if(word==null){
+                continue;
+            }
             totallength+=dnb.getWord().length();
         }
     }
-    @Test
-    //初始化分词表
-    public void InitSegmentTable() {
 
+    //初始化分词表
+    public void initSegmentTable(String table) {
+        String segmentTable="segment_"+table;
+        segmentService.createSegTable(segmentTable);
         List<String> segs = new ArrayList<>();
         // 布隆过滤器
         BloomFilter<String> bf = BloomFilter.create(Funnels.stringFunnel(Charset.forName("UTF-8")),10000000);
 
         // 加载停顿词
-        loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+        if (stopWordsSet.size()==0){
+            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+        }
+
 
 
         // 获取所有的datanobody数据
-        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys();
+        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys(table);
 
         for (DataNoBody dnb:dnbs) {
 
 
             String word=dnb.getWord();
-
+            if(word==null){
+                continue;
+            }
             //对每一条数据都进行分词
             //将获取到的word进行分词
             List<SegToken> segTokens = jiebaSegmenter.process(word, JiebaSegmenter.SegMode.INDEX);
             for (SegToken segToken : segTokens) {
                 String seg = segToken.word;
+                if(seg.length()>50){
+                    continue;
+                }
                 if (stopWordsSet.contains(seg)) continue; // 判断是否是停用词
                 // 布隆过滤器判断是否已经包括了
                 if (!bf.mightContain(seg)) {
@@ -86,30 +117,40 @@ public class DBInitial {
 
         }
 
-        dataSegmentDao.initSegmentTable(segs); // 将分词全部添加到segment表里面
+        dataSegmentDao.initSegmentTable(segs,segmentTable); // 将分词全部添加到segment表里面
     }
 
-    @Test
+
     //根据idf公式 idf=log(语料库文档总数/（包含该词的文档数+1）)
-    public void createIDF() throws IOException {
+    public void createIDF(String table) throws IOException {
         List<String> segs = new ArrayList<>();
         HashMap<String,Double> hasht=new HashMap<String, Double>();
 
         // 加载停顿词
-        loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+        if(stopWordsSet.size()==0){
+            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+        }
+
 
 
         // 获取所有的datanobody数据
-        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys();
+        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys(table);
         //计算各分词出现在几个文档中
         for (DataNoBody dnb:dnbs) {
             String word=dnb.getWord();
+            if(word==null){
+                continue;
+            }
             //对每一条数据都进行分词
             //将获取到的word进行分词
             List<SegToken> segTokens = jiebaSegmenter.process(word, JiebaSegmenter.SegMode.INDEX);
             HashMap<String,Integer>hashl=new HashMap<String,Integer>();
             for (SegToken segToken : segTokens) {
                 String seg = segToken.word;
+                if(seg.equals(" ")){
+                    continue;
+                }
+
                 if (stopWordsSet.contains(seg)) continue; // 判断是否是停用词
                 if(hashl.containsKey(seg)){
                     continue;
@@ -124,7 +165,8 @@ public class DBInitial {
             }
         }
         int textnums=dnbs.size();
-        File file =new File("src/main/resources/jieba/myidf_dict.txt");
+        String fileName="target/classes/jieba/"+table+".txt";
+        File file =new File(fileName);
 
         if(!file.exists()){
             file.createNewFile();
@@ -144,11 +186,11 @@ public class DBInitial {
 
     }
 
-    @Test
+
     //请运行这个函数
-    public void initDataSegRelationTable() {
+    public void initDataSegRelationTable(String table) {
         // 获取到所有的 segment 分词
-        List<Segment> segments = segmentService.getAllSeg();
+        List<Segment> segments = segmentService.getAllSeg("segment_"+table);
 
         // 将分词按照 word->id 的方式放入 map
         // 其实就是键值对，不过这里的Key是word，因为我们建立的是倒排索引
@@ -156,11 +198,13 @@ public class DBInitial {
         for (Segment seg : segments) {
             wordToId.put(seg.getWord(), seg.getId());
         }
+        if(stopWordsSet.size()==0){
+            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+        }
 
-        loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
 
         if(totallength== null||totallength==0.0){
-            calTotalLength();
+            calTotalLength(table);
         }
         // 一个List<DataSegment>代表一张DataSegment表
         // dataSegmentListMap代表很多张DataSegment表
@@ -168,15 +212,19 @@ public class DBInitial {
         int cnt = 0;
 
         //计算分词对应文档中的tf,idf,bm25值
-        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys();
+        List<DataNoBody> dnbs = dataNoBodyService.getAllDataNoBodys(table);
         for(DataNoBody dnb:dnbs){
             String word=dnb.getWord();
+            if(word==null){
+                continue;
+            }
+            if(word.equals("")||word.equals(" "))continue;
             // 进行分词
             List<SegToken> segTokens = jiebaSegmenter.process(word, JiebaSegmenter.SegMode.INDEX);
 
 
             // 获取返回的 tfidf 值最高的topn个关键词
-            List<Keyword> keywords = tfidfAnalyzer.analyze(word,20);
+            List<Keyword> keywords = tfidfAnalyzer.analyze(word,20,table);
             Map<String, DataSegment> segmentMap = new HashMap<>();
 
             for (SegToken segToken : segTokens) {
@@ -240,7 +288,7 @@ public class DBInitial {
         // 最后通过 dataSegmentList 来创建所有的 DataSegment 表：data_seg_relation
         if (cnt > 0) {
             for (Integer idx : dataSegmentListMap.keySet()) {
-                String tableName = "data_seg_relation_" + idx;
+                String tableName = table+"_seg_relation_" + idx;
                 dataSegmentDao.createNewTable(tableName);
                 dataSegmentDao.initRelationTable(dataSegmentListMap.get(idx), tableName);
             }

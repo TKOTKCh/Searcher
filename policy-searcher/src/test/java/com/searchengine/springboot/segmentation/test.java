@@ -29,28 +29,28 @@ public class test {
             };
     @Test
     public void segTest1(){
-        for (String sentence : sentences) {
-            long start = System.currentTimeMillis();
-            List<SegToken> tokens = segmenter.process(sentence, JiebaSegmenter.SegMode.SEARCH);
-            TFIDFAnalyzer tfidfAnalyzer=new TFIDFAnalyzer();
-            List<Keyword> list=tfidfAnalyzer.analyze(sentence,10);
-            long end = System.currentTimeMillis();
-            System.out.println((end - start) + "ms");
-            System.out.print(String.format(Locale.getDefault(), "\n%s\n%s", sentence, tokens.toString()));
-            for (SegToken token : tokens) {
-                System.out.println(token.word);
-            }
-        }
+//        for (String sentence : sentences) {
+//            long start = System.currentTimeMillis();
+//            List<SegToken> tokens = segmenter.process(sentence, JiebaSegmenter.SegMode.SEARCH);
+//            TFIDFAnalyzer tfidfAnalyzer=new TFIDFAnalyzer();
+//            List<Keyword> list=tfidfAnalyzer.analyze(sentence,10);
+//            long end = System.currentTimeMillis();
+//            System.out.println((end - start) + "ms");
+//            System.out.print(String.format(Locale.getDefault(), "\n%s\n%s", sentence, tokens.toString()));
+//            for (SegToken token : tokens) {
+//                System.out.println(token.word);
+//            }
+//        }
     }
 
     @Test
     public void tfidfTest1(){
-        String content="孩子上了幼儿园 安全防拐教育要做好 卧槽这也太牛逼了吧";
-        int topN=5;
-        TFIDFAnalyzer tfidfAnalyzer=new TFIDFAnalyzer();
-        List<Keyword> list=tfidfAnalyzer.analyze(content,10);
-        for(Keyword word:list)
-            System.out.print(word.getName()+":"+word.getTfidfvalue()+",");
+//        String content="孩子上了幼儿园 安全防拐教育要做好 卧槽这也太牛逼了吧";
+//        int topN=5;
+//        TFIDFAnalyzer tfidfAnalyzer=new TFIDFAnalyzer();
+//        List<Keyword> list=tfidfAnalyzer.analyze(content,10);
+//        for(Keyword word:list)
+//            System.out.print(word.getName()+":"+word.getTfidfvalue()+",");
     }
     @Test
     public void testDemo() {

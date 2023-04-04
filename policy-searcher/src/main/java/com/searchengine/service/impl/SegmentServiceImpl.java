@@ -172,13 +172,10 @@ public class SegmentServiceImpl implements SegmentService {
 
     }
 
-    @Override
-    public List<Segment> getAllSeg() {
-        return segmentDao.getAllSeg();
-    }
 
-    public List<Segment> getAllSegByTableName(String tableName) {
-        return segmentDao.getAllSegByTableName(tableName);
+    @Override
+    public List<Segment> getAllSeg(String table) {
+        return segmentDao.getAllSeg(table);
     }
 
     @Override

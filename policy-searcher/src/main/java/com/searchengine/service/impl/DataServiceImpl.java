@@ -178,24 +178,24 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
 
     @Override
     public Boolean addRecord(Record record) {
-        //文本信息加入data表
-        dataDao.insertRecord(record);
-        //分词处理
-        String sentence = record.getCaption();
-        List<SegToken> segTokens = segmenter.process(sentence, JiebaSegmenter.SegMode.INDEX);
-        List<Keyword> list=tfidfAnalyzer.analyze(sentence,5);
-        Integer recordId = record.getId();
-        Double tidifValue = new Double(0);
-        for (SegToken segToken : segTokens) {
-            //对应tidif值
-            for (Keyword keyword : list) {
-                if (keyword.getName().equals(segToken.word)){
-                    tidifValue = keyword.getTfidfvalue();
-                }
-            }
-            //分词信息加入分词表
-            segmentService.addSeg(segToken.word,recordId,tidifValue);
-        }
+//        //文本信息加入data表
+//        dataDao.insertRecord(record);
+//        //分词处理
+//        String sentence = record.getCaption();
+//        List<SegToken> segTokens = segmenter.process(sentence, JiebaSegmenter.SegMode.INDEX);
+//        List<Keyword> list=tfidfAnalyzer.analyze(sentence,5);
+//        Integer recordId = record.getId();
+//        Double tidifValue = new Double(0);
+//        for (SegToken segToken : segTokens) {
+//            //对应tidif值
+//            for (Keyword keyword : list) {
+//                if (keyword.getName().equals(segToken.word)){
+//                    tidifValue = keyword.getTfidfvalue();
+//                }
+//            }
+//            //分词信息加入分词表
+//            segmentService.addSeg(segToken.word,recordId,tidifValue);
+//        }
         return true;
     }
 

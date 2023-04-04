@@ -29,7 +29,7 @@ public class TFIDFAnalyzer
 	 * @param topN 需要返回的tfidf值最高的N个关键词，若超过content本身含有的词语上限数目，则默认返回全部
 	 * @return
 	 */
-	public List<Keyword> analyze(String content,int topN){
+	public List<Keyword> analyze(String content,int topN,String table){
 		List<Keyword> keywordList=new ArrayList<>();
 
 		if(stopWordsSet==null) {
@@ -38,7 +38,8 @@ public class TFIDFAnalyzer
 		}
 		if(idfMap==null) {
 			idfMap=new HashMap<>();
-			loadIDFMap(idfMap, this.getClass().getResourceAsStream("/jieba/idf_dict.txt"));
+			String fileName="/jieba/"+table+".txt";
+			loadIDFMap(idfMap, this.getClass().getResourceAsStream(fileName));
 		}
 
 		Map<String, Double> tfMap=getTF(content);
@@ -49,8 +50,12 @@ public class TFIDFAnalyzer
 			}else
 				keywordList.add(new Keyword(word,idfMedian*tfMap.get(word)));
 		}
+		try {
+			Collections.sort(keywordList);
+		}catch (Exception e){
+			System.out.println(content);
+		}
 
-		Collections.sort(keywordList);
 
 		if(keywordList.size()>topN) {
 			int num=keywordList.size()-topN;
@@ -138,7 +143,12 @@ public class TFIDFAnalyzer
 			String line=null;
 			while((line=bufr.readLine())!=null) {
 				String[] kv=line.trim().split(" ");
+				if(kv.length<=1){
+					continue;
+				}
 				map.put(kv[0],Double.parseDouble(kv[1]));
+
+
 			}
 			try
 			{

@@ -30,11 +30,12 @@ public interface SegmentDao {
     List<Segment> getAllByWords(String word);
 
     List<Segment> getAllSegByTableName(@Param("tableName") String tableName);
-    List<Segment> getAllSeg();
+//    List<Segment> getAllSeg();
 
-    // 通过word获取一个Segment
+    List<Segment> getAllSeg(@Param("table")String table);
+
     // 通过word获取一个Segment
     Segment getOneSeg(@Param("table")String table,@Param("word") String word);
 
-    boolean createSegTable(@Param("table") String table);
+    boolean createSegTable(@Param("table")String table);
 }

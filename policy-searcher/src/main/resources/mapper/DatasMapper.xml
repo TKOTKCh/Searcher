@@ -16,6 +16,7 @@
         <result column="pub_agency_fullname" property="pubAgencyFullname"></result>
         <result column="pub_number" property="pubNumber"></result>
         <result column="pub_time" property="pubTime"></result>
+        <result column="pub_time_year" property="pubTimeYear"></result>
         <result column="policy_type" property="policyType"></result>
         <result column="policy_body" property="policyBody"></result>
         <result column="province" property="province"></result>
@@ -28,12 +29,12 @@
     <select id="getSomeDatas" resultType="com.searchengine.entity.Data">
         select *
         from data limit #{limit}
-        offset #{offset}
+            offset #{offset}
     </select>
 
-<!--
-id,policy_title
--->
+    <!--
+    id,policy_title
+    -->
     <select id="getDataBySplit" resultType="com.searchengine.entity.Data">
         select id,policy_title,PUB_AGENCY_FULLNAME,POLICY_SOURCE
         from data
@@ -46,7 +47,7 @@ id,policy_title
                               ) tb1
                      group by data_id
                      order by sum(bm25) desc limit ${pageSize}
-                     offset ${offset}
+                         offset ${offset}
                  ) db
         )
     </select>
@@ -63,7 +64,7 @@ id,policy_title
                               ) tb1
                      group by data_id
                      order by sum(bm25) desc limit ${pageSize}
-                     offset ${offset}
+                         offset ${offset}
                  ) db
         )
     </select>
@@ -89,5 +90,4 @@ id,policy_title
     <update id="addCount">
         update databrief set count=count+1 WHERE id=${id}
     </update>
-
 </mapper>

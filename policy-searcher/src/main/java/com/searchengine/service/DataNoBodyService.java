@@ -7,5 +7,5 @@ import java.util.List;
 
 @Service
 public interface DataNoBodyService {
-    List<DataNoBody> getAllDataNoBodys();
+    List<DataNoBody> getAllDataNoBodys(String table);
 }
