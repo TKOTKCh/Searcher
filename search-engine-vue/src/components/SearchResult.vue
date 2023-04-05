@@ -1,518 +1,521 @@
 <template>
-  <el-container style="width: 100%">
-    <el-menu mode="horizontal"  style="background-color:#cbb486;" >
-      <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>
-      <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>
-      <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger">政务公开</el-menu-item>
-    </el-menu>
-<!--    头部-->
-    <el-header class="header" height="20%" >
-      <el-row  style="height: 200px; width: 100%; display: flex">
-        <el-col s style="width: 100px; margin-right: 40px">
-          <div>
-            <a href="/"><img src="~@/assets/img.png" alt="" width="200%"/></a>
-          </div>
-        </el-col>
-      </el-row>
-      <div class="little_button">
-        <el-col style="display: flex; float: left;">
-          <el-popover
-              placement="left-start"
-              title="收藏夹"
-              width="300"
-              trigger="click"
-              content="将来放收藏夹相关内容，实现效果可以参考edge的收藏夹。"
-          >
-            <el-button
-                slot="reference"
-                icon="el-icon-folder"
-                circle
-                style="margin-top: 25%"
-            ></el-button>
-            <div v-if="check">
-              <favorites
-                  :username="user.username"
-                  :addToFavorite="0"
-                  :key="timer"
-                  ref="favorites"
-              ></favorites>
+  <div>
+    <el-container style="width: 100%">
+      <el-menu mode="horizontal"  style="background-color:#cbb486;" >
+        <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>
+        <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>
+        <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger">政务公开</el-menu-item>
+      </el-menu>
+      <!--    头部-->
+      <el-header class="header" height="20%" >
+        <el-row  style="height: 200px; width: 100%; display: flex">
+          <el-col s style="width: 100px; margin-right: 40px">
+            <div>
+              <a href="/"><img src="~@/assets/img.png" alt="" width="200%"/></a>
             </div>
-            <div v-if="!check">
-              <a
-                  style="
+          </el-col>
+        </el-row>
+        <div class="little_button">
+          <el-col style="display: flex; float: left;">
+            <el-popover
+                placement="left-start"
+                title="收藏夹"
+                width="300"
+                trigger="click"
+                content="将来放收藏夹相关内容，实现效果可以参考edge的收藏夹。"
+            >
+              <el-button
+                  slot="reference"
+                  icon="el-icon-folder"
+                  circle
+                  style="margin-top: 25%"
+              ></el-button>
+              <div v-if="check">
+                <favorites
+                    :username="user.username"
+                    :addToFavorite="0"
+                    :key="timer"
+                    ref="favorites"
+                ></favorites>
+              </div>
+              <div v-if="!check">
+                <a
+                    style="
                     color: #55ab41;
                     margin-right: 148px;
                     text-decoration: none;
                   "
-                  href="/login"
-              >对不起,请前往登录</a
-              >
-            </div>
-          </el-popover>
-          <span>&nbsp;&nbsp;</span>
-          <el-popover
-              placement="bottom"
-              title="个人信息"
-              width="300"
-              trigger="click"
-              content="将来放关于用户的信息。"
-          >
-            <el-button slot="reference" icon="el-icon-user" circle
-                       style="margin-top: 25%">
-            </el-button>
-            <!--用户信息 -->
-            <div v-if="check">
-              欢迎回来！<span style="color: #55ab41">{{
-                user.username
-              }}</span>
-              <span id="logout" @click="logout">注销</span>
-            </div>
-            <div v-if="!check">
-              <a
-                  style="
+                    href="/login"
+                >对不起,请前往登录</a
+                >
+              </div>
+            </el-popover>
+            <span>&nbsp;&nbsp;</span>
+            <el-popover
+                placement="bottom"
+                title="个人信息"
+                width="300"
+                trigger="click"
+                content="将来放关于用户的信息。"
+            >
+              <el-button slot="reference" icon="el-icon-user" circle
+                         style="margin-top: 25%">
+              </el-button>
+              <!--用户信息 -->
+              <div v-if="check">
+                欢迎回来！<span style="color: #55ab41">{{
+                  user.username
+                }}</span>
+                <span id="logout" @click="logout">注销</span>
+              </div>
+              <div v-if="!check">
+                <a
+                    style="
                     color: #55ab41;
                     margin-right: 148px;
                     text-decoration: none;
                   "
-                  href="/login"
-              >对不起,请前往登录</a
-              >
-              <a
-                  style="color: #55ab41; text-decoration: none"
-                  href="/register"
-              >注册</a
-              >
-            </div>
-          </el-popover>
-        </el-col>
-      </div>
-    </el-header>
-<!--el body部分-->
-    <el-main>
-      <!-- 选择地点的浮窗 -->
-      <el-dialog title="地点筛选" :visible.sync="dialogTableVisible" style="height: 800px">
-        <div style="margin-bottom: 50px" >
-          <div style="display: flex">
-            <h3>全部： </h3>
-            <el-radio v-model="place" label="全部" border>全部</el-radio>
-          </div>
-          <div style="display: flex;margin-top: 40px">
-            <h3>省份： </h3>
-            <el-radio-group v-model="place" >
-              <el-radio-button label="北京市"></el-radio-button>
-              <el-radio-button label="上海市"></el-radio-button>
-              <el-radio-button label="天津市"></el-radio-button>
-              <el-radio-button label="重庆市"></el-radio-button>
-              <el-radio-button label="河北省"></el-radio-button>
-              <el-radio-button label="山西省"></el-radio-button>
-              <el-radio-button label="黑龙江省"></el-radio-button>
-              <el-radio-button label="吉林省"></el-radio-button>
-              <el-radio-button label="辽宁省"></el-radio-button>
-            </el-radio-group>
-          </div>
-
-          <div style="display: flex;margin-top: 40px" >
-            <el-radio-group v-model="place" style="margin-left: 50px">
-              <el-radio-button label="江苏省"></el-radio-button>
-              <el-radio-button label="浙江省"></el-radio-button>
-              <el-radio-button label="安徽省"></el-radio-button>
-              <el-radio-button label="福建省"></el-radio-button>
-              <el-radio-button label="江西省"></el-radio-button>
-              <el-radio-button label="山东省"></el-radio-button>
-              <el-radio-button label="河南省"></el-radio-button>
-              <el-radio-button label="湖北省"></el-radio-button>
-              <el-radio-button label="湖南省"></el-radio-button>
-            </el-radio-group>
-          </div>
-
-          <div style="display: flex;margin-top: 40px">
-            <el-radio-group v-model="place" style="margin-left: 50px">
-              <el-radio-button label="广东省"></el-radio-button>
-              <el-radio-button label="海南省"></el-radio-button>
-              <el-radio-button label="四川省"></el-radio-button>
-              <el-radio-button label="贵州省"></el-radio-button>
-              <el-radio-button label="云南省"></el-radio-button>
-              <el-radio-button label="陕西省"></el-radio-button>
-              <el-radio-button label="甘肃省"></el-radio-button>
-              <el-radio-button label="青海省"></el-radio-button>
-            </el-radio-group>
-          </div>
-
-          <div style="display: flex;margin-top: 40px">
-            <el-radio-group v-model="place" style="margin-left: 50px;margin-bottom: 50px">
-              <el-radio-button label="内蒙古自治区"></el-radio-button>
-              <el-radio-button label="广西壮族自治区"></el-radio-button>
-              <el-radio-button label="西藏自治区"></el-radio-button>
-              <el-radio-button label="宁夏回族自治区"></el-radio-button>
-              <el-radio-button label="新疆维吾尔自治区"></el-radio-button>
-            </el-radio-group>
-          </div>
+                    href="/login"
+                >对不起,请前往登录</a
+                >
+                <a
+                    style="color: #55ab41; text-decoration: none"
+                    href="/register"
+                >注册</a
+                >
+              </div>
+            </el-popover>
+          </el-col>
         </div>
-      </el-dialog>
+      </el-header>
+      <!--el body部分-->
+      <el-main>
+        <!-- 选择地点的浮窗 -->
+        <el-dialog title="地点筛选" :visible.sync="dialogTableVisible" style="height: 800px">
+          <div style="margin-bottom: 50px" >
+            <div style="display: flex">
+              <h3>全部： </h3>
+              <el-radio v-model="place" label="全部" border>全部</el-radio>
+            </div>
+            <div style="display: flex;margin-top: 40px">
+              <h3>省份： </h3>
+              <el-radio-group v-model="place" >
+                <el-radio-button label="北京市"></el-radio-button>
+                <el-radio-button label="上海市"></el-radio-button>
+                <el-radio-button label="天津市"></el-radio-button>
+                <el-radio-button label="重庆市"></el-radio-button>
+                <el-radio-button label="河北省"></el-radio-button>
+                <el-radio-button label="山西省"></el-radio-button>
+                <el-radio-button label="黑龙江省"></el-radio-button>
+                <el-radio-button label="吉林省"></el-radio-button>
+                <el-radio-button label="辽宁省"></el-radio-button>
+              </el-radio-group>
+            </div>
+
+            <div style="display: flex;margin-top: 40px" >
+              <el-radio-group v-model="place" style="margin-left: 50px">
+                <el-radio-button label="江苏省"></el-radio-button>
+                <el-radio-button label="浙江省"></el-radio-button>
+                <el-radio-button label="安徽省"></el-radio-button>
+                <el-radio-button label="福建省"></el-radio-button>
+                <el-radio-button label="江西省"></el-radio-button>
+                <el-radio-button label="山东省"></el-radio-button>
+                <el-radio-button label="河南省"></el-radio-button>
+                <el-radio-button label="湖北省"></el-radio-button>
+                <el-radio-button label="湖南省"></el-radio-button>
+              </el-radio-group>
+            </div>
+
+            <div style="display: flex;margin-top: 40px">
+              <el-radio-group v-model="place" style="margin-left: 50px">
+                <el-radio-button label="广东省"></el-radio-button>
+                <el-radio-button label="海南省"></el-radio-button>
+                <el-radio-button label="四川省"></el-radio-button>
+                <el-radio-button label="贵州省"></el-radio-button>
+                <el-radio-button label="云南省"></el-radio-button>
+                <el-radio-button label="陕西省"></el-radio-button>
+                <el-radio-button label="甘肃省"></el-radio-button>
+                <el-radio-button label="青海省"></el-radio-button>
+              </el-radio-group>
+            </div>
+
+            <div style="display: flex;margin-top: 40px">
+              <el-radio-group v-model="place" style="margin-left: 50px;margin-bottom: 50px">
+                <el-radio-button label="内蒙古自治区"></el-radio-button>
+                <el-radio-button label="广西壮族自治区"></el-radio-button>
+                <el-radio-button label="西藏自治区"></el-radio-button>
+                <el-radio-button label="宁夏回族自治区"></el-radio-button>
+                <el-radio-button label="新疆维吾尔自治区"></el-radio-button>
+              </el-radio-group>
+            </div>
+          </div>
+        </el-dialog>
 
 
-      <el-row style="display: flex;justify-content: center">
-        <!--        搜索框列-->
-        <div align="center"
-             style="
+        <el-row style="display: flex;justify-content: center">
+          <!--        搜索框列-->
+          <div align="center"
+               style="
                     display: flex;
                     margin-bottom: 15px;
                     align-items: center;">
 
-<!--          地区选择按钮-->
-          <el-button type="text" @click="dialogTableVisible = true" size="mini" icon="el-icon-location-information" style="height: 50px;margin-right: 30px;font-size: 20px;font-weight: bolder;color: #cbb486">{{place}}</el-button>
+            <!--          地区选择按钮-->
+            <el-button type="text" @click="dialogTableVisible = true" size="mini" icon="el-icon-location-information" style="height: 50px;margin-right: 30px;font-size: 20px;font-weight: bolder;color: #cbb486">{{place}}</el-button>
 
-<!--          搜索框-->
-          <div class="input" style="text-align: center;margin-top: 2%;margin-bottom: 2%">
-<!--            :popper-append-to-body="false"-->
-            <el-autocomplete v-model="search_word" style=""
-                             :fetch-suggestions="querySearchAsync" @select="handleSelect"
-                             placeholder="请输入搜索内容" prefix-icon="el-icon-search"
-                             @keyup.enter.native="search">
-              <template v-slot:suffix>
-                <el-button
-                    style="margin-right: 10px; margin-top: 5px"
-                    slot="suffix"
-                    type="text"
-                    @click="searcher"
-                >搜索</el-button
-                >
-              </template>
-            </el-autocomplete>
+            <!--          搜索框-->
+            <div class="input" style="text-align: center;margin-top: 2%;margin-bottom: 2%">
+              <!--            :popper-append-to-body="false"-->
+              <el-autocomplete v-model="search_word" style=""
+                               :fetch-suggestions="querySearchAsync" @select="handleSelect"
+                               placeholder="请输入搜索内容" prefix-icon="el-icon-search"
+                               @keyup.enter.native="search">
+                <template v-slot:suffix>
+                  <el-button
+                      style="margin-right: 10px; margin-top: 5px"
+                      slot="suffix"
+                      type="text"
+                      @click="searcher"
+                  >搜索</el-button
+                  >
+                </template>
+              </el-autocomplete>
+            </div>
           </div>
-        </div>
-      </el-row>
-      <el-col
-        v-loading="loading"
-        element-loading-text="拼命加载中"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgb(255 255 255)"
-      >
-        <div style="display: flex;background-color:rgba(203,180,134,.2);height: 60px;margin-bottom: 1%" >
-          <el-col :span="2" id="gen">
-            <span>&nbsp;</span>
-          </el-col>
-          <div
-            style="margin-right: 15px;height: 60px;font-size: 20px;line-height: 60px;font-weight: bolder;color: black"
-            id="text"
-            :class="{ selectedOne: picture_text === 1 }"
-            @click="tranfer1('text')"
-          >
-            全部
+        </el-row>
+        <el-col
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgb(255 255 255)"
+        >
+          <div style="display: flex;background-color:rgba(203,180,134,.2);height: 60px;margin-bottom: 1%" >
+            <el-col :span="2" id="gen">
+              <span>&nbsp;</span>
+            </el-col>
+            <div
+                style="margin-right: 15px;height: 60px;font-size: 20px;line-height: 60px;font-weight: bolder;color: black"
+                id="text"
+                :class="{ selectedOne: picture_text === 1 }"
+                @click="tranfer1('text')"
+            >
+              全部
+            </div>
+            <!--          <div-->
+            <!--            style="margin-right: 15px;height: 60px;font-size: 20px;line-height: 60px;font-weight: bolder;color: black"-->
+            <!--            :class="{ selectedOne: picture_text === 2 }"-->
+            <!--            @click="tranfer1('picture')"-->
+            <!--          >-->
+            <!--            要闻动态-->
+            <!--          </div>-->
           </div>
-<!--          <div-->
-<!--            style="margin-right: 15px;height: 60px;font-size: 20px;line-height: 60px;font-weight: bolder;color: black"-->
-<!--            :class="{ selectedOne: picture_text === 2 }"-->
-<!--            @click="tranfer1('picture')"-->
-<!--          >-->
-<!--            要闻动态-->
-<!--          </div>-->
-        </div>
-        <el-row>
-          <el-col :span="2" :class="{ picToPic: picture_text == 3 }">
-            <span>&nbsp;</span>
-          </el-col>
-          <!-- 搜索结果 -->
+          <el-row>
+            <el-col :span="2" :class="{ picToPic: picture_text == 3 }">
+              <span>&nbsp;</span>
+            </el-col>
+            <!-- 搜索结果 -->
 
-<!--          第一类-->
-          <el-col :span="10" v-if="picture_text == 1">
-            <div style="margin-bottom: 25px;display: flex;
+            <!--          第一类-->
+            <el-col :span="10" v-if="picture_text == 1">
+              <div style="margin-bottom: 25px;display: flex;
                     font-size: 15px;
                     border-bottom: solid 1px #eee;">
-              <el-dropdown @command="handle_type" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
+                <el-dropdown @command="handle_type" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
                 <span class="el-dropdown-link" >
                   事项筛选<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="a">方案办法</el-dropdown-item>
-                  <el-dropdown-item command="b">请示答复</el-dropdown-item>
-                  <el-dropdown-item command="c">通知公告</el-dropdown-item>
-                  <el-dropdown-item command="d" >决定条例</el-dropdown-item>
-                  <el-dropdown-item command="e" >其他</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="a">方案办法</el-dropdown-item>
+                    <el-dropdown-item command="b">请示答复</el-dropdown-item>
+                    <el-dropdown-item command="c">通知公告</el-dropdown-item>
+                    <el-dropdown-item command="d" >决定条例</el-dropdown-item>
+                    <el-dropdown-item command="e" >其他</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
 
-              <el-dropdown @command="handle_tableName" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
+                <el-dropdown @command="handle_tableName" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
                 <span class="el-dropdown-link" >
                   搜索范围<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="datatitle">标题</el-dropdown-item>
-                  <el-dropdown-item command="databody">正文</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="datatitle">标题</el-dropdown-item>
+                    <el-dropdown-item command="databody">正文</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
 
-              <el-dropdown @command="handle_time" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
+                <el-dropdown @command="handle_time" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
                 <span class="el-dropdown-link" >
                   时间范围<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="a">一周内</el-dropdown-item>
-                  <el-dropdown-item command="b">一月内</el-dropdown-item>
-                  <el-dropdown-item command="c">一年内</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </div>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="a">一周内</el-dropdown-item>
+                    <el-dropdown-item command="b">一月内</el-dropdown-item>
+                    <el-dropdown-item command="c">一年内</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
 
 
 
-            <dl>
-              <div v-if="recordsNum != 0">
-                <div
-                  v-for="(item) in imgAndCaption"
-                  align="left"
-                  style="
+              <dl>
+                <div v-if="recordsNum != 0">
+                  <div
+                      v-for="(item) in imgAndCaption"
+                      align="left"
+                      style="
                     /*height: 100px;*/
                     display: flex;
                     margin-bottom: 15px;
                     align-items: center;
                     border-bottom: solid 1px #eee;
                   "
-                >
-                  <div style="display: flex; align-items: center;width: 900px">
-                    <!-- 收藏按钮 -->
-<!--                    <el-button-->
-<!--                        @click="addToFavorite(item)"-->
-<!--                        style="margin-right: 10px;"-->
-<!--                        icon="el-icon-star-off" circle-->
-<!--                    ></el-button>-->
+                  >
+                    <div style="display: flex; align-items: center;width: 900px">
+                      <!-- 收藏按钮 -->
+                      <!--                    <el-button-->
+                      <!--                        @click="addToFavorite(item)"-->
+                      <!--                        style="margin-right: 10px;"-->
+                      <!--                        icon="el-icon-star-off" circle-->
+                      <!--                    ></el-button>-->
 
 
-                    <span class="tag">文章类型</span>
-<!--                    a标签中 作者本身写的 有匹配的挑战Title-->
-<!--                    <a-->
-<!--                        :href="item.url"-->
-<!--                        target="_blank"-->
-<!--                        style="white-space: nowrap; word-break: break-all"-->
-<!--                    >-->
-<!--                      <h3 v-html="lightFn(item.caption, search_word_not_contain_filter)"></h3>-->
-<!--                    </a>-->
-<!--                    <h3 @click="seach">{{item.POLICY_TITLE}}</h3>-->
-<!--                    <el-link style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)">{{item.POLICY_TITLE}}</el-link>-->
-                    <el-link class="title_caption" v-html="lightFn(item.POLICY_TITLE,search_word_not_contain_filter)" style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)"></el-link>
+                      <span class="tag">文章类型</span>
+                      <!--                    a标签中 作者本身写的 有匹配的挑战Title-->
+                      <!--                    <a-->
+                      <!--                        :href="item.url"-->
+                      <!--                        target="_blank"-->
+                      <!--                        style="white-space: nowrap; word-break: break-all"-->
+                      <!--                    >-->
+                      <!--                      <h3 v-html="lightFn(item.caption, search_word_not_contain_filter)"></h3>-->
+                      <!--                    </a>-->
+                      <!--                    <h3 @click="seach">{{item.POLICY_TITLE}}</h3>-->
+                      <!--                    <el-link style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)">{{item.POLICY_TITLE}}</el-link>-->
+                      <el-link class="title_caption" v-html="lightFn(item.POLICY_TITLE,search_word_not_contain_filter)" style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)"></el-link>
+                    </div>
+                    <div class="article_caption" style="margin-left: 80px;">
+                      <!--                    <p class="article_caption">{{item.POLICY_BODY}}</p>-->
+                      {{item.POLICY_BODY}}
+                    </div>
+                    <div style="margin-left: 80px;margin-top: 10px;margin-bottom: 10px">
+                      <small class="small_time">发布机构: {{item.PUB_AGENCY}}</small>
+                      <small class="small_time" style="margin-left: 20px">发布时间: {{item.PUB_TIME}}</small>
+                    </div>
+
+
                   </div>
-                  <div class="article_caption" style="margin-left: 80px;">
-<!--                    <p class="article_caption">{{item.POLICY_BODY}}</p>-->
-                    {{item.POLICY_BODY}}
-                  </div>
-                  <div style="margin-left: 80px;margin-top: 10px;margin-bottom: 10px">
-                    <small class="small_time">发布机构: {{item.PUB_AGENCY}}</small>
-                    <small class="small_time" style="margin-left: 20px">发布时间: {{item.PUB_TIME}}</small>
-                  </div>
-
-
                 </div>
-              </div>
-              <div v-if="recordsNum == 0">
-                <div style="display: flex; margin-bottom: 15px">
-                  <div>
-                    <h1>
-                      抱歉没有找到与<span style="color: #55ab41">{{
-                        search_word
-                      }}</span
+                <div v-if="recordsNum == 0">
+                  <div style="display: flex; margin-bottom: 15px">
+                    <div>
+                      <h1>
+                        抱歉没有找到与<span style="color: #55ab41">{{
+                          search_word
+                        }}</span
                       >相关的文本。
-                    </h1>
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </dl>
+            </el-col>
+
+
+            <!--          右侧栏目-->
+            <el-col :span="11">
+              <div class="search-content-right">
+                <div class="recommends-group">
+                  <div class="r-g-til" style="position: relative;left: 0px">
+                    <span style="display: flex;margin-left: 15px">热搜资源</span>
+                  </div>
+                  <div class="r-g-con">
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-1">1</span>
+                      <el-link class="right_content" v-html="this.hot[0].POLICY_TITLE" target="_blank" @click="intoContent(hot[0])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-2">2</span>
+                      <el-link class="right_content" v-html="this.hot[1].POLICY_TITLE" target="_blank" @click="intoContent(hot[1])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-3">3</span>
+                      <el-link class="right_content" v-html="this.hot[2].POLICY_TITLE" target="_blank" @click="intoContent(hot[2])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-4">4</span>
+                      <el-link class="right_content" v-html="this.hot[3].POLICY_TITLE" target="_blank" @click="intoContent(hot[3])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-5">5</span>
+                      <el-link class="right_content" v-html="this.hot[4].POLICY_TITLE" target="_blank" @click="intoContent(hot[4])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-6">6</span>
+                      <el-link class="right_content" v-html="this.hot[5].POLICY_TITLE" target="_blank" @click="intoContent(hot[5])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-7">7</span>
+                      <el-link class="right_content" v-html="this.hot[6].POLICY_TITLE" target="_blank" @click="intoContent(hot[6])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+                    <div class="r-g-toplist-cell">
+                      <span class="r-g-index r-g-index-8">8</span>
+                      <el-link class="right_content" v-html="this.hot[7].POLICY_TITLE" target="_blank" @click="intoContent(hot[7])"></el-link>
+                      <span class="status keep"></span>
+                    </div>
+
                   </div>
                 </div>
               </div>
-            </dl>
-          </el-col>
+            </el-col>
+
+            <!--          第二类-->
+            <!--          <el-col style="max-width: 1200px" v-if="picture_text == 2">-->
+            <!--            <dl>-->
+            <!--              <div-->
+            <!--                v-if="recordsNum != 0"-->
+            <!--                style="-->
+            <!--                  display: flex;-->
+            <!--                  flex-wrap: wrap;-->
+            <!--                  justify-content: flex-start;-->
+            <!--                "-->
+            <!--              >-->
+            <!--                <div v-for="item in imgAndCaption" align="left" class="P_item">-->
+            <!--                  <div>-->
+            <!--                    <img-->
+            <!--                      style="height: 200px; border-radius: 10%"-->
+            <!--                      :src="item.url"-->
+            <!--                      :alt="item.caption"-->
+            <!--                    />-->
+            <!--                    <p-->
+            <!--                      style="-->
+            <!--                        font-size: 10px;-->
+            <!--                        overflow: hidden;-->
+            <!--                        word-break: keep-all;-->
+            <!--                        white-space: nowrap;-->
+            <!--                        text-overflow: ellipsis;-->
+            <!--                      "-->
+            <!--                      :style="'width:' + item.width"-->
+            <!--                      v-html="lightFn(item.caption, search_word_not_contain_filter)"-->
+            <!--                    ></p>-->
+            <!--                  </div>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--              <div v-if="recordsNum == 0">-->
+            <!--                <div style="display: flex; margin-bottom: 15px">-->
+            <!--                  <div>-->
+            <!--                    <h1>-->
+            <!--                      抱歉没有找到与<span style="color: #55ab41">{{-->
+            <!--                        search_word-->
+            <!--                      }}</span-->
+            <!--                      >相关的图片。-->
+            <!--                    </h1>-->
+            <!--                  </div>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </dl>-->
+            <!--          </el-col>-->
+
+            <!--          第三类-->
+            <!--          <el-col :span="11" v-if="picture_text == 3">-->
+            <!--            <dl>-->
+            <!--              <div-->
+            <!--                style="-->
+            <!--                  display: flex;-->
+            <!--                  flex-wrap: wrap;-->
+            <!--                  justify-content: flex-start;-->
+            <!--                  min-width: 850px;-->
+            <!--                "-->
+            <!--              >-->
+            <!--                <div v-for="item in imgAndCaption1" align="left">-->
+            <!--                  <img-->
+            <!--                    style="-->
+            <!--                      height: 200px;-->
+            <!--                      margin-right: 15px;-->
+            <!--                      border-radius: 10%;-->
+            <!--                    "-->
+            <!--                    :src="item.url"-->
+            <!--                  />-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </dl>-->
+            <!--          </el-col>-->
+          </el-row>
 
 
-<!--          右侧栏目-->
-          <el-col :span="11">
-            <div class="search-content-right">
-              <div class="recommends-group">
-                <div class="r-g-til" style="position: relative;left: 0px">
-                  <span style="display: flex;margin-left: 15px">热搜资源</span>
-                </div>
-                <div class="r-g-con">
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-1">1</span>
-                    <el-link class="right_content" v-html="this.hot[0].POLICY_TITLE" target="_blank" @click="intoContent(hot[0])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-2">2</span>
-                    <el-link class="right_content" v-html="this.hot[1].POLICY_TITLE" target="_blank" @click="intoContent(hot[1])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-3">3</span>
-                    <el-link class="right_content" v-html="this.hot[2].POLICY_TITLE" target="_blank" @click="intoContent(hot[2])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-4">4</span>
-                    <el-link class="right_content" v-html="this.hot[3].POLICY_TITLE" target="_blank" @click="intoContent(hot[3])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-5">5</span>
-                    <el-link class="right_content" v-html="this.hot[4].POLICY_TITLE" target="_blank" @click="intoContent(hot[4])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-6">6</span>
-                    <el-link class="right_content" v-html="this.hot[5].POLICY_TITLE" target="_blank" @click="intoContent(hot[5])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-7">7</span>
-                    <el-link class="right_content" v-html="this.hot[6].POLICY_TITLE" target="_blank" @click="intoContent(hot[6])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
-                  <div class="r-g-toplist-cell">
-                    <span class="r-g-index r-g-index-8">8</span>
-                    <el-link class="right_content" v-html="this.hot[7].POLICY_TITLE" target="_blank" @click="intoContent(hot[7])"></el-link>
-                    <span class="status keep"></span>
-                  </div>
+          <!--        <el-row>-->
+          <!--          &lt;!&ndash; 相关搜索 &ndash;&gt;-->
+          <!--          <h3 style="width: 100px; margin-left: 100px; color: #248e24">-->
+          <!--            相关搜索-->
+          <!--          </h3>-->
+          <!--          <div id="allrelated">-->
+          <!--            <div-->
+          <!--              class="related"-->
+          <!--              v-for="rw in relatedWord"-->
+          <!--              @click="searchRelated({ rw })"-->
+          <!--            >-->
+          <!--              {{ rw }}-->
+          <!--            </div>-->
+          <!--          </div>-->
+          <!--        </el-row>-->
 
-                </div>
+          <!--        换页-->
+          <el-row style="bottom: 0">
+            <el-col :span="2">
+              <span>&nbsp;</span>
+            </el-col>
+            <el-col :span="11">
+              <div align="left">
+                <el-pagination
+                    background
+                    @current-change="handleCurrentChange"
+                    :current-page="pageNum"
+                    :page-size="10"
+                    layout="prev, pager, next, jumper"
+                    :total="recordsNum"
+                >
+                </el-pagination>
               </div>
-            </div>
-          </el-col>
+            </el-col>
+            <el-col :span="12"> </el-col>
+          </el-row>
 
-<!--          第二类-->
-<!--          <el-col style="max-width: 1200px" v-if="picture_text == 2">-->
-<!--            <dl>-->
-<!--              <div-->
-<!--                v-if="recordsNum != 0"-->
-<!--                style="-->
-<!--                  display: flex;-->
-<!--                  flex-wrap: wrap;-->
-<!--                  justify-content: flex-start;-->
-<!--                "-->
-<!--              >-->
-<!--                <div v-for="item in imgAndCaption" align="left" class="P_item">-->
-<!--                  <div>-->
-<!--                    <img-->
-<!--                      style="height: 200px; border-radius: 10%"-->
-<!--                      :src="item.url"-->
-<!--                      :alt="item.caption"-->
-<!--                    />-->
-<!--                    <p-->
-<!--                      style="-->
-<!--                        font-size: 10px;-->
-<!--                        overflow: hidden;-->
-<!--                        word-break: keep-all;-->
-<!--                        white-space: nowrap;-->
-<!--                        text-overflow: ellipsis;-->
-<!--                      "-->
-<!--                      :style="'width:' + item.width"-->
-<!--                      v-html="lightFn(item.caption, search_word_not_contain_filter)"-->
-<!--                    ></p>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div v-if="recordsNum == 0">-->
-<!--                <div style="display: flex; margin-bottom: 15px">-->
-<!--                  <div>-->
-<!--                    <h1>-->
-<!--                      抱歉没有找到与<span style="color: #55ab41">{{-->
-<!--                        search_word-->
-<!--                      }}</span-->
-<!--                      >相关的图片。-->
-<!--                    </h1>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </dl>-->
-<!--          </el-col>-->
+        </el-col>
+      </el-main>
 
-<!--          第三类-->
-<!--          <el-col :span="11" v-if="picture_text == 3">-->
-<!--            <dl>-->
-<!--              <div-->
-<!--                style="-->
-<!--                  display: flex;-->
-<!--                  flex-wrap: wrap;-->
-<!--                  justify-content: flex-start;-->
-<!--                  min-width: 850px;-->
-<!--                "-->
-<!--              >-->
-<!--                <div v-for="item in imgAndCaption1" align="left">-->
-<!--                  <img-->
-<!--                    style="-->
-<!--                      height: 200px;-->
-<!--                      margin-right: 15px;-->
-<!--                      border-radius: 10%;-->
-<!--                    "-->
-<!--                    :src="item.url"-->
-<!--                  />-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </dl>-->
-<!--          </el-col>-->
-        </el-row>
-
-
-<!--        <el-row>-->
-<!--          &lt;!&ndash; 相关搜索 &ndash;&gt;-->
-<!--          <h3 style="width: 100px; margin-left: 100px; color: #248e24">-->
-<!--            相关搜索-->
-<!--          </h3>-->
-<!--          <div id="allrelated">-->
-<!--            <div-->
-<!--              class="related"-->
-<!--              v-for="rw in relatedWord"-->
-<!--              @click="searchRelated({ rw })"-->
-<!--            >-->
-<!--              {{ rw }}-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </el-row>-->
-
-<!--        换页-->
-        <el-row style="bottom: 0">
-          <el-col :span="2">
-            <span>&nbsp;</span>
-          </el-col>
-          <el-col :span="11">
-            <div align="left">
-              <el-pagination
-                background
-                @current-change="handleCurrentChange"
-                :current-page="pageNum"
-                :page-size="10"
-                layout="prev, pager, next, jumper"
-                :total="recordsNum"
-              >
-              </el-pagination>
-            </div>
-          </el-col>
-          <el-col :span="12"> </el-col>
-        </el-row>
-
-      </el-col>
-    </el-main>
-
-    <div v-if="check">
-      <div v-show="false">
-        <favorites
-            :username="user.username"
-            :addToFavorite="1"
-            ref="favorites"
-            @notShowDialog="change"
-        ></favorites>
-      </div>
-      <el-dialog
-        title="请选择添加位置"
-        :visible.sync="addToFavoritedialogVisible"
-        width="20%"
-      >
-        <favorites
-          :username="user.username"
-          :addToFavorite="1"
-          ref="favorites"
-          @notShowDialog="change"
-        ></favorites>
-        <span>
+      <div v-if="check">
+        <div v-show="false">
+          <favorites
+              :username="user.username"
+              :addToFavorite="1"
+              ref="favorites"
+              @notShowDialog="change"
+          ></favorites>
+        </div>
+        <el-dialog
+            title="请选择添加位置"
+            :visible.sync="addToFavoritedialogVisible"
+            width="20%"
+        >
+          <favorites
+              :username="user.username"
+              :addToFavorite="1"
+              ref="favorites"
+              @notShowDialog="change"
+          ></favorites>
+          <span>
           <br />
         </span>
-      </el-dialog>
-    </div>
-  </el-container>
+        </el-dialog>
+      </div>
+    </el-container>
+  </div>
+
 </template>
 
 <script>
@@ -551,6 +554,7 @@ export default {
     };
   },
   created() {
+    this.bodyScale()
     this.user = JSON.parse(window.localStorage.getItem("access"));
     if (this.user != null) {
       this.check = true;
@@ -820,6 +824,12 @@ export default {
         this.recordsNum = 0;
       }
     },
+    bodyScale() {
+      var devicewidth = document.documentElement.clientWidth;//获取当前分辨率下的可是区域宽度
+      var scale = devicewidth / 1366; // 分母——设计稿的尺寸
+      document.body.style = scale;//放大缩小相应倍数
+    },
+
     //处理搜搜范围转变
     handle_tableName(command){
       this.tableName=command;

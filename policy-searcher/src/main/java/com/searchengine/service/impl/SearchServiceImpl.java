@@ -40,8 +40,8 @@ public class SearchServiceImpl implements SearchService {
 
     // 搜索业务
     @Override
-    public List<Data> getDataByKeyword(String tableName,String keyword, int pageSize, int pageNum) {
-        String segmentname="segment_"+tableName;
+    public List<Data> getDataByKeyword(String tableName, String keyword, int pageSize, int pageNum) {
+        String segmentname = "segment_" + tableName;
         int offset = pageSize * (pageNum - 1);
         StringBuilder sb = new StringBuilder();
 
@@ -51,7 +51,7 @@ public class SearchServiceImpl implements SearchService {
 
         boolean flag = true;
         for (SegToken segToken : segTokens) {
-            Segment segment=segmentDao.getOneSeg(segmentname,segToken.word);
+            Segment segment = segmentDao.getOneSeg(segmentname, segToken.word);
             // 获取关键词的 segment
             if (segment == null) {
                 continue;
@@ -92,8 +92,8 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Map<List<Data>,Integer> getDataByScore(String tableName,String keyword, int pageSize, int pageNum) {
-        String segmentname="segment_"+tableName;
+    public Map<String , Object> getDataByScore(String tableName, String keyword, int pageSize, int pageNum) {
+        String segmentname = "segment_" + tableName;
         int offset = pageSize * (pageNum - 1);
         StringBuilder sb = new StringBuilder();
 
@@ -102,11 +102,11 @@ public class SearchServiceImpl implements SearchService {
         List<SegToken> segTokens = segmenter.process(keyword, JiebaSegmenter.SegMode.INDEX);
 
         boolean flag = true;
-        int availSeg=0;//记录搜索词中有效关键词个数
+        int availSeg = 0;//记录搜索词中有效关键词个数
         //检测关键词是否已经出现过，针对北京北京北京上海这样的搜索记录等价于北京上海
-        Map<Integer,Integer>seghasht=new HashMap<Integer,Integer>();
+        Map<Integer, Integer> seghasht = new HashMap<Integer, Integer>();
         for (SegToken segToken : segTokens) {
-            Segment segment=segmentDao.getOneSeg(segmentname,segToken.word);
+            Segment segment = segmentDao.getOneSeg(segmentname, segToken.word);
             // 获取关键词的 segment
             if (segment == null) {
                 continue;
@@ -119,11 +119,11 @@ public class SearchServiceImpl implements SearchService {
 
             // 获取segId
             int segId = segment.getId();
-            if(seghasht.containsKey(segId)){
+            if (seghasht.containsKey(segId)) {
                 continue;
-            }else{
+            } else {
                 availSeg++;
-                seghasht.put(segId,1);
+                seghasht.put(segId, 1);
             }
             // 通过segId找到去哪张表查找（哪张data_segment_relation表，在建立的时候使用的，这里的100算是魔数了，不规范~）
             int idx = segId % 1000;
@@ -143,25 +143,27 @@ public class SearchServiceImpl implements SearchService {
         if ("".equals(sql)) {
             return null;
         }
-        List<Data>datas=dataDao.getDataRelevance(sql);
+        List<Data> datas = dataDao.getDataRelevance(sql);
 
-        for(int i=0;i<datas.size();i++){
-            Integer dataid=datas.get(i).getId();
-            Integer count=datas.get(i).getCount();
-            double bm25=datas.get(i).getBm25();
-            datas.get(i).setScore(bm25*count/availSeg);
+        for (int i = 0; i < datas.size(); i++) {
+            Integer dataid = datas.get(i).getId();
+            Integer count = datas.get(i).getCount();
+            double bm25 = datas.get(i).getBm25();
+            datas.get(i).setScore(bm25 * count / availSeg);
         }
         Collections.sort(datas);
-        int startIndex=pageSize*(pageNum-1);
-        int endIndex=startIndex+pageSize;
-        List<Data>dataResult;
-        if(datas.size()>=endIndex){
-            dataResult=datas.subList(startIndex,datas.size()-1);
-        }else{
-            dataResult=datas.subList(startIndex,endIndex);
+        int startIndex = pageSize * (pageNum - 1);
+        int endIndex = startIndex + pageSize;
+        List<Data> dataResult;
+        if (datas.size() > endIndex) {
+            dataResult = datas.subList(startIndex, endIndex);
+        } else {
+            dataResult = datas.subList(startIndex, datas.size()-1);
         }
-        Map<List<Data>,Integer>result=new HashMap<>();
-        result.put(dataResult,datas.size());
+
+        Map<String , Object> result = new HashMap<>();
+        result.put("data", dataResult);
+        result.put("count", datas.size());
         return result;
     }
 

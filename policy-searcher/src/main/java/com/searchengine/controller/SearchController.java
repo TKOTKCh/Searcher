@@ -41,19 +41,10 @@ public class SearchController {
     // 通过分词的方式去搜索
     @GetMapping("/search")
     public Result searchBySegment(@Param("tableName")String tableName, @RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) {
-        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-//        List<Data>data=searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String, Object> result = new HashMap<>();
+//        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
+        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum);
 
-        if (this.lastKeyword.equals(keyword)) {
-            this.dataCounter+=data.size();
-        }
-        else{
-            this.dataCounter=data.size();
-        }
-        result.put("count", this.dataCounter);
-        result.put("data", data);
-        return Result.success(result);
+        return Result.success(dataByScore);
     }
 
     @GetMapping("/test")
@@ -70,8 +61,8 @@ public class SearchController {
     @GetMapping("/hot")
     public Map<String, Object> getHotdata() {
         //获取当前热搜，每两小时更新一次
-        double timeMillis=System.currentTimeMillis();
-        if(dataService.judgeUpdate(timeMillis)==true){
+        double time=System.currentTimeMillis()/1000;
+        if(dataService.judgeUpdate(time)==true){
             dataService.updateHotdata();
         }
         return dataService.getHotdata();
