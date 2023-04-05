@@ -11,3 +11,5 @@
 # 2023/4/4 TKOTKCh
 1、解决了4月2日的问题
 2、添加了最近搜索记录功能，详见usercontroller中的getLastQuery和addUserQuery，并附上user_query的sql文件
+# 2023/4/5 TKOTKCh
+1、添加了getDataByScore函数，在bm25匹配的基础上加了权重模块，此函数还有待优化
