@@ -9,6 +9,7 @@ const SearchResult = () => import('../components/SearchResult')
 const Login = () => import('../components/Login')
 const Register = () => import('../components/Register')
 const Content = () =>import('../components/Content')
+const Administrator = () =>import('../components/administrator')
 
 const routes = [
     { path: '/', component: Home },
@@ -16,6 +17,7 @@ const routes = [
     { path: '/login', component: Login },
     { path: '/register', component: Register },
     { path:'/content',component:Content},
+    { path:'/administrator',component:Administrator},
     { path: '/*', redirect: '/' }  // 当匹配不上时重定向的到首页
 ]
 

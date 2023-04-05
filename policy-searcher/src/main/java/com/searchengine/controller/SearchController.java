@@ -42,6 +42,7 @@ public class SearchController {
     @GetMapping("/search")
     public Result searchBySegment(@Param("tableName")String tableName, @RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) {
         List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
+//        List<Data>data=searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum);
         Map<String, Object> result = new HashMap<>();
 
         if (this.lastKeyword.equals(keyword)) {

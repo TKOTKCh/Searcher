@@ -8,8 +8,10 @@ import java.util.Map;
 
 
 public interface SearchService {
-    // 通过
+    // 通过加权模型
+    Map<List<Data>,Integer> getDataByScore(String tableName, String keyword, int pageSize, int pageNum);
+    //仅通过关键词的bm25值
     List<Data> getDataByKeyword(String tableName, String keyword, int pageSize, int pageNum);
-
+//    List<Data> getDataByKeyword2(String tableName,String keyword,int pageSize,int pageNum);
     List<String> complete(String query);
 }

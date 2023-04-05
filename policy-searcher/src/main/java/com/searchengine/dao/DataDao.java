@@ -42,4 +42,7 @@ public interface DataDao extends BaseMapper<Data> {
     boolean addCount(@Param("id")Integer id);
     //获得热门数据
     List<Data> getHotdata();
+
+    //得到政策与搜索词之间的相关性，用于search搜索的打分模块
+    List<Data>getDataRelevance(@Param("sql")String sql);
 }

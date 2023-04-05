@@ -22,7 +22,8 @@
         <result column="province" property="province"></result>
         <result column="city" property="city"></result>
         <result column="policy_source" property="policySource"></result>
-
+        <result column="count" property="count"></result>
+        <result column="bm25" property="bm25"></result>
     </resultMap>
 
 
@@ -63,6 +64,7 @@
                               ${sql}
                               ) tb1
                      group by data_id
+#                     order by sum(bm25) desc
                      order by sum(bm25) desc limit ${pageSize}
                          offset ${offset}
                  ) db
@@ -90,4 +92,17 @@
     <update id="addCount">
         update databrief set count=count+1 WHERE id=${id}
     </update>
+
+    <select id="getDataRelevance" resultType="com.searchengine.entity.Data">
+
+        SELECT data.*,tb1.count, tb1.bm25 FROM(
+                         SELECT data_id,COUNT(data_id) as count ,sum(bm25) as bm25 from
+                             (
+                                 ${sql}
+                                ) tb1
+                         GROUP BY data_id
+                         ORDER BY SUM(bm25) desc LIMIT 300
+                     )tb1,data
+        where tb1.data_id=data.id;
+    </select>
 </mapper>

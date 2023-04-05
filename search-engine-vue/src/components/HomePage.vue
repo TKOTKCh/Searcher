@@ -1,74 +1,75 @@
 <template>
-  <div>
-    <el-row   type="flex" justify="end">
-<!--      <el-image :src="require('~@/assets/tiantan.png')"></el-image>-->
-      <img  src="~@/assets/img.png" style="width: 10%;margin-right: 85%">
+  <div style="">
+<!--    <el-row  :gutter="20" type="flex" justify="end" style="">-->
+      <div style="display: flex;overflow: hidden;width: 100%;height: 50px;"><!--      <el-image :src="require('~@/assets/tiantan.png')"></el-image>-->
+        <img  src="~@/assets/img.png" style="width:200px;margin-right: 80%">
 
-      <!-- 将来放用户登录以及收藏夹的东西 -->
-      <el-popover
-          placement="left-start"
-          title="收藏夹"
-          width="300"
-          trigger="click"
-          content="将来放收藏夹相关内容，实现效果可以参考edge的收藏夹。"
-      >
-        <el-button
-            slot="reference"
-            icon="el-icon-folder"
-            style="margin-right: 3%;margin-top: 25%"
-            circle
-        ></el-button>
-        <div v-if="check">
-          <favorites
-              :username="user.username"
-              :addToFavorite="0"
-              ref="favorites"
-          ></favorites>
-        </div>
-        <div v-if="!check">
-          <a
-              style="
+        <!-- 将来放用户登录以及收藏夹的东西 -->
+        <el-popover
+            placement="left-start"
+            title="收藏夹"
+            width="300"
+            trigger="click"
+            content="将来放收藏夹相关内容，实现效果可以参考edge的收藏夹。"
+        >
+          <el-button
+              slot="reference"
+              icon="el-icon-folder"
+              style="margin-right: 3%;margin-top: 25%"
+              circle
+          ></el-button>
+          <div v-if="check">
+            <favorites
+                :username="user.username"
+                :addToFavorite="0"
+                ref="favorites"
+            ></favorites>
+          </div>
+          <div v-if="!check">
+            <a
+                style="
                     color: #55ab41;
                     margin-right: 148px;
                     text-decoration: none;
                   "
-              href="/login"
-          >对不起,请前往登录</a
-          >
-        </div>
-      </el-popover>
-      <span>&nbsp;&nbsp;</span>
-      <el-popover
-        placement="bottom"
-        style="margin-right: 0"
-        title="个人信息"
-        width="300"
-        trigger="click"
-        content="将来放关于用户的信息。"
-      >
-        <el-button slot="reference" icon="el-icon-user" circle style="margin-right: 5%;margin-top: 25%"> </el-button>
-        <!--用户信息 -->
-        <div v-if="check">
-          欢迎回来！<span style="color: #55ab41">{{ user.username }}</span>
-          <span id="logout" @click="logout">注销</span>
-        </div>
-        <div v-if="!check">
-          <a
-            style="color: #55ab41; margin-right: 148px; text-decoration: none"
-            href="/login"
+                href="/login"
             >对不起,请前往登录</a
-          >
-          <a style="color: #55ab41; text-decoration: none" href="/register"
+            >
+          </div>
+        </el-popover>
+        <span>&nbsp;&nbsp;</span>
+        <el-popover
+            placement="bottom"
+            style="margin-right: 0"
+            title="个人信息"
+            width="300"
+            trigger="click"
+            content="将来放关于用户的信息。"
+        >
+          <el-button slot="reference" icon="el-icon-user" circle style="margin-right: 5%;margin-top: 25%"> </el-button>
+          <!--用户信息 -->
+          <div v-if="check">
+            欢迎回来！<span style="color: #55ab41">{{ user.username }}</span>
+            <span id="logout" @click="logout">注销</span>
+          </div>
+          <div v-if="!check">
+            <a
+                style="color: #55ab41; margin-right: 148px; text-decoration: none"
+                href="/login"
+            >对不起,请前往登录</a
+            >
+            <a style="color: #55ab41; text-decoration: none" href="/register"
             >注册</a
-          >
-        </div>
-      </el-popover>
-    </el-row>
+            >
+          </div>
+        </el-popover>
+      </div>
+<!--    </el-row>-->
 
 
 <!--    背景图片底层-->
-    <div class="back" style="margin-top: 1%;width: 100%">
-      <img style="overflow: hidden" src="~@/assets/tiantan.png" />
+    <div class="back" style="margin-top: 1%;overflow: hidden;width: 100%">
+      <img src="~@/assets/tiantan.png" style="" />
     </div>
 
     <!--    header -->
@@ -89,7 +90,9 @@
       <h2 id="top">智能政策检索系统</h2>
       <p id="mid"
       >海纳百川 · 追求卓越 · 开明睿智 · 大气谦和</p>
-        <el-autocomplete v-model="search_word" id="ssk" style="width: 600px;
+<!--      :popper-append-to-body='false'-->
+        <el-autocomplete v-model="search_word" id="ssk"  style="width: 600px;
+    transform: scale(1.3);
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
@@ -98,6 +101,7 @@
     line-height: 2;
     transition: .3s ease-in-out;
     -webkit-appearance: none;
+    font-size: 50px;
     outline: none;
     border: none;
     padding: 0 0 0 0px;
@@ -119,7 +123,7 @@
               @click="search"
           >搜索</el-button>
         </el-autocomplete>
-
+<!--        <div >111</div>-->
     </el-row>
 
 <!--最下面四个东西-->
@@ -195,9 +199,9 @@ export default {
         cb(results);
       } else {
         await axios
-          .get("http://localhost:9090/prefix_word?word=" + this.search_word)
+          .get("http://localhost:8081/bm25/completion?query=" + this.search_word)
           .then((response) => {
-            data = response.data
+            data = response.data.data
           })
         for (let i = 0; i < data.length; i++) {
           results.push({
@@ -271,6 +275,10 @@ export default {
 </script>
 
 <style lang="scss">
+
+.el-autocomplete_::placeholder{
+  font-size: 60px;
+}
 
 .bock01 {
   border: 1px solid rgba(0,0,0,0.10);

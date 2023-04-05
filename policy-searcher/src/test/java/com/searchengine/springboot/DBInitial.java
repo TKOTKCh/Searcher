@@ -45,6 +45,7 @@ public class DBInitial {
     public void createDataBase() throws IOException {
         createtable("datatitle");
         createtable("databody");
+
     }
 
     public void createtable(String table) throws IOException {

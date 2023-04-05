@@ -8,13 +8,11 @@ import com.searchengine.entity.Data;
 import com.searchengine.entity.Segment;
 import com.searchengine.service.SearchService;
 import com.searchengine.utils.Trie;
-import io.lettuce.core.dynamic.annotation.Param;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,9 +86,83 @@ public class SearchServiceImpl implements SearchService {
 
         // 通过sql去获取所有的Data，详细见DataMapper.xml
         // offset 是第几页搜索结果的意思
-//        List<Data> datas = dataDao.getDataBySplit(sql, pageSize, offset);
+//        List<Data> dataList = dataDao.getDataBySplit(sql, pageSize, offset);
         List<Data> dataList = dataDao.getCompleteDataBySplit(sql, pageSize, offset);
         return dataList;
+    }
+
+    @Override
+    public Map<List<Data>,Integer> getDataByScore(String tableName,String keyword, int pageSize, int pageNum) {
+        String segmentname="segment_"+tableName;
+        int offset = pageSize * (pageNum - 1);
+        StringBuilder sb = new StringBuilder();
+
+        // 对输入的关键字进行分词
+        JiebaSegmenter segmenter = new JiebaSegmenter();
+        List<SegToken> segTokens = segmenter.process(keyword, JiebaSegmenter.SegMode.INDEX);
+
+        boolean flag = true;
+        int availSeg=0;//记录搜索词中有效关键词个数
+        //检测关键词是否已经出现过，针对北京北京北京上海这样的搜索记录等价于北京上海
+        Map<Integer,Integer>seghasht=new HashMap<Integer,Integer>();
+        for (SegToken segToken : segTokens) {
+            Segment segment=segmentDao.getOneSeg(segmentname,segToken.word);
+            // 获取关键词的 segment
+            if (segment == null) {
+                continue;
+            }
+
+            // segment 为空 跳过
+            if ("".equals(segToken.word.trim())) {
+                continue;
+            }
+
+            // 获取segId
+            int segId = segment.getId();
+            if(seghasht.containsKey(segId)){
+                continue;
+            }else{
+                availSeg++;
+                seghasht.put(segId,1);
+            }
+            // 通过segId找到去哪张表查找（哪张data_segment_relation表，在建立的时候使用的，这里的100算是魔数了，不规范~）
+            int idx = segId % 1000;
+
+            // 组合出一个sql语句：用于取各个关键词查出来的data_segment，union的方式去重
+            if (flag) {
+                sb.append("select * from ").append(tableName).append("_seg_relation_").append(idx).append(" where seg_id = ").append(segId).append('\n');
+                flag = false;
+            } else {
+                sb.append("union").append('\n');
+                sb.append("select * from ").append(tableName).append("_seg_relation_").append(idx).append(" where seg_id = ").append(segId).append('\n');
+            }
+
+        }
+        String sql = sb.toString();
+
+        if ("".equals(sql)) {
+            return null;
+        }
+        List<Data>datas=dataDao.getDataRelevance(sql);
+
+        for(int i=0;i<datas.size();i++){
+            Integer dataid=datas.get(i).getId();
+            Integer count=datas.get(i).getCount();
+            double bm25=datas.get(i).getBm25();
+            datas.get(i).setScore(bm25*count/availSeg);
+        }
+        Collections.sort(datas);
+        int startIndex=pageSize*(pageNum-1);
+        int endIndex=startIndex+pageSize;
+        List<Data>dataResult;
+        if(datas.size()>=endIndex){
+            dataResult=datas.subList(startIndex,datas.size()-1);
+        }else{
+            dataResult=datas.subList(startIndex,endIndex);
+        }
+        Map<List<Data>,Integer>result=new HashMap<>();
+        result.put(dataResult,datas.size());
+        return result;
     }
 
     @Override

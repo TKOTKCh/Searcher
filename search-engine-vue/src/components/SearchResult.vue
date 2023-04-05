@@ -89,6 +89,68 @@
     </el-header>
 <!--el body部分-->
     <el-main>
+      <!-- 选择地点的浮窗 -->
+      <el-dialog title="地点筛选" :visible.sync="dialogTableVisible" style="height: 800px">
+        <div style="margin-bottom: 50px" >
+          <div style="display: flex">
+            <h3>全部： </h3>
+            <el-radio v-model="place" label="全部" border>全部</el-radio>
+          </div>
+          <div style="display: flex;margin-top: 40px">
+            <h3>省份： </h3>
+            <el-radio-group v-model="place" >
+              <el-radio-button label="北京市"></el-radio-button>
+              <el-radio-button label="上海市"></el-radio-button>
+              <el-radio-button label="天津市"></el-radio-button>
+              <el-radio-button label="重庆市"></el-radio-button>
+              <el-radio-button label="河北省"></el-radio-button>
+              <el-radio-button label="山西省"></el-radio-button>
+              <el-radio-button label="黑龙江省"></el-radio-button>
+              <el-radio-button label="吉林省"></el-radio-button>
+              <el-radio-button label="辽宁省"></el-radio-button>
+            </el-radio-group>
+          </div>
+
+          <div style="display: flex;margin-top: 40px" >
+            <el-radio-group v-model="place" style="margin-left: 50px">
+              <el-radio-button label="江苏省"></el-radio-button>
+              <el-radio-button label="浙江省"></el-radio-button>
+              <el-radio-button label="安徽省"></el-radio-button>
+              <el-radio-button label="福建省"></el-radio-button>
+              <el-radio-button label="江西省"></el-radio-button>
+              <el-radio-button label="山东省"></el-radio-button>
+              <el-radio-button label="河南省"></el-radio-button>
+              <el-radio-button label="湖北省"></el-radio-button>
+              <el-radio-button label="湖南省"></el-radio-button>
+            </el-radio-group>
+          </div>
+
+          <div style="display: flex;margin-top: 40px">
+            <el-radio-group v-model="place" style="margin-left: 50px">
+              <el-radio-button label="广东省"></el-radio-button>
+              <el-radio-button label="海南省"></el-radio-button>
+              <el-radio-button label="四川省"></el-radio-button>
+              <el-radio-button label="贵州省"></el-radio-button>
+              <el-radio-button label="云南省"></el-radio-button>
+              <el-radio-button label="陕西省"></el-radio-button>
+              <el-radio-button label="甘肃省"></el-radio-button>
+              <el-radio-button label="青海省"></el-radio-button>
+            </el-radio-group>
+          </div>
+
+          <div style="display: flex;margin-top: 40px">
+            <el-radio-group v-model="place" style="margin-left: 50px;margin-bottom: 50px">
+              <el-radio-button label="内蒙古自治区"></el-radio-button>
+              <el-radio-button label="广西壮族自治区"></el-radio-button>
+              <el-radio-button label="西藏自治区"></el-radio-button>
+              <el-radio-button label="宁夏回族自治区"></el-radio-button>
+              <el-radio-button label="新疆维吾尔自治区"></el-radio-button>
+            </el-radio-group>
+          </div>
+        </div>
+      </el-dialog>
+
+
       <el-row style="display: flex;justify-content: center">
         <!--        搜索框列-->
         <div align="center"
@@ -96,9 +158,14 @@
                     display: flex;
                     margin-bottom: 15px;
                     align-items: center;">
-          <el-button>1</el-button>
+
+<!--          地区选择按钮-->
+          <el-button type="text" @click="dialogTableVisible = true" size="mini" icon="el-icon-location-information" style="height: 50px;margin-right: 30px;font-size: 20px;font-weight: bolder;color: #cbb486">{{place}}</el-button>
+
+<!--          搜索框-->
           <div class="input" style="text-align: center;margin-top: 2%;margin-bottom: 2%">
-            <el-autocomplete v-model="search_word" style="width: 700px;"
+<!--            :popper-append-to-body="false"-->
+            <el-autocomplete v-model="search_word" style=""
                              :fetch-suggestions="querySearchAsync" @select="handleSelect"
                              placeholder="请输入搜索内容" prefix-icon="el-icon-search"
                              @keyup.enter.native="search">
@@ -133,23 +200,13 @@
           >
             全部
           </div>
-          <div
-            style="margin-right: 15px;height: 60px;font-size: 20px;line-height: 60px;font-weight: bolder;color: black"
-            :class="{ selectedOne: picture_text === 2 }"
-            @click="tranfer1('picture')"
-          >
-            要闻动态
-          </div>
-          <div
-
-            :class="{
-              selectedOne: picture_text === 3,
-              picToPic: picTopic1 === false,
-            }"
-            @click="tranfer1('picToPic')"
-          >
-            政务公开
-          </div>
+<!--          <div-->
+<!--            style="margin-right: 15px;height: 60px;font-size: 20px;line-height: 60px;font-weight: bolder;color: black"-->
+<!--            :class="{ selectedOne: picture_text === 2 }"-->
+<!--            @click="tranfer1('picture')"-->
+<!--          >-->
+<!--            要闻动态-->
+<!--          </div>-->
         </div>
         <el-row>
           <el-col :span="2" :class="{ picToPic: picture_text == 3 }">
@@ -159,6 +216,46 @@
 
 <!--          第一类-->
           <el-col :span="10" v-if="picture_text == 1">
+            <div style="margin-bottom: 25px;display: flex;
+                    font-size: 15px;
+                    border-bottom: solid 1px #eee;">
+              <el-dropdown @command="handle_type" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
+                <span class="el-dropdown-link" >
+                  事项筛选<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="a">方案办法</el-dropdown-item>
+                  <el-dropdown-item command="b">请示答复</el-dropdown-item>
+                  <el-dropdown-item command="c">通知公告</el-dropdown-item>
+                  <el-dropdown-item command="d" >决定条例</el-dropdown-item>
+                  <el-dropdown-item command="e" >其他</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+
+              <el-dropdown @command="handle_tableName" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
+                <span class="el-dropdown-link" >
+                  搜索范围<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="datatitle">标题</el-dropdown-item>
+                  <el-dropdown-item command="databody">正文</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+
+              <el-dropdown @command="handle_time" style="font-size: 15px;color: black;margin-bottom: 5px;margin-right: 10px">
+                <span class="el-dropdown-link" >
+                  时间范围<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="a">一周内</el-dropdown-item>
+                  <el-dropdown-item command="b">一月内</el-dropdown-item>
+                  <el-dropdown-item command="c">一年内</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+
+
+
             <dl>
               <div v-if="recordsNum != 0">
                 <div
@@ -172,13 +269,16 @@
                     border-bottom: solid 1px #eee;
                   "
                 >
-                  <div style="display: flex; align-items: center"> <!-- 收藏按钮 -->
-                    <el-button
-                        @click="addToFavorite(item)"
-                        style="margin-right: 10px;"
-                        icon="el-icon-star-off" circle
-                    ></el-button
-                    >
+                  <div style="display: flex; align-items: center;width: 900px">
+                    <!-- 收藏按钮 -->
+<!--                    <el-button-->
+<!--                        @click="addToFavorite(item)"-->
+<!--                        style="margin-right: 10px;"-->
+<!--                        icon="el-icon-star-off" circle-->
+<!--                    ></el-button>-->
+
+
+                    <span class="tag">文章类型</span>
 <!--                    a标签中 作者本身写的 有匹配的挑战Title-->
 <!--                    <a-->
 <!--                        :href="item.url"-->
@@ -188,13 +288,14 @@
 <!--                      <h3 v-html="lightFn(item.caption, search_word_not_contain_filter)"></h3>-->
 <!--                    </a>-->
 <!--                    <h3 @click="seach">{{item.POLICY_TITLE}}</h3>-->
-                    <el-link style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)">{{item.POLICY_TITLE}}</el-link>
+<!--                    <el-link style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)">{{item.POLICY_TITLE}}</el-link>-->
+                    <el-link class="title_caption" v-html="lightFn(item.POLICY_TITLE,search_word_not_contain_filter)" style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)"></el-link>
                   </div>
-                  <div class="article_caption" style="margin-left: 50px;">
+                  <div class="article_caption" style="margin-left: 80px;">
 <!--                    <p class="article_caption">{{item.POLICY_BODY}}</p>-->
                     {{item.POLICY_BODY}}
                   </div>
-                  <div style="margin-left: 50px;margin-top: 10px;margin-bottom: 10px">
+                  <div style="margin-left: 80px;margin-top: 10px;margin-bottom: 10px">
                     <small class="small_time">发布机构: {{item.PUB_AGENCY}}</small>
                     <small class="small_time" style="margin-left: 20px">发布时间: {{item.PUB_TIME}}</small>
                   </div>
@@ -216,100 +317,151 @@
               </div>
             </dl>
           </el-col>
+
+
+<!--          右侧栏目-->
           <el-col :span="11">
-            <h3>热点政策预留</h3>
-            <h3>推荐位置预留</h3>
+            <div class="search-content-right">
+              <div class="recommends-group">
+                <div class="r-g-til" style="position: relative;left: 0px">
+                  <span style="display: flex;margin-left: 15px">热搜资源</span>
+                </div>
+                <div class="r-g-con">
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-1">1</span>
+                    <el-link class="right_content" v-html="this.hot[0].POLICY_TITLE" target="_blank" @click="intoContent(hot[0])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-2">2</span>
+                    <el-link class="right_content" v-html="this.hot[1].POLICY_TITLE" target="_blank" @click="intoContent(hot[1])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-3">3</span>
+                    <el-link class="right_content" v-html="this.hot[2].POLICY_TITLE" target="_blank" @click="intoContent(hot[2])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-4">4</span>
+                    <el-link class="right_content" v-html="this.hot[3].POLICY_TITLE" target="_blank" @click="intoContent(hot[3])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-5">5</span>
+                    <el-link class="right_content" v-html="this.hot[4].POLICY_TITLE" target="_blank" @click="intoContent(hot[4])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-6">6</span>
+                    <el-link class="right_content" v-html="this.hot[5].POLICY_TITLE" target="_blank" @click="intoContent(hot[5])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-7">7</span>
+                    <el-link class="right_content" v-html="this.hot[6].POLICY_TITLE" target="_blank" @click="intoContent(hot[6])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+                  <div class="r-g-toplist-cell">
+                    <span class="r-g-index r-g-index-8">8</span>
+                    <el-link class="right_content" v-html="this.hot[7].POLICY_TITLE" target="_blank" @click="intoContent(hot[7])"></el-link>
+                    <span class="status keep"></span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </el-col>
 
 <!--          第二类-->
-          <el-col style="max-width: 1200px" v-if="picture_text == 2">
-            <dl>
-              <div
-                v-if="recordsNum != 0"
-                style="
-                  display: flex;
-                  flex-wrap: wrap;
-                  justify-content: flex-start;
-                "
-              >
-                <div v-for="item in imgAndCaption" align="left" class="P_item">
-                  <div>
-                    <img
-                      style="height: 200px; border-radius: 10%"
-                      :src="item.url"
-                      :alt="item.caption"
-                    />
-                    <p
-                      style="
-                        font-size: 10px;
-                        overflow: hidden;
-                        word-break: keep-all;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                      "
-                      :style="'width:' + item.width"
-                      v-html="lightFn(item.caption, search_word_not_contain_filter)"
-                    ></p>
-                  </div>
-                </div>
-              </div>
-              <div v-if="recordsNum == 0">
-                <div style="display: flex; margin-bottom: 15px">
-                  <div>
-                    <h1>
-                      抱歉没有找到与<span style="color: #55ab41">{{
-                        search_word
-                      }}</span
-                      >相关的图片。
-                    </h1>
-                  </div>
-                </div>
-              </div>
-            </dl>
-          </el-col>
+<!--          <el-col style="max-width: 1200px" v-if="picture_text == 2">-->
+<!--            <dl>-->
+<!--              <div-->
+<!--                v-if="recordsNum != 0"-->
+<!--                style="-->
+<!--                  display: flex;-->
+<!--                  flex-wrap: wrap;-->
+<!--                  justify-content: flex-start;-->
+<!--                "-->
+<!--              >-->
+<!--                <div v-for="item in imgAndCaption" align="left" class="P_item">-->
+<!--                  <div>-->
+<!--                    <img-->
+<!--                      style="height: 200px; border-radius: 10%"-->
+<!--                      :src="item.url"-->
+<!--                      :alt="item.caption"-->
+<!--                    />-->
+<!--                    <p-->
+<!--                      style="-->
+<!--                        font-size: 10px;-->
+<!--                        overflow: hidden;-->
+<!--                        word-break: keep-all;-->
+<!--                        white-space: nowrap;-->
+<!--                        text-overflow: ellipsis;-->
+<!--                      "-->
+<!--                      :style="'width:' + item.width"-->
+<!--                      v-html="lightFn(item.caption, search_word_not_contain_filter)"-->
+<!--                    ></p>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div v-if="recordsNum == 0">-->
+<!--                <div style="display: flex; margin-bottom: 15px">-->
+<!--                  <div>-->
+<!--                    <h1>-->
+<!--                      抱歉没有找到与<span style="color: #55ab41">{{-->
+<!--                        search_word-->
+<!--                      }}</span-->
+<!--                      >相关的图片。-->
+<!--                    </h1>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </dl>-->
+<!--          </el-col>-->
 
 <!--          第三类-->
-          <el-col :span="11" v-if="picture_text == 3">
-            <dl>
-              <div
-                style="
-                  display: flex;
-                  flex-wrap: wrap;
-                  justify-content: flex-start;
-                  min-width: 850px;
-                "
-              >
-                <div v-for="item in imgAndCaption1" align="left">
-                  <img
-                    style="
-                      height: 200px;
-                      margin-right: 15px;
-                      border-radius: 10%;
-                    "
-                    :src="item.url"
-                  />
-                </div>
-              </div>
-            </dl>
-          </el-col>
+<!--          <el-col :span="11" v-if="picture_text == 3">-->
+<!--            <dl>-->
+<!--              <div-->
+<!--                style="-->
+<!--                  display: flex;-->
+<!--                  flex-wrap: wrap;-->
+<!--                  justify-content: flex-start;-->
+<!--                  min-width: 850px;-->
+<!--                "-->
+<!--              >-->
+<!--                <div v-for="item in imgAndCaption1" align="left">-->
+<!--                  <img-->
+<!--                    style="-->
+<!--                      height: 200px;-->
+<!--                      margin-right: 15px;-->
+<!--                      border-radius: 10%;-->
+<!--                    "-->
+<!--                    :src="item.url"-->
+<!--                  />-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </dl>-->
+<!--          </el-col>-->
         </el-row>
 
 
-        <el-row>
-          <!-- 相关搜索 -->
-          <h3 style="width: 100px; margin-left: 100px; color: #248e24">
-            相关搜索
-          </h3>
-          <div id="allrelated">
-            <div
-              class="related"
-              v-for="rw in relatedWord"
-              @click="searchRelated({ rw })"
-            >
-              {{ rw }}
-            </div>
-          </div>
-        </el-row>
+<!--        <el-row>-->
+<!--          &lt;!&ndash; 相关搜索 &ndash;&gt;-->
+<!--          <h3 style="width: 100px; margin-left: 100px; color: #248e24">-->
+<!--            相关搜索-->
+<!--          </h3>-->
+<!--          <div id="allrelated">-->
+<!--            <div-->
+<!--              class="related"-->
+<!--              v-for="rw in relatedWord"-->
+<!--              @click="searchRelated({ rw })"-->
+<!--            >-->
+<!--              {{ rw }}-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </el-row>-->
 
 <!--        换页-->
         <el-row style="bottom: 0">
@@ -322,7 +474,7 @@
                 background
                 @current-change="handleCurrentChange"
                 :current-page="pageNum"
-                :page-size="15"
+                :page-size="10"
                 layout="prev, pager, next, jumper"
                 :total="recordsNum"
               >
@@ -374,7 +526,12 @@ export default {
       message: "123",
     };
     return {
+      tableName:'datatitle',
+      dialogTableVisible:false,
+      place:'全部',
       upImage: [],
+      hot:[],
+      hotbuffer:'',
       loading: true,
       user: "",
       check: false,
@@ -382,40 +539,11 @@ export default {
       search_word1: "",
       search_word_not_contain_filter: "",
       info: "",
-      imgAndCaption: [
-          {url:'http://localhost:8080/content',
-            id:'1',
-            POLICY_TITLE:'房地产估价师注册证书遗失作废声明',
-            PUB_AGENCY:'住房和城乡建设部房地产市场监管司',
-            PUB_TIME:'2022/8/19',
-            POLICY_TYPE:'其他',
-            POLICY_BODY:'根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予,房地产估价师注册证书遗失作废声明' +
-                '房地产估价师注册证书遗失作废声明',
-            caption:'房地产估价师注册证书遗失作废声明',
-      },
-        {
-          url:'http://localhost:8080/content',
-          id:'1',
-          POLICY_TITLE:'房地产估价师注册证书遗失作废声明',
-          PUB_AGENCY:'住房和城乡建设部房地产市场监管司',
-          PUB_TIME:'2022/8/19',
-          POLICY_TYPE:'其他',
-          POLICY_BODY:'根据《住房和城多建设部关于取消部分部门规壹和规范性文体没定的证明李项的决定》 (法规219) 6号)的规定，现将等2名房地产价师注册证书遗失信息予',
-          caption:'房地产估价师注册证书遗失作废声明',
-        }
-      ],
+      imgAndCaption: [],
       imgAndCaption1: [],
       relatedWord: [],
       pageNum: 1,
-      recordsNum: 2,
+      recordsNum: 0,
       picture_text: 1,
       picTopic1: false,
       addToFavoritedialogVisible: false,
@@ -435,7 +563,8 @@ export default {
       this.addToFavoritedialogVisible = false;
     }, 1);
     this.getFirstPage();
-    this.getRelatedWord();
+    this.getHot();
+    // this.getRelatedWord();
     if (window.localStorage.getItem("access") != null) {
       this.checkToken();
     }
@@ -588,6 +717,7 @@ export default {
       location.reload();
     },
     async search() {
+      console.log('进入异步搜索');
       this.pageNum = 1;
       let outer = this;
 
@@ -608,31 +738,30 @@ export default {
       }
 
       await axios
-        .get(
-          "http://localhost:8081/bm25/search?keyword=" +
-            outer.search_word +
-            "&pageNum=" +
-            outer.pageNum
-        )
-        .then((response) => (outer.info = response.data));
-      if (this.info != "") {
+          .get(
+              "http://localhost:8081/bm25/search?keyword=" +
+              this.search_word + "&tableName=" + this.tableName +
+              "&pageNum=1"
+          )
+          .then((response) => (outer.info = response.data));
+      if (this.info.data.count!=0) {
+
         this.imgAndCaption = []
-        this.recordsNum = this.info.length;
-        for (let i = 0; i < this.info.length; i++) {
+        this.recordsNum = this.info.data.count;
+        for (let i = 0; i < this.info.data.data.length; i++) {
           this.imgAndCaption.push({
-            id:this.info[i].id,
-            POLICY_TITLE: this.info[i].policyTitle,
-            PUB_AGENCY:this.info[i].pubAgency,
-            PUB_TIME:this.info[i].pubTime,
-            POLICY_TYPE:this.info[i].policyType,
-            POLICY_BODY:this.info[i].policyBody,
+            id:this.info.data.data[i].id,
+            POLICY_TITLE: this.info.data.data[i].policyTitle,
+            PUB_AGENCY:this.info.data.data[i].pubAgency,
+            PUB_TIME:this.info.data.data[i].pubTime,
+            POLICY_TYPE:this.info.data.data[i].policyType,
+            POLICY_BODY:this.info.data.data[i].policyBody,
           });
         }
       } else {
         this.imgAndCaption = [];
         this.recordsNum = 0;
       }
-      this.getRelatedWord();
     },
     async searchRelated(word) {
       this.$router.push({
@@ -644,6 +773,7 @@ export default {
       location.reload();
     },
     async getFirstPage() {
+      console.log('进入第一页搜索');
       this.recordsNum = this.$route.query.recordsNum;
       this.search_word = this.$route.query.word;
       this.search_word1 = this.$route.query.word;
@@ -668,21 +798,21 @@ export default {
       await axios
         .get(
           "http://localhost:8081/bm25/search?keyword=" +
-            this.search_word +
+            this.search_word + "&tableName=" + this.tableName +
             "&pageNum=1"
         )
-        .then((response) => (outer.info = response.data.result));
-      if (this.info != "") {
+        .then((response) => (outer.info = response.data));
+      if (this.info.data.count!=0) {
         this.imgAndCaption = []
-        this.recordsNum = this.info.length;
-        for (let i = 0; i < this.info.length; i++) {
+        this.recordsNum = this.info.data.count;
+        for (let i = 0; i < this.info.data.data.length; i++) {
           this.imgAndCaption.push({
-            id:this.info[i].id,
-            POLICY_TITLE: this.info[i].policyTitle,
-            PUB_AGENCY:this.info[i].pubAgency,
-            PUB_TIME:this.info[i].pubTime,
-            POLICY_TYPE:this.info[i].policyType,
-            POLICY_BODY:this.info[i].policyBody,
+            id:this.info.data.data[i].id,
+            POLICY_TITLE: this.info.data.data[i].policyTitle,
+            PUB_AGENCY:this.info.data.data[i].pubAgency,
+            PUB_TIME:this.info.data.data[i].pubTime,
+            POLICY_TYPE:this.info.data.data[i].policyType,
+            POLICY_BODY:this.info.data.data[i].policyBody,
           });
         }
       } else {
@@ -690,28 +820,39 @@ export default {
         this.recordsNum = 0;
       }
     },
+    //处理搜搜范围转变
+    handle_tableName(command){
+      this.tableName=command;
+      this.search();
+    },
+
     async handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`);
+      console.log('页转换了');
+      console.log(`当前页: ${val}`);
       let outer = this;
       await axios
-        .get(
-          "http://localhost:8081/bm25/search?keyword=" +
-            this.search_word +
-            "&pageNum=" +
-            val
-        )
-        .then((response) => (outer.info = response.data));
-      this.imgAndCaption = []
-      this.recordsNum = this.info.length;
-      for (let i = 0; i < this.info.length; i++) {
-        this.imgAndCaption.push({
-          id:this.info[i].id,
-          POLICY_TITLE: this.info[i].policyTitle,
-          PUB_AGENCY:this.info[i].pubAgency,
-          PUB_TIME:this.info[i].pubTime,
-          POLICY_TYPE:this.info[i].policyType,
-          POLICY_BODY:this.info[i].policyBody,
-        });
+          .get(
+              "http://localhost:8081/bm25/search?keyword=" +
+              this.search_word + "&tableName=" + this.tableName +
+              "&pageNum=" +val
+          )
+          .then((response) => (outer.info = response.data));
+      if (this.info.data.count!=0) {
+        this.imgAndCaption = []
+        this.recordsNum = this.info.data.count;
+        for (let i = 0; i < this.info.data.data.length; i++) {
+          this.imgAndCaption.push({
+            id:this.info.data.data[i].id,
+            POLICY_TITLE: this.info.data.data[i].policyTitle,
+            PUB_AGENCY:this.info.data.data[i].pubAgency,
+            PUB_TIME:this.info.data.data[i].pubTime,
+            POLICY_TYPE:this.info.data.data[i].policyType,
+            POLICY_BODY:this.info.data.data[i].policyBody,
+          });
+        }
+      } else {
+        this.imgAndCaption = [];
+        this.recordsNum = 0;
       }
     },
     async getRelatedWord() {
@@ -729,9 +870,9 @@ export default {
         cb(results);
       } else {
         await axios
-            .get("http://localhost:9090/prefix_word?word=" + this.search_word)
+            .get("http://localhost:8081/bm25/completion?query=" + this.search_word)
             .then((response) => {
-              data = response.data
+              data = response.data.data
             })
         for (let i = 0; i < data.length; i++) {
           results.push({
@@ -741,6 +882,29 @@ export default {
         cb(results)
       }
     },
+    //获取热门
+    async getHot(){
+      let outer = this;
+      await axios
+          .get(
+              "http://localhost:8081/bm25/hot"
+          )
+          .then((response) => (outer.hotbuffer = response.data.result));
+      if (this.hotbuffer) {
+        this.hot = []
+        for (let i = 0; i < this.hotbuffer.length; i++) {
+          this.hot.push({
+            id:this.hotbuffer[i].id,
+            POLICY_TITLE: this.hotbuffer[i].policyTitle,
+            PUB_AGENCY:this.hotbuffer[i].pubAgency,
+            PUB_TIME:this.hotbuffer[i].pubTime,
+            POLICY_TYPE:this.hotbuffer[i].policyType,
+            POLICY_BODY:this.hotbuffer[i].policyBody,
+          });
+        }
+      }
+    },
+
     //点击出现搜索后点击的每一项
     handleSelect(item) {
       this.id = item.id
@@ -752,6 +916,112 @@ export default {
 </script>
 
 <style>
+
+/*热门搜索样式*/
+.search-content-right {
+  margin-right: 30%;
+  float: right;
+  width: 334px;
+  border-left: 1px solid #eee;
+}
+.right_content{
+  font-size: 15px;
+  color: #666;
+  width: 268px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+
+.search-content-right > * {
+  margin: 0 0 20px 15px;
+}
+.r-g-til {
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.r-g-til > span {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.r-g-toplist-cell + .r-g-toplist-cell {
+  margin-top: 10px;
+}
+
+.r-g-index {
+  width: 20px;
+  background: #cccccc;
+  color: #fff;
+  text-align: center;
+}
+a {
+  color: #666;
+}
+
+.r-g-con {
+  overflow: hidden;
+}
+.r-g-index.r-g-index-1 {
+  background: #fc7a43;
+}
+.r-g-toplist-cell > a {
+  width: 268px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.r-g-toplist-cell > * {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 20px;
+}
+.r-g-index.r-g-index-2 {
+  background: #fdab4d;
+}
+/*end*/
+
+
+
+/*筛选样式*/
+.el-dropdown-link {
+  cursor: pointer;
+  color: black;
+  font-size: 16px;
+
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+/*end*/
+
+.tag {
+  position: relative;
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 10px;
+  color: #000;
+  line-height: 1;
+  background-color: #fff;
+  border: 1px solid #cbb486;
+  color: #cbb486;
+  margin-right: 5px;
+}
+
+.el-autocomplete{
+  width: 700px;
+  background-color: rgba(255, 255, 255, 0.247);
+
+}
+
+.el-radio-button{
+
+  transform: scale(1.1);
+
+}
+
 .little_button{
  position: absolute;
   left: 35%;
@@ -766,11 +1036,21 @@ export default {
   height: 5px;
 }
 
-.article_caption{
+.title_caption{
   width: 750px;
   overflow: hidden;
   text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 
+}
+
+.article_caption{
+
+  width: 750px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   -webkit-line-clamp: 2;
   display: -webkit-box;
   -webkit-box-orient: vertical;

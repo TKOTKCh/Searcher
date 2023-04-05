@@ -160,7 +160,7 @@ export default {
           } else {
             let _this = this;
             axios
-              .post("http://localhost:9090/register", this.form, {
+              .post("http://localhost:8081/user/register", this.form, {
                 headers: { "Content-Type": "application/json" },
               })
               .then(function (ressponse) {
