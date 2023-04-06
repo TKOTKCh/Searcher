@@ -1,6 +1,7 @@
 package com.searchengine.utils.jieba.keyword;
 
 import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class TFIDFAnalyzer
 	public static HashMap<String,Double> idfMap;
 	public static HashSet<String> stopWordsSet;
 	public static double idfMedian;
-
+	JiebaSegmenter jiebaSegmenter = new JiebaSegmenter();
 	/**
 	 * tfidf分析方法
 	 * @param content 需要分析的文本/文档内容
@@ -78,12 +79,14 @@ public class TFIDFAnalyzer
 		if(content==null || content.equals(""))
 			return tfMap;
 
-		JiebaSegmenter segmenter = new JiebaSegmenter();
-		List<String> segments=segmenter.sentenceProcess(content);
+
+		List<SegToken> segTokens = jiebaSegmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+
 		Map<String,Integer> freqMap=new HashMap<>();
 
 		int wordSum=0;
-		for(String segment:segments) {
+		for(SegToken segToken : segTokens) {
+			String segment=segToken.word;
 			//停用词不予考虑，单字词不予考虑
 			if(!stopWordsSet.contains(segment) && segment.length()>1) {
 				wordSum++;

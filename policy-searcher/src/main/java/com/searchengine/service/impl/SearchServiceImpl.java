@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -27,6 +28,8 @@ public class SearchServiceImpl implements SearchService {
     private SegmentDao segmentDao;
 
     private Trie trie;
+    public static HashMap<String,Double> idfMap;
+    public static HashSet<String> stopWordsSet;
 
     @PostConstruct
     public void init() {
@@ -35,6 +38,15 @@ public class SearchServiceImpl implements SearchService {
         for (Segment segmentation : segmentations) {
             String word = segmentation.getWord();
             this.trie.add(word);
+        }
+        if(stopWordsSet==null) {
+            stopWordsSet=new HashSet<>();
+            loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+        }
+        if(idfMap==null) {
+            idfMap=new HashMap<>();
+            String fileName="/jieba/datatitle.txt";
+            loadIDFMap(idfMap, this.getClass().getResourceAsStream(fileName));
         }
     }
 
@@ -112,11 +124,19 @@ public class SearchServiceImpl implements SearchService {
                 continue;
             }
 
+            String segword=segToken.word.trim();
             // segment 为空 跳过
-            if ("".equals(segToken.word.trim())) {
+            if ("".equals(segword)) {
                 continue;
             }
-
+            if(stopWordsSet.contains(segword)){
+                continue;
+            }
+//            if(idfMap.containsKey(segword)){
+//                if (idfMap.get(segword)<=1.5){
+//                    continue;
+//                }
+//            }
             // 获取segId
             int segId = segment.getId();
             if (seghasht.containsKey(segId)) {
@@ -173,4 +193,59 @@ public class SearchServiceImpl implements SearchService {
         return completion;
     }
 
+    //加载停顿词
+    private void loadStopWords(Set<String> set, InputStream in){
+        BufferedReader bufr;
+        try
+        {
+            bufr = new BufferedReader(new InputStreamReader(in));
+            String line=null;
+            while((line=bufr.readLine())!=null) {
+                set.add(line.trim());
+            }
+            try
+            {
+                bufr.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    //加载IDFmap
+    private void loadIDFMap(Map<String,Double> map, InputStream in ){
+        BufferedReader bufr;
+        try
+        {
+            bufr = new BufferedReader(new InputStreamReader(in));
+            String line=null;
+            while((line=bufr.readLine())!=null) {
+                String[] kv=line.trim().split(" ");
+                if(kv.length<=1){
+                    continue;
+                }
+                map.put(kv[0],Double.parseDouble(kv[1]));
+
+
+            }
+            try
+            {
+                bufr.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

@@ -43,7 +43,7 @@ public class DBInitial {
 
     @Test
     public void createDataBase() throws IOException {
-        createtable("datatitle");
+//        createtable("datatitle");
         createtable("databody");
 
     }
@@ -219,6 +219,7 @@ public class DBInitial {
             if(word==null){
                 continue;
             }
+            int id=dnb.getId();
             if(word.equals("")||word.equals(" "))continue;
             // 进行分词
             List<SegToken> segTokens = jiebaSegmenter.process(word, JiebaSegmenter.SegMode.INDEX);
