@@ -43,7 +43,7 @@ public class DBInitial {
 
     @Test
     public void createDataBase() throws IOException {
-//        createtable("datatitle");
+        createtable("datatitle");
         createtable("databody");
 
     }
