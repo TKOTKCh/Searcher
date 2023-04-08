@@ -129,6 +129,9 @@ public class SearchServiceImpl implements SearchService {
             if ("".equals(segword)) {
                 continue;
             }
+            if(segword.equals("最新")){
+                continue;
+            }
             if(stopWordsSet.contains(segword)){
                 continue;
             }
@@ -180,7 +183,11 @@ public class SearchServiceImpl implements SearchService {
         } else {
             dataResult = datas.subList(startIndex, datas.size()-1);
         }
-
+        for(int i=0;i<datas.size()&&i<30;i++){
+            System.out.print(datas.get(i).getId()+datas.get(i).getPolicyTitle());
+            System.out.print(" ");
+        }
+        System.out.println();
         Map<String , Object> result = new HashMap<>();
         result.put("data", dataResult);
         result.put("count", datas.size());

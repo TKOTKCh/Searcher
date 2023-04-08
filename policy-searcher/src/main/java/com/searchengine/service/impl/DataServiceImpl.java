@@ -257,8 +257,8 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     @Override
     //判断当前时间点需不需要更新，如果现在的时间距离上次更新时间已经过去2小时就更新
     public boolean judgeUpdate(double currentTime){
-        System.out.println(currentTime);
-        System.out.println(lastupdate);
+//        System.out.println(currentTime);
+//        System.out.println(lastupdate);
         if(currentTime-7200>=lastupdate){
             lastupdate=currentTime;
 
