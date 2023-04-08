@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.searchengine.dao.DataDao">
+
+    <resultMap id="DataMap" type="com.searchengine.entity.Data">
+
+        <id column="id" property="id"></id>
+        <result column="policy_id" property="policyId"></result>
+        <result column="policy_title" property="policyTitle"></result>
+        <result column="policy_grade" property="policyGrade"></result>
+        <result column="pub_agency_id" property="pubAgencyId"></result>
+        <result column="pub_agency" property="pubAgency"></result>
+        <result column="pub_agency_fullname" property="pubAgencyFullname"></result>
+        <result column="pub_number" property="pubNumber"></result>
+        <result column="pub_time" property="pubTime"></result>
+        <result column="pub_time_year" property="pubTimeYear"></result>
+        <result column="policy_type" property="policyType"></result>
+        <result column="policy_body" property="policyBody"></result>
+        <result column="province" property="province"></result>
+        <result column="city" property="city"></result>
+        <result column="policy_source" property="policySource"></result>
+        <result column="count" property="count"></result>
+        <result column="bm25" property="bm25"></result>
+    </resultMap>
+
+
+    <select id="getSomeDatas" resultType="com.searchengine.entity.Data">
+        select *
+        from data limit #{limit}
+            offset #{offset}
+    </select>
+
+    <!--
+    id,policy_title
+    -->
+    <select id="getDataBySplit" resultType="com.searchengine.entity.Data">
+        select id,policy_title,PUB_AGENCY_FULLNAME,POLICY_SOURCE
+        from data
+        where id in (
+            select db.data_id
+            from (
+                     select data_id
+                     from (
+                              ${sql}
+                              ) tb1
+                     group by data_id
+                     order by sum(bm25) desc limit ${pageSize}
+                         offset ${offset}
+                 ) db
+        )
+    </select>
+
+    <select id="getCompleteDataBySplit" resultType="com.searchengine.entity.Data">
+        select *
+        from data
+        where id in (
+            select db.data_id
+            from (
+                     select data_id
+                     from (
+                              ${sql}
+                              ) tb1
+                     group by data_id
+#                     order by sum(bm25) desc
+                     order by sum(bm25) desc limit ${pageSize}
+                         offset ${offset}
+                 ) db
+        )
+    </select>
+
+    <select id="getHotdata" resultType="com.searchengine.entity.Data">
+        select * from hotdata
+    </select>
+
+    <delete id="clearHotdata">
+        DELETE FROM hotdata;
+
+    </delete>
+    <update id="clearCount">
+        update databrief set count=0;
+    </update>
+    <insert id="updateHotdata" >
+        insert into hotdata select * from data where id in (
+            select a.id from(
+                                select databrief.id from databrief ORDER BY databrief.COUNT desc LIMIT 10
+                            ) a
+        )
+    </insert>
+    <update id="addCount">
+        update databrief set count=count+1 WHERE id=${id}
+    </update>
+
+    <select id="getDataRelevance" resultType="com.searchengine.entity.Data">
+
+        SELECT data.*,tb1.count, tb1.bm25 FROM(
+                         SELECT data_id,COUNT(data_id) as count ,sum(bm25) as bm25 from
+                             (
+                                 ${sql}
+                                ) tb1
+                         GROUP BY data_id
+                         ORDER BY COUNT(data_id) desc,SUM(bm25) desc LIMIT 300
+                     )tb1,data
+        where tb1.data_id=data.id;
+    </select>
+</mapper>
