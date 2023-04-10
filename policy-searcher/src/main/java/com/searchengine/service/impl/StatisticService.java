@@ -90,6 +90,8 @@ public class StatisticService {
     }
 
 
-
-
+    public void subOneUserCount() {
+        String userCount = statisticDao.getRecordByKey("user_count").getValue();
+        statisticDao.setKeyVal("user_count", String.valueOf(Integer.parseInt(userCount) - 1));
+    }
 }

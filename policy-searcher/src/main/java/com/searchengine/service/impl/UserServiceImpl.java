@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.searchengine.dao.StatisticDao;
 import com.searchengine.dao.UserDao;
 import com.searchengine.entity.LoginUser;
+import com.searchengine.entity.StatisticHistory;
 import com.searchengine.entity.TreeNode;
 import com.searchengine.entity.User;
 import com.searchengine.service.UserService;
@@ -162,7 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public boolean removeUserById(Integer id) {
         try {
             this.removeById(id);
-            statisticDao.removeOneUserCount();
+            statisticService.subOneUserCount();
             return true;
         } catch (Exception e) {
             return false;
