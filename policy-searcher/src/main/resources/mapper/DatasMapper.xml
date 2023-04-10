@@ -92,7 +92,6 @@
     <update id="addCount">
         update databrief set count=count+1 WHERE id=${id}
     </update>
-
     <select id="getDataRelevance" resultType="com.searchengine.entity.Data">
 
         SELECT data.*,tb1.count, tb1.bm25 FROM(
@@ -101,7 +100,7 @@
                                  ${sql}
                                 ) tb1
                          GROUP BY data_id
-                         ORDER BY SUM(bm25) desc LIMIT 300
+                         ORDER BY COUNT(data_id) desc,SUM(bm25) desc LIMIT 300
                      )tb1,data
         where tb1.data_id=data.id;
     </select>
