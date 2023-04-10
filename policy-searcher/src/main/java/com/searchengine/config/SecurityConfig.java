@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/bm25/hot",
                         "/bm25/completion",
                         "/bm25/search",
+                        "/bm25/search_condition",
                         "/user/login",
                         "/user/*",
                         "/",

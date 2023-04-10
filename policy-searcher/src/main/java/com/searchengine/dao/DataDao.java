@@ -46,5 +46,8 @@ public interface DataDao extends BaseMapper<Data> {
     //得到政策与搜索词之间的相关性，用于search搜索的打分模块
     List<Data>getDataRelevance(@Param("sql")String sql);
 
+    //得到政策与搜索词之间的相关性，带筛选的,用于search搜索的打分模块
+    List<Data>getDataRelevanceLimit(@Param("sql1")String sql1,@Param("sql2")String sql2);
+
     int getNumberOfData();
 }

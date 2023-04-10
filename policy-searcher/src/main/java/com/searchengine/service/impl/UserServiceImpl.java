@@ -136,8 +136,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
     @Override
     public void addUserQuery(Integer userId,String query,double time){
-        int num=userDao.getUserQueryCount(userId);
-        if(num>=5){
+//        int num=userDao.getUserQueryCount(userId);
+        List<String>querys=getUserQuery(userId);
+        for(String q:querys){
+            if(q.equals(query)){
+                return;
+            }
+        }
+        if(querys.size()>=5){
             userDao.updateUserQuery(userId,query,time);
         }else{
             userDao.addUserQuery(userId,query,time);

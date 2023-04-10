@@ -104,7 +104,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Map<String , Object> getDataByScore(String tableName, String keyword, int pageSize, int pageNum) {
+    public Map<String , Object> getDataByScore(String tableName, String keyword, int pageSize, int pageNum,String province,String type,String year) {
         String segmentname = "segment_" + tableName;
         int offset = pageSize * (pageNum - 1);
         StringBuilder sb = new StringBuilder();
@@ -166,7 +166,25 @@ public class SearchServiceImpl implements SearchService {
         if ("".equals(sql)) {
             return null;
         }
-        List<Data> datas = dataDao.getDataRelevance(sql);
+        StringBuilder sb2=new StringBuilder();
+        if(province!=null&&!province.equals("")){
+            sb2.append(" and data.province = ").append("'").append(province).append("'");
+        }
+        if(type!=null&&!type.equals("")){
+            sb2.append(" and data.policy_type = ").append("'").append(type).append("'");
+        }
+        if(year!=null&&!year.equals("")){
+            int year_int=Integer.parseInt(year);
+            sb2.append(" and data.pub_time_year = ").append(year_int);
+        }
+        String sql2=sb2.toString();
+        List<Data> datas;
+        if(sb2.equals("")||sb2==null){
+            datas= dataDao.getDataRelevance(sql);
+        }else{
+            datas= dataDao.getDataRelevanceLimit(sql,sql2);
+        }
+
 
         for (int i = 0; i < datas.size(); i++) {
             Integer dataid = datas.get(i).getId();
@@ -178,7 +196,10 @@ public class SearchServiceImpl implements SearchService {
         int startIndex = pageSize * (pageNum - 1);
         int endIndex = startIndex + pageSize;
         List<Data> dataResult;
-        if (datas.size() > endIndex) {
+        if(datas.size()==0){
+            dataResult=datas;
+        }
+        else if (datas.size() > endIndex) {
             dataResult = datas.subList(startIndex, endIndex);
         } else {
             dataResult = datas.subList(startIndex, datas.size()-1);

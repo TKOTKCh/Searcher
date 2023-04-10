@@ -104,6 +104,10 @@
                      )tb1,data
         where tb1.data_id=data.id;
     </select>
+    <select id="getDataRelevanceLimit" resultType="com.searchengine.entity.Data">
+SELECT data.*,tb1.count, tb1.bm25 FROM( SELECT data_id,COUNT(data_id) as count ,sum(bm25) as bm25 from ( ${sql1} ) tb1 GROUP BY data_id ORDER BY COUNT(data_id) desc,SUM(bm25) desc LIMIT 300 )tb1,data where tb1.data_id=data.id ${sql2};
+</select>
+
     <select id="getNumberOfData" resultType="java.lang.Integer">
         select count(*) from data
     </select>
