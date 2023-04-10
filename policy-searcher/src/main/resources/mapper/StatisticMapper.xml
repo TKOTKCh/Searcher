@@ -6,7 +6,7 @@
 <mapper namespace="com.searchengine.dao.StatisticDao">
 
     <insert id="put">
-        insert into statistic_history(key,value) values(#{key,#{value})
+        insert into statistic_history(key,value) values(#{key},#{value})
     </insert>
     <update id="addOneUserCount">
         update statistic_history set value=value+1 where key=user_count
@@ -18,7 +18,7 @@
     <update id="addOneTodayClick">
         update statistic_history set value=value+1 where key=#{key}
     </update>
-    <select id="getRecordByKey" resultType="java.lang.Integer">
+    <select id="getRecordByKey" resultType="com.searchengine.entity.StatisticHistory" >
         select * from statistic_history where key=#{key}
     </select>
 </mapper>
