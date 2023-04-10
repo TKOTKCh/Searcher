@@ -62,6 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/addTreeNode",
                         "/prefix_word",
                         "/user/getLastQuery",
+                        "/statistic/*",
+                        "/bm25/count",
+                        "/user/getByUid/*",
+                        "/bm25/search_condition",
                         "/user/addUserQuery").permitAll()//不拦截这些路径
                 .anyRequest().authenticated();
     }
