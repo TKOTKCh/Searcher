@@ -276,6 +276,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
         try {
             dataDao.addCount(id);
             statisticService.addCurrentClick();
+
             return true;
         } catch (Exception e) {
             return false;

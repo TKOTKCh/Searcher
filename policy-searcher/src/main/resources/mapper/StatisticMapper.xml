@@ -8,21 +8,25 @@
     <insert id="put">
         insert into statistic_history(key,value) values(#{key},#{value})
     </insert>
-    <update id="addOneUserCount">
-        update statistic_history set value=value+1 where key='user_count'
+
+    <update id="setKeyVal">
+        update statistic_history set value=#{value} where `key`=#{key}
     </update>
 
-    <update id="removeOneUserCount">
-        update statistic_history set value=value-1 where key='user_count'
+    <update id="setUserCount">
+        update statistic_history set value=#{value} where `key`='user_count'
     </update>
 
-    <update id="addOneTotalClick">
-        update statistic_history set value=value+1 where key='total_click'
+    <update id="setTotalClick">
+        update statistic_history set value=#{value} where `key`='total_click'
     </update>
-    <update id="addOneTodayClick">
-        update statistic_history set value=value+1 where key=#{key}
+
+
+    <update id="setTodayClick">
+        update statistic_history set value=#{value} where `key`=#{key}
     </update>
+
     <select id="getRecordByKey" resultType="com.searchengine.entity.StatisticHistory" >
-        select * from statistic_history where key=#{key}
+        select * from statistic_history where `key`=#{key}
     </select>
 </mapper>

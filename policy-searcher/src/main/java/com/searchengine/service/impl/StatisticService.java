@@ -19,15 +19,33 @@ public class StatisticService {
     @Autowired
     private DataDao dataDao;
 
-    public int addCurrentClick() {
+    private String strPlusOne(String str) {
+        try {
+            int i = Integer.parseInt(str);
+            return String.valueOf(i + 1);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public boolean addCurrentClick() {
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String key = simpleDateFormat.format(date);
-        return statisticDao.addOneTodayClick(key);
+
+        String today = statisticDao.getRecordByKey(key).getValue();
+        statisticDao.setTodayClick(key,strPlusOne(today));
+
+        String total = statisticDao.getRecordByKey("total_click").getValue();
+        statisticDao.setTotalClick(strPlusOne(total));
+
+        return true;
     }
 
+
     public int addUserCount() {
-        return statisticDao.addOneUserCount();
+        String currentNum = statisticDao.getRecordByKey("user_count").getValue();
+        return statisticDao.setUserCount(strPlusOne(currentNum));
     }
 
     public List<StatisticHistory> getLatestSevenDayClick() {
