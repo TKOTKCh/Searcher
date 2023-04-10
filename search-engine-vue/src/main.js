@@ -14,7 +14,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 import router from "./router/index";
 import VueTreeList from 'vue-tree-list';
-import echarts from "echarts";
+import * as echarts from 'echarts';
 Vue.prototype.$echarts = echarts;
 
 Vue.use(ElementUI);

@@ -187,7 +187,7 @@ export default {
                     _this.$message({
                       message: "用户名已存在，注册失败",
                     });
-                  } else if (message == "success") {
+                  } else if (message == "") {
                     _this.$message({
                       message: "注册成功，即将跳转到登录页面",
                       type: "success",

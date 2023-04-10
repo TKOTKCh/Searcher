@@ -176,7 +176,7 @@
                       style="margin-right: 10px; margin-top: 5px"
                       slot="suffix"
                       type="text"
-                      @click="searcher"
+                      @click="search"
                   >搜索</el-button
                   >
                 </template>
@@ -309,7 +309,7 @@
 
                   </div>
                 </div>
-                <div v-if="recordsNum == 0">
+                <div v-if="imgAndCaption.length == 0">
                   <div style="display: flex; margin-bottom: 15px">
                     <div>
                       <h1>
@@ -377,8 +377,8 @@
                   </div>
                 </div>
                 <div class="recommends-group " style="">
-                  <div class="r-g-til" style="position: relative;left: 0px">
-                    <span style="display: flex;margin-left: 15px">最近搜索记录</span>
+                  <div v-if="check" class="r-g-til" style="position: relative;left: 0px">
+                    <span  style="display: flex;margin-left: 15px">最近搜索记录</span>
                   </div>
                   <div class="r-g-con recent-search" id="searchHistoryList">
 <!--                    <a class="r-g-link-cell" title="11" href="javascript:void(0)" onclick="searchKeyword(this)">11</a>-->
@@ -550,10 +550,11 @@ export default {
     };
     return {
       q_type:'事项筛选',
+      type:'',
       tableName_mask:'搜索范围',
       time_mask:'时间范围',
+      time:'',
       user_historys:[
-        {keyword:'北京'},{keyword: '住房公积金'}
       ],
       tableName:'datatitle',
       dialogTableVisible:false,
@@ -591,11 +592,7 @@ export default {
     }
   },
   mounted() {
-    // 不知道为什么只有这样才能获取第一次的值
-    this.addToFavoritedialogVisible = true;
-    setTimeout(() => {
-      this.addToFavoritedialogVisible = false;
-    }, 1);
+
     this.getFirstPage();
     this.getHot();
     this.getHis();
@@ -607,6 +604,13 @@ export default {
     // setInterval(() => {
     //   this.checkToken();
     // }, 1000 * 60 * 10); //每十分钟检查token
+  },
+  watch:{
+    place:{
+      handler(){
+        this.search();
+      }
+    }
   },
   methods: {
     // =========收藏夹========
@@ -621,7 +625,7 @@ export default {
       }
     },
     change() {
-      this.addToFavoritedialogVisible = false;
+
     },
     // =======收藏夹结束======
     checkLoading() {
@@ -656,31 +660,42 @@ export default {
     },
     async logout() {
       var _this = this;
-      var jwt = JSON.parse(window.localStorage.getItem("access"));
-      if (jwt != null) {
-        await axios
-          .get(
-            "http://localhost:9090/user/logout?username=" +
-              jwt.username +
-              "&token=" +
-              jwt.token
-          )
-          .then(function (response) {
-            if (response.data.message == "success") {
-              _this.$message({
-                message: "退出成功",
-                type: "success",
-              });
-              window.localStorage.removeItem("access");
-              _this.check = false;
-              setTimeout(() => {
-                location.reload();
-              }, 3000);
-            }
-          });
-      }else{
-        location.reload();
-      }
+      // var jwt = JSON.parse(window.localStorage.getItem("access"));
+      // if (jwt != null) {
+      //   await axios
+      //     .get(
+      //       "http://localhost:9090/user/logout?username=" +
+      //         jwt.username +
+      //         "&token=" +
+      //         jwt.token
+      //     )
+      //     .then(function (response) {
+      //       if (response.data.message == "success") {
+      //         _this.$message({
+      //           message: "退出成功",
+      //           type: "success",
+      //         });
+      //         window.localStorage.removeItem("access");
+      //         _this.check = false;
+      //         setTimeout(() => {
+      //           location.reload();
+      //         }, 3000);
+      //       }
+      //     });
+      // }
+      // else{
+      //   location.reload();
+      // }
+
+      //先简化退出流程
+      this.$message({
+                      message: "退出成功",
+                      type: "success",
+                    });
+      window.localStorage.removeItem("access");
+      setTimeout(() => {
+                      location.reload();
+                    }, 3000);
     },
     lightFn(originStr, target) {
       return originStr.replace(
@@ -740,28 +755,37 @@ export default {
     handle_type(command){
       if(command=='a'){
         this.q_type='事项筛选';
+        this.type='';
+
+
       //  请求
       }
       if(command=='b'){
         this.q_type='方案办法';
+        this.type='方案办法';
         //  请求
       }
       if(command=='c'){
         this.q_type='请示答复';
+        this.type='请示答复';
         //  请求
       }
       if(command=='d'){
         this.q_type='通知公告';
+        this.type='通知公告';
         //  请求
       }
       if(command=='e'){
         this.q_type='决定条例';
+        this.type='决定条例';
         //  请求
       }
       if(command=='f'){
         this.q_type='其他';
+        this.type='其他';
         //  请求
       }
+      this.search();
     },
     //文本栏，图片栏,搜图栏切换
     tranfer1(val) {
@@ -775,6 +799,7 @@ export default {
         this.picture_text = 3;
       }
     },
+
     searcher() {
       this.$router.push({
         path: "/search",
@@ -784,6 +809,7 @@ export default {
       });
       location.reload();
     },
+
     async search() {
       console.log('进入异步搜索');
       this.pageNum = 1;
@@ -814,13 +840,25 @@ export default {
             .then((response) => (console.log(response)));
       }
 
-      await axios
-          .get(
-              "http://localhost:8081/bm25/search?keyword=" +
-              this.search_word + "&tableName=" + this.tableName +
-              "&pageNum=1"
-          )
-          .then((response) => (outer.info = response.data));
+      if(this.place!='全部'){
+        await axios
+            .get(
+                "http://localhost:8081/bm25/search_condition?keyword=" +
+                this.search_word + "&tableName=" + this.tableName +
+                "&pageNum=1" + "&province=" + this.place +"&type=" + this.type+"&year="+this.time
+            )
+            .then((response) => (outer.info = response.data));
+      }else{
+        await axios
+            .get(
+                "http://localhost:8081/bm25/search_condition?keyword=" +
+                this.search_word + "&tableName=" + this.tableName +
+                "&pageNum=1" + "&province=" +"&type=" + this.type+"&year="+this.time
+            )
+            .then((response) => (outer.info = response.data));
+      }
+
+
       if (this.info.data.count!=0) {
 
         this.imgAndCaption = []
@@ -839,6 +877,8 @@ export default {
         this.imgAndCaption = [];
         this.recordsNum = 0;
       }
+
+      this.getHis()
     },
     async searchRelated(word) {
       this.$router.push({
@@ -873,9 +913,9 @@ export default {
       let outer = this;
       await axios
         .get(
-          "http://localhost:8081/bm25/search?keyword=" +
+          "http://localhost:8081/bm25/search_condition?keyword=" +
             this.search_word + "&tableName=" + this.tableName +
-            "&pageNum=1"
+            "&pageNum=1" + "&province=" +"&type="+"&year="
         )
         .then((response) => (outer.info = response.data));
 
@@ -934,22 +974,29 @@ export default {
     handle_time(command){
       if(command=='e'){
         this.time_mask='时间范围'
+        this.time='';
       }
       if(command=='a'){
         this.time_mask='2023年'
+        this.time='2023';
       }
       if(command=='b'){
         this.time_mask='2022年'
+        this.time='2022';
       }
       if(command=='c'){
         this.time_mask='2021年'
+        this.time='2021';
       }
       if(command=='d'){
         this.time_mask='2020年'
+        this.time='2020';
       }
       if(command=='f'){
         this.time_mask='2019年'
+        this.time='2019';
       }
+      this.search();
     },
 
     async handleCurrentChange(val) {
@@ -957,7 +1004,7 @@ export default {
       let outer = this;
       await axios
           .get(
-              "http://localhost:8081/bm25/search?keyword=" +
+              "http://localhost:8081/bm25/search_condition?keyword=" +
               this.search_word + "&tableName=" + this.tableName +
               "&pageNum=" +val
           )

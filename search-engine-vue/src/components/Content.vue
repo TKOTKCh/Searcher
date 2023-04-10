@@ -118,6 +118,7 @@ export default {
   // dconst id=this.$route.params.id;
   data(){
     return{
+      check:false,
       item:{
         POLICY_TITLE:''
       },
@@ -142,6 +143,45 @@ export default {
   mounted() {
   },
   methods:{
+    async logout() {
+      var _this = this;
+      // var jwt = JSON.parse(window.localStorage.getItem("access"));
+      // if (jwt != null) {
+      //   await axios
+      //     .get(
+      //       "http://localhost:9090/user/logout?username=" +
+      //         jwt.username +
+      //         "&token=" +
+      //         jwt.token
+      //     )
+      //     .then(function (response) {
+      //       if (response.data.message == "success") {
+      //         _this.$message({
+      //           message: "退出成功",
+      //           type: "success",
+      //         });
+      //         window.localStorage.removeItem("access");
+      //         _this.check = false;
+      //         setTimeout(() => {
+      //           location.reload();
+      //         }, 3000);
+      //       }
+      //     });
+      // }
+      // else{
+      //   location.reload();
+      // }
+
+      //先简化退出流程
+      this.$message({
+        message: "退出成功",
+        type: "success",
+      });
+      window.localStorage.removeItem("access");
+      setTimeout(() => {
+        location.reload();
+      }, 3000);
+    },
     bodyScale() {
       let t = window.devicePixelRatio   // 获取下载的缩放 125% -> 1.25    150% -> 1.5
       if (!!window.ActiveXObject || "ActiveXObject" in window) {

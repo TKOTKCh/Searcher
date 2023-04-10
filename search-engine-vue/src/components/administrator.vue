@@ -11,8 +11,6 @@
         style="height: 100vh"
         default-active="0"
         class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
@@ -42,7 +40,7 @@
       </el-col>
       <el-col :span="21" style="margin-left: 10px">
 
-        <div v-if="curpage==0" style="width: 100%;padding: 20px" >
+        <div v-show="curpage==0" style="width: 100%;padding: 20px" >
           <div class="part1">
             <div  style="display: flex;margin-top: 20px;margin-bottom: 40px">
               <h3 style="font-size: 24px">
@@ -51,72 +49,74 @@
             </div>
             <div class="line2" style="border-top: solid 2px #eee;border-bottom:solid 2px #eee;height: 100px;align-content: center">
               <el-row style="margin: 20px">
-                <el-col span="5" style="display: flex;border-right: solid 2px #eee;margin-left: 10px;margin-right: 10px">
+                <el-col :span="5" style="display: flex;border-right: solid 2px #eee;margin-left: 10px;margin-right: 10px">
                     <div style="width: 50px; height: 52px" >
                       <img class="img" src="~@/assets/bob_1.png" draggable="false" style="display: block; width: 50px; height: 52px;">
                     </div>
                     <div style="margin-left: 20px">
                       <h4  style="margin-bottom: 10px">收录政策数：</h4>
                       <h2 style="float: left">
-                        157902
+                        {{ num_policy }}
                       </h2>
                     </div>
                 </el-col>
-                <el-col span="5"style="display: flex;border-right: solid 2px #eee;margin-left: 10px;margin-right: 10px">
+                <el-col :span="5"style="display: flex;border-right: solid 2px #eee;margin-left: 10px;margin-right: 10px">
                   <div style="width: 50px; height: 52px" >
                     <img class="img" src="~@/assets/bob_2.png" draggable="false" style="display: block; width: 50px; height: 52px;">
                   </div>
                   <div style="margin-left: 20px">
                     <h4  style="margin-bottom: 10px">注册用户数：</h4>
                     <h2 style="float: left">
-                      201
+                      {{num_user}}
                     </h2>
                   </div>
 
                 </el-col>
-                <el-col span="5" style="display: flex;border-right: solid 2px #eee;margin-left: 10px;margin-right: 10px">
+                <el-col :span="5" style="display: flex;border-right: solid 2px #eee;margin-left: 10px;margin-right: 10px">
                   <div style="width: 50px; height: 52px" >
                     <img class="img" src="~@/assets/bob_3.png" draggable="false" style="display: block; width: 50px; height: 52px;">
                   </div>
                   <div style="margin-left: 20px">
                     <h4  style="margin-bottom: 10px">站点今日点击量：</h4>
                     <h2 style="float: left">
-                      114
+                      {{today_click}}
                     </h2>
                   </div>
                 </el-col>
-                <el-col span="5"style="display: flex;" >
+                <el-col :span="5"style="display: flex;" >
                   <div style="width: 50px; height: 52px" >
                     <img class="img" src="~@/assets/bob_4.png" draggable="false" style="display: block; width: 50px; height: 52px;">
                   </div>
                   <div style="margin-left: 20px">
                     <h4  style="margin-bottom: 10px">政策总点击量：</h4>
                     <h2 style="float: left">
-                      114514
+                      {{total_click}}
                     </h2>
                   </div>
                 </el-col>
               </el-row>
             </div>
+
             <div  style="display: flex;margin-top: 20px;margin-bottom: 40px">
               <h3 style="font-size: 24px">
-                这里可以有一个流量折线
+                近七日站点流量图
               </h3>
             </div>
-            <span>这里有图吗</span>
+            <div id="main" style="margin-top:50px;width: 1400px;height: 400px;"></div>
+<!--            <span>这里有图吗</span>-->
           </div>
         </div>
 
 
-        <div v-if="curpage==1" style="width: 100%;padding: 20px">
+        <div v-show="curpage==1" style="width: 100%;padding: 20px">
           政策查改
         </div>
 
-        <div v-if="curpage==2" style="width: 100%;padding: 20px">
+        <div v-show="curpage==2" style="width: 100%;padding: 20px">
           新增政策
         </div>
 
-        <div v-if="curpage==3" style="width: 100%;padding: 20px">
+        <div v-show="curpage==3" style="width: 100%;padding: 20px">
           <div class="part1">
             <div  style="display: flex;margin-top: 20px;margin-bottom: 40px">
               <h3 style="font-size: 24px">
@@ -126,6 +126,8 @@
             <div class="line2" style="border-top: solid 2px #eee;">
               <div>
                 <el-table
+                    :key="Math.random()"
+
                     :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 80% ">
                   <el-table-column
@@ -193,44 +195,98 @@ export default {
 
   data(){
     return{
+      tableKey:0,
       like: true,
-      value1: 4154.564,
-      value2: 2222,
-      title: '今年的增长',
 
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      tableData: [],
       search: '',
-      curpage:0,
+      curpage:'',
+      num_policy:'',
+      num_user:'',
+      today_click:'',
+      total_click:'',
+      sevendays:[],
+
     }
   },
   created() {
     this.bodyScale()
     this.getUser()
+    this.getStatistic()
+  },
+  mounted() {
+    // this.drawChart()
+  },
+  watch:{
+
+    sevendays:{
+      handler(){
+        this.drawChart()
+      }
+    }
   },
   methods: {
-    getUser(){
+    drawChart() {
+      let date=[];
+      let num=[];
+      console.log(this.sevendays)
+      for(var i=0;i<7;i++){
+        date.push(this.sevendays[i].key)
+        num.push(this.sevendays[i].value)
+      }
+
+      // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
+      let myChart = this.$echarts.init(document.getElementById("main"));
+      // 指定图表的配置项和数据
+      let option = {
+        title: {
+          text: "政策点击量",
+        },
+        tooltip: {},
+        legend: {
+          // data: ["销量"],
+        },
+        xAxis: {
+          data: date,
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "点击量",
+            type: "bar",
+            data: num,
+          },
+        ],
+      };
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    },
+
+    async getStatistic(){
+       let outer = this
+      await axios
+          .get(
+              "http://localhost:8081/statistic/all_statistic"
+          )
+          .then((response) => {
+            outer.num_policy=response.data.data.policyNumber;
+            outer.num_user=response.data.data.userCount.value;
+            outer.today_click=response.data.data.todayClick.value;
+            outer.total_click=response.data.data.total_click;
+            outer.sevendays=response.data.data.seven_days;
+
+          });
+
+    },
+
+    async getUser(){
       let outer = this;
-      axios
+      await axios
           .get(
               "http://localhost:8081/user/list"
           )
           .then((response) => (outer.tableData = response.data));
+      this.tableKey = Math.random()
 
     },
 
@@ -249,17 +305,35 @@ export default {
       }
     },
     handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index);
-      console.log(row);
       axios
-          .delete(
-              "http://localhost:8081/user/delete/" + row.id
+          .get(
+              "http://localhost:8081/user/getByUid/" + row.id
           )
           .then((response) => (console.log(response)));
-      window.location.reload();
+    },
+    handleDelete(index, row) {
+      this.$confirm('此操作将永久删除该用户及其记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        axios
+            .delete(
+                "http://localhost:8081/user/delete/" + row.id
+            )
+            .then((response) => (console.log(response)));
+        this.tableData.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     }
   },
 }

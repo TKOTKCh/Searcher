@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/statistic/*",
                         "/bm25/count",
                         "/user/getByUid/*",
+                        "/user/delete/*",
                         "/bm25/search_condition",
                         "/user/addUserQuery").permitAll()//不拦截这些路径
                 .anyRequest().authenticated();
