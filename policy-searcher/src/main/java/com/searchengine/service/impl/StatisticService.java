@@ -43,6 +43,7 @@ public class StatisticService {
     }
 
 
+
     public int addUserCount() {
         String currentNum = statisticDao.getRecordByKey("user_count").getValue();
         return statisticDao.setUserCount(strPlusOne(currentNum));
@@ -59,8 +60,13 @@ public class StatisticService {
             cal.add(Calendar.DATE, -i);
             String date = new SimpleDateFormat("yyyy-MM-dd ").format(cal.getTime());
             StatisticHistory one = statisticDao.getRecordByKey(date);
-            list.add(one);
+            if (one == null) {
+                list.add(new StatisticHistory(date, "0"));
+            } else {
+                list.add(one);
+            }
         }
+
         return list;
     }
 
