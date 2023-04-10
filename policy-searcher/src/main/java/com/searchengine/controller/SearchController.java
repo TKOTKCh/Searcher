@@ -44,6 +44,21 @@ public class SearchController {
         return Result.success(dataByScore);
     }
 
+    @GetMapping("/search_condition")
+    public Result searchBySegmentAndConditions(
+            @Param("tableName")String tableName,
+            @RequestParam("keyword") String keyword,
+            @RequestParam("pageNum") int pageNum,
+            @RequestParam("province") String province,
+            @RequestParam("type") String type,
+            @RequestParam("year") String year
+    ) {
+//        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
+        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum);
+
+        return Result.success(dataByScore);
+    }
+
     @GetMapping("/test")
     public void test() {
         System.out.println("TEST");

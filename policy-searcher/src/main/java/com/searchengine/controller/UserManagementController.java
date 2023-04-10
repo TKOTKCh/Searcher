@@ -22,8 +22,8 @@ public class UserManagementController {
     @Resource
     private UserServiceImpl userService;
     @PostMapping("/insertOrUpdate")
-    public boolean insertOrUpdate(@RequestBody User user) {
-        return userService.saveOrUpdate(user);
+    public Result insertOrUpdate(@RequestBody User user) {
+        return Result.success(userService.saveOrUpdate(user)) ;
     }
 
 //    @RequestMapping("/list")
@@ -58,16 +58,16 @@ public class UserManagementController {
 //    }
 
     @DeleteMapping("/delete/{id}")
-    public boolean deleteByUid(@PathVariable Integer id) {
-        // {xx} 和 方法参数的 xx 名字要一模一样
-        return userService.removeById(id);
+    public Result deleteByUid(@PathVariable Integer id) {
+
+        return Result.success(userService.removeUserById(id)) ;
 
     }
 
     @PostMapping("/delete/batch")
-    public boolean deleteByUids(@RequestBody List<Integer> ids) {
+    public Result deleteByUids(@RequestBody List<Integer> ids) {
         // {xx} 和 方法参数的 xx 名字要一模一样
-        return userService.removeBatchByIds(ids);
+        return Result.success(userService.removeBatchByIds(ids)) ;
     }
 
 

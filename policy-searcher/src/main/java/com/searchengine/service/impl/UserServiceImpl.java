@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.searchengine.dao.StatisticDao;
 import com.searchengine.dao.UserDao;
 import com.searchengine.entity.LoginUser;
 import com.searchengine.entity.TreeNode;
@@ -27,13 +28,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     private UserDao userDao;
 
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    StatisticService statisticService;
+    private StatisticService statisticService;
+
+    @Autowired
+    private StatisticDao statisticDao;
 
     @Autowired
     private RedisUtil_db0 redisUtil;
@@ -153,5 +157,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         } else {
             return "login fail";
         }
+    }
+
+    public boolean removeUserById(Integer id) {
+        try {
+            this.removeById(id);
+            statisticDao.removeOneUserCount();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 }

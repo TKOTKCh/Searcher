@@ -9,11 +9,15 @@
         insert into statistic_history(key,value) values(#{key},#{value})
     </insert>
     <update id="addOneUserCount">
-        update statistic_history set value=value+1 where key=user_count
+        update statistic_history set value=value+1 where key='user_count'
+    </update>
+
+    <update id="removeOneUserCount">
+        update statistic_history set value=value-1 where key='user_count'
     </update>
 
     <update id="addOneTotalClick">
-        update statistic_history set value=value+1 where key=total_click
+        update statistic_history set value=value+1 where key='total_click'
     </update>
     <update id="addOneTodayClick">
         update statistic_history set value=value+1 where key=#{key}

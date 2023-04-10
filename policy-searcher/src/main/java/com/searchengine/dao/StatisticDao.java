@@ -12,6 +12,8 @@ public interface StatisticDao extends BaseMapper<StatisticHistory> {
 
     int addOneUserCount();
 
+    int removeOneUserCount();
+
     int addOneTotalClick();
 
     int addOneTodayClick(@Param("key") String date);
