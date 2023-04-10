@@ -10,10 +10,7 @@ import com.searchengine.utils.Trie;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -59,12 +56,17 @@ public class SearchController {
     }
 
     @GetMapping("/hot")
-    public Map<String, Object> getHotdata() {
+    public Result getHotdata() {
         //获取当前热搜，每两小时更新一次
         double time=System.currentTimeMillis()/1000;
         if(dataService.judgeUpdate(time)==true){
             dataService.updateHotdata();
         }
-        return dataService.getHotdata();
+        return Result.success( dataService.getHotdata());
+    }
+
+    @PostMapping("/count")
+    public Result addCount(@RequestParam("id") Integer  id) {
+        return Result.success( dataService.addCount(id));
     }
 }

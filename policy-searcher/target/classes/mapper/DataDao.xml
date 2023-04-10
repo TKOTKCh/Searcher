@@ -25,6 +25,7 @@
         select * from data where caption like #{word}
     </select>
 
+
     <insert id="insertRecord" parameterType="com.searchengine.entity.Record">
         insert into data
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -1,6 +1,7 @@
 package com.searchengine.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.searchengine.dao.AdminDao;
 import com.searchengine.dao.UserDao;
 import com.searchengine.entity.LoginUser;
 import com.searchengine.entity.User;
@@ -18,9 +19,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private AdminDao adminDao;
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userDao.queryOne(s);
+        if (user == null){
+            //认证失败
+            throw new UsernameNotFoundException("用户名不存在");
+        }else{
+            return new LoginUser(user);
+        }
+    }
+
+    public UserDetails loadAdminByUsername(String s) throws UsernameNotFoundException {
+        User user = adminDao.queryOne(s);
         if (user == null){
             //认证失败
             throw new UsernameNotFoundException("用户名不存在");

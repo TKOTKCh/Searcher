@@ -33,6 +33,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    StatisticService statisticService;
+
+    @Autowired
     private RedisUtil_db0 redisUtil;
 
     @Override
@@ -53,6 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public int register(User user) {
 //        user.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        statisticService.addUserCount();
         return userDao.insertOne(user);
     }
 
@@ -131,6 +135,22 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             userDao.updateUserQuery(userId,query,time);
         }else{
             userDao.addUserQuery(userId,query,time);
+        }
+    }
+
+    @Override
+    public String  adminLogin(User user) {
+        Map<String, String> rs = new HashMap<>();
+        //用户认证
+        LoginUser userDetails = (LoginUser) userDetailsService.loadAdminByUsername(user.getUsername());
+        //判断认证是否通过
+        if (passwordEncoder.matches(user.getPassword(), userDetails.getPassword())) {
+            //认证通过
+            //使用userId生成一个jwt,存到redis中
+            return "admin login successfully";
+//            redisUtil.set("login" + detailsUser.getId(), jwt, 60 * 60 * 6); //6小时
+        } else {
+            return "login fail";
         }
     }
 }

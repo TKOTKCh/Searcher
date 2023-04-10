@@ -9,8 +9,10 @@ import com.huaban.analysis.jieba.SegToken;
 import com.searchengine.dao.DataDao;
 import com.searchengine.dao.RecordSegDao;
 import com.searchengine.dao.SegmentDao;
+import com.searchengine.dao.StatisticDao;
 import com.searchengine.dto.RecordDto;
 import com.searchengine.entity.*;
+import com.searchengine.entity.Record;
 import com.searchengine.service.RecordSegService;
 import com.searchengine.service.DataService;
 import com.searchengine.service.SegmentService;
@@ -36,6 +38,9 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
 
     @Autowired
     private RecordSegDao recordSegDao;
+
+    @Autowired
+    private StatisticService statisticService;
 
     @Autowired
     private SegmentService segmentService;
@@ -234,14 +239,12 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     }
 
     @Override
-    public Map<String, Object> getHotdata() {
-        List<Data>datas=dataDao.getHotdata();
-        Map<String, Object> mp = new HashMap<>();
+    public List<Data> getHotdata() {
+        List<Data> datas=dataDao.getHotdata();
 //        System.out.println(datas);
 
         // 返回搜索结果
-        mp.put("result", datas);
-        return mp;
+        return datas;
     }
 
     @Override
@@ -270,7 +273,12 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     @Override
     //增加点击量
     public boolean addCount(Integer id){
-        dataDao.addCount(id);
-        return true;
+        try {
+            dataDao.addCount(id);
+            statisticService.addCurrentClick();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

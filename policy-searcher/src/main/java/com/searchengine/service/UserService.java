@@ -17,6 +17,8 @@ public interface UserService  {
 
     Map<String, String> login(User user);
 
+
+
     User getUserByName(String username);
 
     List<TreeNode> getFavorite(String username);
@@ -27,4 +29,6 @@ public interface UserService  {
     List<String> getUserQuery(Integer userid);
     //添加用户的搜索记录，其中如果超过五条就修改，小于五条就插入
     void addUserQuery(Integer userid,String query,double time);
+
+    String adminLogin(User user);
 }

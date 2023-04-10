@@ -104,4 +104,7 @@
                      )tb1,data
         where tb1.data_id=data.id;
     </select>
+    <select id="getNumberOfData" resultType="java.lang.Integer">
+        select count(*) from data
+    </select>
 </mapper>

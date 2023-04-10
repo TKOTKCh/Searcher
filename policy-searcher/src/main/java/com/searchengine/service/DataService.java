@@ -29,7 +29,7 @@ public interface DataService {
 
     IPage<Data> findPage(Integer pageNum, Integer pageSize, String username, String email, String phone, String address);
 
-    Map<String, Object> getHotdata() ;
+    List<Data> getHotdata() ;
     boolean updateHotdata();
     boolean judgeUpdate(double currentTime);
     boolean addCount(Integer id);

@@ -1,17 +1,20 @@
 package com.searchengine.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.searchengine.entity.TreeNode;
-import com.searchengine.entity.User;
+import com.searchengine.entity.StatisticHistory;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface AdminDao extends BaseMapper<User> {
+public interface StatisticDao extends BaseMapper<StatisticHistory> {
 
-    User queryOne(String username);
+    int put(@Param("key")String key, @Param("value") String value);
 
+    int addOneUserCount();
 
+    int addOneTotalClick();
+
+    int addOneTodayClick(@Param("key") String date);
+
+    StatisticHistory getRecordByKey(@Param("key") String key);
 }

@@ -50,12 +50,6 @@ public class DataManagementController {
         return Result.success(page);
     }
 
-    //    @DeleteMapping("/{uid}")
-//    public int deleteByUid(@PathVariable Integer uid) {
-//        // {xx} 和 方法参数的 xx 名字要一模一样
-//        return userService.deleteByUid(uid);
-//    }
-
     @DeleteMapping("/delete/{id}")
     public Result deleteByUid(@PathVariable Integer id) {
         // {xx} 和 方法参数的 xx 名字要一模一样
@@ -69,5 +63,9 @@ public class DataManagementController {
         return Result.success(dataService.removeBatchByIds(ids));
     }
 
+    @GetMapping("statistic")
+    public Result getStatisticData() {
+        return Result.success();
+    }
 
 }

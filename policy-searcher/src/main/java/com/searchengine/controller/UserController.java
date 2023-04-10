@@ -47,6 +47,14 @@ public class UserController {
         return Result.success(result);
     }
 
+    @CrossOrigin
+    @PostMapping(value = "/admin_login")
+    @ResponseBody
+    public Result admin_login(@RequestBody User user) {
+        String  result = userService.adminLogin(user);
+        return Result.success(result);
+    }
+
     //注册
     @PostMapping(value = "/register")
     @ResponseBody
@@ -125,11 +133,10 @@ public class UserController {
 
     @GetMapping("/getLastQuery")
     @ResponseBody
-    public Map<String,Object> getLastQuery(@RequestParam("userid") Integer userid) {
+    public Result getLastQuery(@RequestParam("userid") Integer userid) {
         Map<String,Object>result=new HashMap<>();
         List<String> querys=userService.getUserQuery(userid);
-        result.put("result",querys);
-        return result;
+        return Result.success(querys);
     }
 
     @GetMapping("/addUserQuery")
