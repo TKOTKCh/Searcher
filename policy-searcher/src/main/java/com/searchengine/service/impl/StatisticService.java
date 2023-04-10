@@ -34,14 +34,13 @@ public class StatisticService {
         String key = simpleDateFormat.format(date);
 
         String today = statisticDao.getRecordByKey(key).getValue();
-        statisticDao.setTodayClick(key,strPlusOne(today));
+        statisticDao.setTodayClick(key, strPlusOne(today));
 
         String total = statisticDao.getRecordByKey("total_click").getValue();
         statisticDao.setTotalClick(strPlusOne(total));
 
         return true;
     }
-
 
 
     public int addUserCount() {
@@ -55,9 +54,10 @@ public class StatisticService {
         List<StatisticHistory> list = new ArrayList<>();
 
         int dayCount = 7;
+        int step=1;
 
-        for (int i = 1; i < dayCount; i++) {
-            cal.add(Calendar.DATE, -i);
+        for (int i = 0; i < dayCount; i++) {
+            cal.add(Calendar.DATE, -step);
             String date = new SimpleDateFormat("yyyy-MM-dd ").format(cal.getTime());
             StatisticHistory one = statisticDao.getRecordByKey(date);
             if (one == null) {
@@ -68,6 +68,7 @@ public class StatisticService {
             }
         }
 
+
         return list;
     }
 
@@ -77,12 +78,11 @@ public class StatisticService {
         String key = simpleDateFormat.format(date);
         StatisticHistory one = statisticDao.getRecordByKey(key);
 
-        if (one==null) {
+        if (one == null) {
             statisticDao.put(key, "0");
             return new StatisticHistory(key, "0");
 
-        }
-        else {
+        } else {
             return one;
         }
 
@@ -92,17 +92,19 @@ public class StatisticService {
         return statisticDao.getRecordByKey("user_count");
     }
 
-    public Map<String ,Object> getAllStatistic() {
+    public Map<String, Object> getAllStatistic() {
         StatisticHistory todayClick = getTodayClick();
-        List<StatisticHistory> latest7Click= getLatestSevenDayClick();
+        List<StatisticHistory> latest7Click = getLatestSevenDayClick();
         StatisticHistory userCount = getUserCount();
         Integer numberOfData = dataDao.getNumberOfData();
+        Integer totalClick = new Integer(statisticDao.getRecordByKey("total_click").getValue());
 
-        HashMap<String ,Object> rs = new HashMap();
+        HashMap<String, Object> rs = new HashMap();
         rs.put("todayClick", todayClick);
-        rs.put("7days", latest7Click);
+        rs.put("seven_days", latest7Click);
         rs.put("userCount", userCount);
         rs.put("policyNumber", numberOfData);
+        rs.put("total_click", totalClick);
         return rs;
     }
 

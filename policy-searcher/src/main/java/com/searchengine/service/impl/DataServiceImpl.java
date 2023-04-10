@@ -274,6 +274,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     //增加点击量
     public boolean addCount(Integer id){
         try {
+
             dataDao.addCount(id);
             statisticService.addCurrentClick();
 
