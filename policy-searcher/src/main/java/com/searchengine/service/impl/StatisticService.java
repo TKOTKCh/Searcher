@@ -61,6 +61,7 @@ public class StatisticService {
             String date = new SimpleDateFormat("yyyy-MM-dd ").format(cal.getTime());
             StatisticHistory one = statisticDao.getRecordByKey(date);
             if (one == null) {
+                statisticDao.put(date, "0");
                 list.add(new StatisticHistory(date, "0"));
             } else {
                 list.add(one);
@@ -74,7 +75,17 @@ public class StatisticService {
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String key = simpleDateFormat.format(date);
-        return statisticDao.getRecordByKey(key);
+        StatisticHistory one = statisticDao.getRecordByKey(key);
+
+        if (one==null) {
+            statisticDao.put(key, "0");
+            return new StatisticHistory(key, "0");
+
+        }
+        else {
+            return one;
+        }
+
     }
 
     public StatisticHistory getUserCount() {
