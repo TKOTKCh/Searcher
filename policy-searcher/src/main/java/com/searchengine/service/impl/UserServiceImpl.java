@@ -125,7 +125,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     public User getByUid(String id) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("uid", id);
+        queryWrapper.eq("id", id);
         User one = getOne(queryWrapper);
         return one;
     }
