@@ -48,7 +48,7 @@
         insert into tree_node(id, pid, name, isLeaf, user_id, url) values(#{id}, #{pid}, #{name}, #{isLeaf}, #{userId}, #{url})
     </insert>
 
-    <select id="getUserQuery" resultType="java.lang.Integer">
+    <select id="getUserQuery" resultType="java.lang.String">
         select query from user_query where userid=#{userid};
     </select>
 

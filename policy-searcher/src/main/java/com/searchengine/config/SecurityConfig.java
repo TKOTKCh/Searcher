@@ -42,8 +42,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)// 不通过session获取sessionContext;
                 .and()
                 .authorizeRequests()
-                .antMatchers("/bm25/hot","/bm25/completion", "/bm25/search", "/user/login", "/", "/user/logout", "/user/register", "/search_test", "/related_word", "/imageUpload", "/survival", "/search_use_split",
-                        "/getFavorites", "/updateTreeNodeName", "/deleteTreeNode", "/addTreeNode", "/prefix_word","/user/getLastQuery","/user/addUserQuery").permitAll()//不拦截这些路径
+                .antMatchers(
+                        "/bm25/hot",
+                        "/bm25/completion",
+                        "/bm25/search",
+                        "/user/login",
+                        "/user/*",
+                        "/",
+                        "/user/logout",
+                        "/user/register",
+                        "/search_test",
+                        "/related_word",
+                        "/imageUpload",
+                        "/survival",
+                        "/search_use_split",
+                        "/getFavorites",
+                        "/updateTreeNodeName",
+                        "/deleteTreeNode",
+                        "/addTreeNode",
+                        "/prefix_word",
+                        "/user/getLastQuery",
+                        "/user/addUserQuery").permitAll()//不拦截这些路径
                 .anyRequest().authenticated();
     }
 }
