@@ -6,7 +6,7 @@
 <mapper namespace="com.searchengine.dao.StatisticDao">
 
     <insert id="put">
-        insert into statistic_history(key,value) values(#{key},#{value})
+        insert into statistic_history(`key`,value) values(#{key},#{value})
     </insert>
 
     <update id="setKeyVal">
