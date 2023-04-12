@@ -18,16 +18,16 @@
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
       </el-menu-item>
-      <el-submenu index="1">
-        <template slot="title">
-          <i class="el-icon-location"></i>
-          <span>政策管理</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item @click="curpage=1" index="2">政策查改</el-menu-item>
-          <el-menu-item @click="curpage=2" index="3">新增政策</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
+<!--      <el-submenu index="1">-->
+<!--        <template slot="title">-->
+<!--          <i class="el-icon-location"></i>-->
+<!--          <span>政策管理</span>-->
+<!--        </template>-->
+<!--        <el-menu-item-group>-->
+<!--          <el-menu-item @click="curpage=1" index="2">政策查改</el-menu-item>-->
+<!--          <el-menu-item @click="curpage=2" index="3">新增政策</el-menu-item>-->
+<!--        </el-menu-item-group>-->
+<!--      </el-submenu>-->
       <el-menu-item index="4" @click="curpage=3">
         <i class="el-icon-menu"></i>
         <span slot="title">用户管理</span>
@@ -40,7 +40,7 @@
       </el-col>
       <el-col :span="21" style="margin-left: 10px">
 
-        <div v-show="curpage==0" style="width: 100%;padding: 20px" >
+        <div v-show="curpage==0" style="width: 100%;padding-top: 20px" >
           <div class="part1">
             <div  style="display: flex;margin-top: 20px;margin-bottom: 40px">
               <h3 style="font-size: 24px">
@@ -102,7 +102,7 @@
                 近七日站点流量图
               </h3>
             </div>
-            <div id="main" style="margin-top:50px;width: 1400px;height: 400px;"></div>
+            <div id="main" style="margin-top:50px;width: 80%;height: 400px;"></div>
 <!--            <span>这里有图吗</span>-->
           </div>
         </div>
@@ -151,6 +151,7 @@
                       prop="address">
                   </el-table-column>
                   <el-table-column
+                      width="200px"
                       align="right">
                     <template slot="header" slot-scope="scope">
                       <el-input
@@ -159,9 +160,9 @@
                           placeholder="输入关键字搜索"/>
                     </template>
                     <template slot-scope="scope">
-                      <el-button
-                          size="mini"
-                          @click="handleEdit(scope.$index, scope.row)">编辑/查看</el-button>
+<!--                      <el-button-->
+<!--                          size="mini"-->
+<!--                          @click="handleEdit(scope.$index, scope.row)">编辑/查看</el-button>-->
                       <el-button
                           size="mini"
                           type="danger"
@@ -210,12 +211,20 @@ export default {
     }
   },
   created() {
-    this.bodyScale()
+    this.user = JSON.parse(window.localStorage.getItem("access"));
+    if (this.user != null) {
+      this.check = true;
+      console.log(this.user)
+    }
+    // this.bodyScale()
     this.getUser()
     this.getStatistic()
   },
   mounted() {
     // this.drawChart()
+    window.onbeforeunload = function (e) {
+      const storage = window.localStorage;
+      storage.clear()}
   },
   watch:{
 
@@ -300,7 +309,7 @@ export default {
       } else {
         if (t != 1) {   // 如果进行了缩放，也就是不是1
           let c = document.querySelector('body')
-          c.style.zoom = -0.62 * t + 1.55;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
+          c.style.zoom = -0.62 * t + 1.60;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
         }
       }
     },

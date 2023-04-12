@@ -156,9 +156,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         //用户认证
         LoginUser userDetails = (LoginUser) userDetailsService.loadAdminByUsername(user.getUsername());
         //判断认证是否通过
-        if (passwordEncoder.matches(user.getPassword(), userDetails.getPassword())) {
+        if (user.getPassword().equals(userDetails.getPassword()) ) {
             //认证通过
             //使用userId生成一个jwt,存到redis中
+            System.out.println("passwordok");
             return "admin login successfully";
 //            redisUtil.set("login" + detailsUser.getId(), jwt, 60 * 60 * 6); //6小时
         } else {

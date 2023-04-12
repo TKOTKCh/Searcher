@@ -808,6 +808,7 @@ export default {
     },
 
     async search() {
+      this.loading=true;
       console.log('进入异步搜索');
       this.pageNum = 1;
       let outer = this;
@@ -881,6 +882,7 @@ export default {
         this.recordsNum = 0;
       }
       this.getHis()
+      this.loading=false;
     },
 
     async searchRelated(word) {
@@ -953,6 +955,7 @@ export default {
     },
 
     async getFirstPage() {
+      this.loading=true;
       this.recordsNum = this.$route.query.recordsNum;
       this.search_word = this.$route.query.word;
       this.search_word1 = this.$route.query.word;
@@ -1018,6 +1021,7 @@ export default {
         this.imgAndCaption = [];
         this.recordsNum = 0;
       }
+      this.loading=false;
     },
 
     bodyScale() {
@@ -1030,7 +1034,7 @@ export default {
       } else {
         if (t != 1) {   // 如果进行了缩放，也就是不是1
           let c = document.querySelector('body')
-          c.style.zoom = -0.62 * t + 1.55;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
+          c.style.zoom = -0.62 * t + 1.60;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
         }
       }
     },

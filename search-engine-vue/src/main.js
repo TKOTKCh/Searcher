@@ -20,7 +20,10 @@ Vue.prototype.$echarts = echarts;
 Vue.use(ElementUI);
 Vue.use(VueTreeList);
 
+
+
 new Vue({
   render: h => h(App),
   router
 }).$mount('#app');
+

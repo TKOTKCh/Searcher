@@ -165,7 +165,7 @@ export default {
       } else {
         if (t != 1) {   // 如果进行了缩放，也就是不是1
           let c = document.querySelector('body')
-          c.style.zoom = -0.62 * t + 1.65;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
+          c.style.zoom = -0.62 * t + 1.60;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
         }
       }
     },
