@@ -2,9 +2,9 @@
   <div>
     <el-container style="width: 100%">
       <el-menu mode="horizontal"  style="background-color:#cbb486;" >
-        <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>
-        <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>
-        <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger">政务公开</el-menu-item>
+<!--        <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>-->
+<!--        <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>-->
+        <el-menu-item index="3" disabled style="color: white;font-weight: bolder;font-size: larger"></el-menu-item>
       </el-menu>
       <!--    头部-->
       <div class="little_button" style="float: right;margin-right: 10px">
@@ -126,7 +126,6 @@
                 <el-radio-button label="湖南省"></el-radio-button>
               </el-radio-group>
             </div>
-
             <div style="display: flex;margin-top: 40px">
               <el-radio-group v-model="place" style="margin-left: 50px">
                 <el-radio-button label="广东省"></el-radio-button>
@@ -139,7 +138,6 @@
                 <el-radio-button label="青海省"></el-radio-button>
               </el-radio-group>
             </div>
-
             <div style="display: flex;margin-top: 40px">
               <el-radio-group v-model="place" style="margin-left: 50px;margin-bottom: 50px">
                 <el-radio-button label="内蒙古自治区"></el-radio-button>
@@ -251,7 +249,7 @@
                 </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="e">不限</el-dropdown-item>
-                    <el-dropdown-item command="a">2023</el-dropdown-item>
+<!--                    <el-dropdown-item command="a">2023</el-dropdown-item>-->
                     <el-dropdown-item command="b">2022</el-dropdown-item>
                     <el-dropdown-item command="c">2021</el-dropdown-item>
                     <el-dropdown-item command="d">2020</el-dropdown-item>
@@ -295,7 +293,7 @@
                       <!--                    </a>-->
                       <!--                    <h3 @click="seach">{{item.POLICY_TITLE}}</h3>-->
                       <!--                    <el-link style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)">{{item.POLICY_TITLE}}</el-link>-->
-                      <el-link class="title_caption" v-html="lightFn(item.POLICY_TITLE,search_word_not_contain_filter)" style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)"></el-link>
+                      <el-link class="title_caption" :underline='false' v-html="lightFn(item.POLICY_TITLE,search_word_not_contain_filter)" style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)"></el-link>
                     </div>
                     <div class="article_caption" style="margin-left: 80px;">
                       <!--                    <p class="article_caption">{{item.POLICY_BODY}}</p>-->
@@ -584,15 +582,13 @@ export default {
   },
   created() {
     this.bodyScale()
-
     this.user = JSON.parse(window.localStorage.getItem("access"));
-    console.log(this.user)
     if (this.user != null) {
       this.check = true;
+      console.log(this.user)
     }
   },
   mounted() {
-
     this.getFirstPage();
     this.getHot();
     this.getHis();
@@ -608,6 +604,7 @@ export default {
   watch:{
     place:{
       handler(){
+        this.dialogTableVisible=false;
         this.search();
       }
     }
@@ -814,7 +811,6 @@ export default {
       console.log('进入异步搜索');
       this.pageNum = 1;
       let outer = this;
-
       this.search_word1 = this.search_word;
       this.search_word_not_contain_filter = this.search_word
       var filter = /^-.*?$/
@@ -840,6 +836,16 @@ export default {
             .then((response) => (console.log(response)));
       }
 
+      //开始搜索逻辑
+      this.$router.push({
+        path: "/search",
+        query: {
+          word: this.search_word,
+          province:this.province,
+        },
+      });
+      // window.location.reload();
+
       if(this.place!='全部'){
         await axios
             .get(
@@ -857,10 +863,7 @@ export default {
             )
             .then((response) => (outer.info = response.data));
       }
-
-
-      if (this.info.data.count!=0) {
-
+      if (this.info.data&&this.info.data&&this.info.data.count!=0) {
         this.imgAndCaption = []
         this.recordsNum = this.info.data.count;
         for (let i = 0; i < this.info.data.data.length; i++) {
@@ -877,9 +880,9 @@ export default {
         this.imgAndCaption = [];
         this.recordsNum = 0;
       }
-
       this.getHis()
     },
+
     async searchRelated(word) {
       this.$router.push({
         path: "/search",
@@ -889,7 +892,8 @@ export default {
       });
       location.reload();
     },
-    async getFirstPage() {
+
+    async getFirstPage_b() {
       this.recordsNum = this.$route.query.recordsNum;
       this.search_word = this.$route.query.word;
       this.search_word1 = this.$route.query.word;
@@ -929,7 +933,7 @@ export default {
             .then((response) => (console.log(response)));
       }
 
-      if (this.info.data.count!=0) {
+      if (this.info.data&&this.info.data.count!=0) {
         this.imgAndCaption = []
         this.recordsNum = this.info.data.count;
         for (let i = 0; i < this.info.data.data.length; i++) {
@@ -947,6 +951,75 @@ export default {
         this.recordsNum = 0;
       }
     },
+
+    async getFirstPage() {
+      this.recordsNum = this.$route.query.recordsNum;
+      this.search_word = this.$route.query.word;
+      this.search_word1 = this.$route.query.word;
+      this.province=this.$route.query.province;
+
+      // 以下代码用于查询结果中过滤词不变红
+      this.search_word_not_contain_filter = this.search_word
+      var filter = /^-.*?$/
+      var strs = this.search_word_not_contain_filter.trim().split(/\s+/)
+      var idx =  -1;
+      for (let i = 0; i < strs.length; i++) {
+        if (filter.test(strs[i])) {
+          idx = this.search_word_not_contain_filter.indexOf(strs[i])
+          break;
+        }
+      }
+      if (idx != -1) {
+        this.search_word_not_contain_filter = this.search_word_not_contain_filter
+            .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
+      }
+      //发送搜索请求
+      let outer = this;
+      await axios
+          .get(
+              "http://localhost:8081/bm25/search_condition",{
+                params:{
+                  keyword:this.search_word,
+                  tableName:this.tableName,
+                  pageNum:1,
+                  province:'',
+                  type:'',
+                  year:'',
+                  user:this.user
+                }
+              }
+          )
+          .then((response) => (outer.info = response.data));
+
+      // 输出搜索记录
+      if(this.check){
+        axios
+            .get(
+                "http://localhost:8081/user/addUserQuery?userid=" + this.user.id
+                + "&query=" + this.search_word
+            )
+            .then((response) => (console.log(response)));
+      }
+
+      if (this.info.data&&this.info.data.count!=0) {
+        this.imgAndCaption = []
+        this.recordsNum = this.info.data.count;
+        for (let i = 0; i < this.info.data.data.length; i++) {
+          this.imgAndCaption.push({
+            id:this.info.data.data[i].id,
+            POLICY_TITLE: this.info.data.data[i].policyTitle,
+            PUB_AGENCY:this.info.data.data[i].pubAgency,
+            PUB_TIME:this.info.data.data[i].pubTime,
+            POLICY_TYPE:this.info.data.data[i].policyType,
+            POLICY_BODY:this.info.data.data[i].policyBody,
+          });
+        }
+      } else {
+        this.imgAndCaption = [];
+        this.recordsNum = 0;
+      }
+    },
+
     bodyScale() {
       let t = window.devicePixelRatio   // 获取下载的缩放 125% -> 1.25    150% -> 1.5
       if (!!window.ActiveXObject || "ActiveXObject" in window) {
@@ -1002,14 +1075,24 @@ export default {
     async handleCurrentChange(val) {
       this.loading=true;
       let outer = this;
-      await axios
-          .get(
-              "http://localhost:8081/bm25/search_condition?keyword=" +
-              this.search_word + "&tableName=" + this.tableName +
-              "&pageNum=" +val
-          )
-          .then((response) => {outer.info = response.data;this.loading=false;});
-      if (this.info.data.count!=0) {
+      if(this.place!='全部'){
+        await axios
+            .get(
+                "http://localhost:8081/bm25/search_condition?keyword=" +
+                this.search_word + "&tableName=" + this.tableName +
+                "&pageNum="+val + "&province=" + this.place +"&type=" + this.type+"&year="+this.time
+            )
+            .then((response) => (outer.info = response.data));
+      }else{
+        await axios
+            .get(
+                "http://localhost:8081/bm25/search_condition?keyword=" +
+                this.search_word + "&tableName=" + this.tableName +
+                "&pageNum="+val + "&province=" +"&type=" + this.type+"&year="+this.time
+            )
+            .then((response) => (outer.info = response.data));
+      }
+      if (this.info.data&&this.info.data.count!=0) {
         this.imgAndCaption = []
         this.recordsNum = this.info.data.count;
         for (let i = 0; i < this.info.data.data.length; i++) {
@@ -1074,7 +1157,6 @@ export default {
     //获取热门
     async getHot(){
       let outer = this;
-
       await axios
           .get(
               "http://localhost:8081/bm25/hot"

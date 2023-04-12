@@ -36,12 +36,12 @@
     </div>
     <!--    header -->
     <!--    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">-->
-    <div class="table-wrapper" style="background-color: transparent">
-    <el-menu mode="horizontal"  style="background-color: transparent;margin-top: 1%" >
-      <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>
-      <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>
-      <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger">政务公开</el-menu-item>
-    </el-menu>
+    <div class="table-wrapper" style="background-color: transparent;height: 50px">
+<!--    <el-menu mode="horizontal"  style="background-color: transparent;margin-top: 1%" >-->
+<!--      <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>-->
+<!--      <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>-->
+<!--      <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger">政务公开</el-menu-item>-->
+<!--    </el-menu>-->
     </div>
 
 
@@ -378,6 +378,7 @@ el-menu{
 *{
   margin: 0;
 }
+
 .back{
   position: absolute;
   top:4%;
@@ -385,9 +386,6 @@ el-menu{
   margin: 0px;
   z-index: -1;
 }
-
-
-
 
 /**表格背景透明 */
 //透明化整体

@@ -9,7 +9,7 @@
             <img  src="~@/assets/img.png" style="width:200px">
           </div>
           <h3 class="login-title">注册</h3>
-            <el-form-item label="账号" prop="username" >
+            <el-form-item label="账号" prop="username">
               <el-input
                   type="text"
                   placeholder="请输入用户名"
@@ -29,7 +29,7 @@
               <el-input
                   type="password"
                   placeholder="请再次输入密码"
-                  v-model="otherPassword"
+                  v-model="form.otherPassword"
               ></el-input>
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
@@ -46,27 +46,44 @@
                   v-model="form.phone"
               ></el-input>
             </el-form-item>
-            <el-form-item label="地址" prop="address">
-              <el-input
-                  type="text"
-                  placeholder="请输入地址"
-                  v-model="form.address"
-              ></el-input>
+          <el-form-item label="年龄" prop="age">
+            <el-input
+                type="text"
+                placeholder="请输入年龄"
+                v-model="form.age"
+            ></el-input>
+          </el-form-item>
+            <el-form-item label="领域" prop="career">
+<!--              <el-input-->
+<!--                  type="text"-->
+<!--                  placeholder="请输入职业"-->
+<!--                  v-model="form.career"-->
+<!--              ></el-input>-->
+              <el-select v-model="form.career" placeholder="请选择">
+                <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="职业" prop="career">
-              <el-input
-                  type="text"
-                  placeholder="请输入职业"
-                  v-model="form.career"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="年龄" prop="age">
-              <el-input
-                  type="text"
-                  placeholder="请输入年龄"
-                  v-model="form.age"
-              ></el-input>
-            </el-form-item>
+          <el-form-item label="地区" prop="address">
+<!--            <el-input-->
+<!--                type="text"-->
+<!--                placeholder="请输入地址"-->
+<!--                v-model="form.address"-->
+<!--            ></el-input>-->
+            <el-select v-model="form.address" placeholder="请选择">
+              <el-option
+                  v-for="item in provinces"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
 
           <!-- <el-button id="login_button" type="primary" @click="submitForm('form')">登录</el-button> -->
           <el-button id="login_button" type="primary" @click="submitForm()"
@@ -96,11 +113,60 @@ export default {
   name: "Login",
   data() {
     return {
-      otherPassword: "",
+      options: [{
+        value: '医疗',
+        label: '医疗'
+      }, {
+        value: '农业',
+        label: '农业'
+      }, {
+        value: '金融',
+        label: '金融'
+      }, {
+        value: '政治',
+        label: '政治'
+      }, {
+        value: '体育',
+        label: '体育'
+      }],
+
+      provinces: [{value: '北京市',label: '北京市'},
+    {value: '上海市',label: '上海市'},
+    {value: '天津市',label: '天津市'},
+    {value: '重庆市',label: '重庆市'},
+    {value: '河北省',label: '河北省'},
+    {value: '山西省',label: '山西省'},
+    {value: '黑龙江省',label: '黑龙江省'},
+    {value: '吉林省',label: '吉林省'},
+    {value: '辽宁省',label: '辽宁省'},
+    {value: '江苏省',label: '江苏省'},
+    {value: '浙江省',label: '浙江省'},
+    {value: '安徽省',label: '安徽省'},
+    {value: '福建省',label: '福建省'},
+    {value: '江西省',label: '江西省'},
+    {value: '山东省',label: '山东省'},
+    {value: '河南省',label: '河南省'},
+    {value: '湖北省',label: '湖北省'},
+    {value: '湖南省',label: '湖南省'},
+    {value: '广东省',label: '广东省'},
+    {value: '海南省',label: '海南省'},
+    {value: '四川省',label: '四川省'},
+    {value: '贵州省',label: '贵州省'},
+    {value: '云南省',label: '云南省'},
+    {value: '陕西省',label: '陕西省'},
+    {value: '甘肃省',label: '甘肃省'},
+    {value: '青海省',label: '青海省'},
+    {value: '内蒙古自治区',label: '内蒙古自治区'},
+    {value: '广西壮族自治区',label: '广西壮族自治区'},
+    {value: '西藏自治区',label: '西藏自治区'},
+    {value: '宁夏回族自治区',label: '宁夏回族自治区'},
+    {value: '新疆维吾尔自治区',label: '新疆维吾尔自治区'},],
+
       form: {
         username: "",
         password: "",
         email: "",
+        otherPassword: "",
         phone: "",
         address: "",
         career: "",
@@ -109,6 +175,13 @@ export default {
       },
       rules: {
         username: [
+          {
+            required: true,
+            message: "请输入用户名",
+            trigger: "blur",
+          },
+        ],
+        address: [
           {
             required: true,
             message: "请输入用户名",
@@ -124,7 +197,29 @@ export default {
           // ,
           { validator: validPassword, trigger: "blur" },
         ],
+        otherPassword:[
+          {
+            required: true,
+            message: "请确认密码",
+            trigger: "blur",
+          }
+        ],
+        career: [
+          {
+            required: true,
+            message: "请选择领域",
+            trigger: "blur",
+          }
+        ]
       },
+      address: [
+        {
+          required: true,
+          message: "请选择地区",
+          trigger: "blur",
+        }
+      ],
+
     };
   },
   created() {
@@ -166,9 +261,7 @@ export default {
     submitForm() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          console.log(this.form.password);
-          console.log(this.otherPassword);
-          if (this.form.password != this.otherPassword) {
+          if (this.form.password != this.form.otherPassword) {
             this.$message({
               message: "密码不一致，请重新输入",
               type: "warning",
@@ -209,7 +302,7 @@ export default {
           }
         } else {
           this.$message({
-            message: "用户名或密码错误",
+            message: "请检查注册信息",
             type: "warning",
           });
           return false;

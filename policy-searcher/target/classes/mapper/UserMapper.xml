@@ -9,7 +9,8 @@
     </select>
 
     <insert id="insertOne" parameterType="com.searchengine.entity.User">
-        insert into user(username,password) values(#{username},#{password})
+        insert into user(username,password,age,career,email,phone,sex,address)
+        values(#{username},#{password}, #{age},#{career},#{email},#{phone},#{sex},#{address})
     </insert>
 
     <select id="queryAllNodesByUsername" resultType="java.lang.Integer">
