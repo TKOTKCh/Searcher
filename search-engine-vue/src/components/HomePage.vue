@@ -11,7 +11,8 @@
             trigger="click"
             content="将来放关于用户的信息。"
         >
-          <el-button slot="reference" icon="el-icon-user" circle style="margin-right:10px;margin-top: 10px;float: right"> </el-button>
+          <el-button v-if="check" slot="reference" icon="el-icon-user-solid" circle style="margin-right:10px;margin-top: 10px;float: right"> </el-button>
+          <el-button v-if="!check"slot="reference" icon="el-icon-user" circle style="margin-right:10px;margin-top: 10px;float: right"> </el-button>
           <!--用户信息 -->
           <div v-if="check">
             欢迎回来！<span style="color: #55ab41">{{ user.username }}</span>

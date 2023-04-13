@@ -50,7 +50,11 @@
               trigger="click"
               content="将来放关于用户的信息。"
           >
-            <el-button slot="reference" icon="el-icon-user" circle
+            <el-button v-if="check" slot="reference"  icon="el-icon-user-solid" circle
+                       style="margin-top: 25%;">
+            </el-button>
+
+            <el-button v-if="!check" slot="reference"  icon="el-icon-user" circle
                        style="margin-top: 25%">
             </el-button>
             <!--用户信息 -->
@@ -307,7 +311,7 @@
 
                   </div>
                 </div>
-                <div v-if="imgAndCaption.length == 0">
+                <div v-if="imgAndCaption.length == 0&&firstload" >
                   <div style="display: flex; margin-bottom: 15px">
                     <div>
                       <h1>
@@ -492,7 +496,7 @@
                 <el-pagination
                     background
                     @current-change="handleCurrentChange"
-                    :current-page="pageNum"
+                    :current-page.sync="pageNum"
                     :page-size="10"
                     layout="prev, pager, next, jumper"
                     :total="recordsNum"
@@ -573,11 +577,12 @@ export default {
       imgAndCaption1: [],
       relatedWord: [],
       pageNum: 1,
-      recordsNum: 0,
+      recordsNum: '',
       picture_text: 1,
       picTopic1: false,
       addToFavoritedialogVisible: false,
-      timer: ''
+      timer: '',
+      firstload:false,
     };
   },
   created() {
@@ -864,6 +869,7 @@ export default {
             )
             .then((response) => (outer.info = response.data));
       }
+
       if (this.info.data&&this.info.data&&this.info.data.count!=0) {
         this.imgAndCaption = []
         this.recordsNum = this.info.data.count;
@@ -1022,6 +1028,7 @@ export default {
         this.recordsNum = 0;
       }
       this.loading=false;
+      this.firstload=true;
     },
 
     bodyScale() {

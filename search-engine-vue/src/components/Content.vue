@@ -49,7 +49,10 @@
             trigger="click"
             content="将来放关于用户的信息。"
         >
-          <el-button slot="reference" icon="el-icon-user" circle
+          <el-button v-if="check" slot="reference" icon="el-icon-user-solid" circle
+                     style="margin-top: 25%">
+          </el-button>
+          <el-button v-if="!check" slot="reference" icon="el-icon-user" circle
                      style="margin-top: 25%">
           </el-button>
           <!--用户信息 -->
