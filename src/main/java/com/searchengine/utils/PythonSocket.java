@@ -13,12 +13,17 @@ import java.util.List;
 
 public class PythonSocket {
 
+    public static Socket socket=null;
+
+
     public static List<QueryKeyword> getKeyWord(String content){
         Socket socket = null;
         String Code_Adress = "127.0.0.1";
         List<QueryKeyword>result=new LinkedList<>();
         try {
-            socket = new Socket(Code_Adress,9006);
+            if(socket==null){
+                socket=new Socket("127.0.0.1",9006);
+            }
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
             byte[] bytes = new byte[1024];

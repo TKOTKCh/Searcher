@@ -34,11 +34,12 @@ public class SearchServiceImpl implements SearchService {
     public static HashSet<String> stopWordsSet;
     public static Map<String,String>provinces_map;
     public static Map<String,String>brief_pro_map;
+
     String []provinces={"黑龙江省","吉林省","辽宁省","上海市","江苏省","浙江省","安徽省","福建省","江西省","山东省","台湾省","北京市","天津市","山西省","河北省","内蒙古自治区","河南省","湖北省","湖南省","广东省","广西壮族自治区","海南省","香港特别行政区","澳门特别行政区","四川省","贵州省","云南省","重庆市","西藏自治区","陕西省","甘肃省","青海省","宁夏回族自治区","新疆维吾尔自治区"};
     String []brief_pro={"黑龙江","吉林","辽宁","上海","江苏","浙江","安徽","福建","江西","山东","台湾","北京","天津","山西","河北","内蒙古","河南","湖北","湖南","广东","广西","海南","香港","澳门","四川","贵州","云南","重庆","西藏","陕西","甘肃","青海","宁夏","新疆"};
     //    String []professions={""};
     @PostConstruct
-    public void init() {
+    public void init() throws IOException {
         List<Segment> segmentations = segmentDao.getAllSegByTableName("segment_datatitle");
         this.trie = new Trie();
         for (Segment segmentation : segmentations) {
@@ -54,6 +55,7 @@ public class SearchServiceImpl implements SearchService {
             String fileName="/jieba/datatitle.txt";
             loadIDFMap(idfMap, this.getClass().getResourceAsStream(fileName));
         }
+
 //        if(provinces_map==null||brief_pro_map==null){
 //            provinces_map=new LinkedHashMap<String,String>();
 //            brief_pro_map=new LinkedHashMap<String,String>();
@@ -118,7 +120,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Map<String , Object> getDataByScore(String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String position,String profession) {
+    public Map<String , Object> getDataByScore(String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String position,String profession) throws IOException {
 //        String segmentname = "segment_" + tableName;
 //        int offset = pageSize * (pageNum - 1);
 //        StringBuilder sb = new StringBuilder();
@@ -237,6 +239,7 @@ public class SearchServiceImpl implements SearchService {
 
 //        JiebaSegmenter segmenter = new JiebaSegmenter();
 //        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+
         List<QueryKeyword> qks= PythonSocket.getKeyWord(content);
         if(position!=null&&!position.equals("")){
             int flag=0;

@@ -4,6 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.search-engine</groupId>
     <artifactId>spring-boot</artifactId>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-boot</name>
     <description>Demo project for Spring Boot</description>
@@ -128,9 +129,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
+
                 <version>2.3.7.RELEASE</version>
                 <configuration>
-                    <mainClass>com.searchengine.springboot.Application</mainClass>
+
+                    <mainClass>com.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -142,6 +146,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>server</finalName>
     </build>
 
     <repositories>

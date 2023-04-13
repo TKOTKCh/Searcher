@@ -6,7 +6,7 @@
 <mapper namespace="com.searchengine.dao.AdminDao">
 
     <select id="queryOne" resultType="com.searchengine.entity.User">
-        select * from admin where username = #{username}
+        select * from `admin` where username = #{username}
     </select>
 
 </mapper>
