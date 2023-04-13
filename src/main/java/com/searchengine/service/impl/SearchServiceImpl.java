@@ -336,12 +336,15 @@ public class SearchServiceImpl implements SearchService {
 
         int startIndex = pageSize * (pageNum - 1);
         int endIndex = startIndex + pageSize;
-        List<Data> dataResult;
-        if (datas.size() > endIndex) {
-            dataResult = datas.subList(startIndex, endIndex);
-        } else {
-            dataResult = datas.subList(startIndex, datas.size()-1);
+        List<Data> dataResult=new LinkedList<>();
+        if(datas.size()!=0){
+            if (datas.size() > endIndex) {
+                dataResult = datas.subList(startIndex, endIndex);
+            } else {
+                dataResult = datas.subList(startIndex, datas.size()-1);
+            }
         }
+
         System.out.println();
         Map<String , Object> result = new HashMap<>();
         result.put("data", dataResult);

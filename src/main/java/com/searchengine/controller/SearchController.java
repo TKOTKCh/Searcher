@@ -44,7 +44,8 @@ public class SearchController {
 
         return Result.success(dataByScore);
     }
-
+//    @RequestParam("position")String position,
+//    @RequestParam("profession")String profession
     @GetMapping("/search_condition")
     public Result searchBySegmentAndConditions(
             @Param("tableName")String tableName,
@@ -52,11 +53,13 @@ public class SearchController {
             @RequestParam("pageNum") int pageNum,
             @RequestParam("province") String province,
             @RequestParam("type") String type,
-            @RequestParam("year") String year
+            @RequestParam("year") String year,
+            @RequestParam("position")String position,
+            @RequestParam("profession")String profession
     ) throws IOException{
         System.out.println("here");
 //        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year,"天津","教育");
+        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year,position,profession);
 
         return Result.success(dataByScore);
     }
