@@ -205,6 +205,80 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     }
 
     @Override
+    public boolean addData(Integer policyId,
+                           String policyTitle,
+                           String policyGrade,
+                           String pubAgencyId,
+                           String pubAgency,
+                           String pubAgencyFullname,
+                           String pubNumber,
+                           String pubTime,
+                           String policyType,
+                           String policyBody,
+                           String province,
+                           String city,
+                           String policySource,
+                           String pubTimeYear){
+//        int id=dataDao.getNumberOfData()+1;
+//        String content=policyId+policyTitle+policyGrade+pubAgencyId+pubAgency+pubAgencyFullname+pubNumber+pubTime+policyType+policyBody+province+city+
+//                policySource+pubTimeYear;
+//        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+//        List<Keyword> keywords = tfidfAnalyzer.analyze(content,20,"datatitle");
+//        Map<String, DataSegment> segmentMap = new HashMap<>();
+//        // 获取到所有的 segment 分词
+//        List<Segment> segments = segmentService.getAllSeg("segment_datatitle");
+//
+//        // 将分词按照 word->id 的方式放入 map
+//        // 其实就是键值对，不过这里的Key是word，因为我们建立的是倒排索引
+//        Map<String, Integer> wordToId = new HashMap<>();
+//        for (Segment seg : segments) {
+//            wordToId.put(seg.getWord(), seg.getId());
+//        }
+//        for (SegToken segToken : segTokens) {
+//            String seg = segToken.word;
+//
+//
+//            // 不在 segment 表中的分词，去掉
+//            if (!wordToId.containsKey(seg)) continue;
+//
+//            int segId = wordToId.get(seg);
+//            int dataId = id;
+//            double tfidf = 0;
+//
+//            // 如果是 tfidf 值最高的topn个关键词之一，就将 tf 值保存起来
+//            for (Keyword v : keywords) {
+//                if (v.getName().equals(seg)) {
+//                    tfidf = v.getTfidfvalue();
+//                    break;
+//                }
+//            }
+//            if (tfidf==0){
+//                continue;
+//            }
+//            if (!segmentMap.containsKey(seg)){
+//                int count = 1;
+//                double tf;
+//                double idf;
+//                if (TFIDFAnalyzer.idfMap.containsKey(seg)){
+//                    idf=TFIDFAnalyzer.idfMap.get(seg);
+//                    tf=tfidf/idf;
+//                }else{
+//                    idf=TFIDFAnalyzer.idfMedian;
+//                    tf=tfidf/idf;
+//                }
+//                double L=content.length()*1.0/totallength;
+//                double bm=bm25.cal(idf,tf,L);
+//                segmentMap.put(seg, new DataSegment(dataId, segId, tf,idf,bm, count));
+//            } else {
+//                DataSegment dataSegment = segmentMap.get(seg);
+//                int count = dataSegment.getCount();
+//                dataSegment.setCount(++count);
+//                segmentMap.put(seg, dataSegment);
+//            }
+//        }
+        return true;
+    }
+    @Override
     public List<Data> getSomeDatas(int limit, int offset) {
         return dataDao.getSomeDatas(limit, offset);
     }

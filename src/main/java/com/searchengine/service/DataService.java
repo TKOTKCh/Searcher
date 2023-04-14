@@ -33,4 +33,20 @@ public interface DataService {
     boolean updateHotdata();
     boolean judgeUpdate(double currentTime);
     boolean addCount(Integer id);
+    boolean addData(
+                    Integer policyId,
+                    String policyTitle,
+                    String policyGrade,
+                    String pubAgencyId,
+                    String pubAgency,
+                    String pubAgencyFullname,
+                    String pubNumber,
+                    String pubTime,
+                    String policyType,
+                    String policyBody,
+                    String province,
+                    String city,
+                    String policySource,
+                    String pubTimeYear
+                    );
 }

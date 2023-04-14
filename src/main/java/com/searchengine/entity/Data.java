@@ -3,6 +3,10 @@ package com.searchengine.entity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @lombok.Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,14 +26,47 @@ public class Data implements Comparable<Data>{
     private String province;
     private String city;
     private String policySource;
-
+    private String pubTimeYear;
     private Integer count=0;//政策在对应搜索词中匹配到的关键词个数
     private double bm25=0;//政策在对应搜索词中的bm25值
     private double score=0.0;
 
+    public static Map<String,Integer>hasht=new LinkedHashMap<String,Integer>() {{
+        put("国家级", 3);
+        put("省级", 2);
+        put("市级", 1);
+        put("区县级", 0);
+    }};;
     @Override
     public int compareTo(Data o)
     {
-        return this.score>o.score?-1:(this.score==o.score?0:1);
+        if(this.count==o.count){
+            if(this.bm25==this.bm25){
+                String[]list1=this.pubTime.split("/");
+                String[]list2=o.pubTime.split("/");
+                for(int i=0;i<list1.length;i++){
+                    int temp1=Integer.parseInt(list1[i]);
+                    int temp2=Integer.parseInt(list2[i]);
+                    if(temp1>temp2){
+                        return -1;
+                    }
+                    if(temp1<temp2){
+                        return 1;
+                    }
+                }
+                int level1=hasht.get(this.policyGrade);
+                int level2=hasht.get(o.policyGrade);
+                if(level1==level2){
+                    return 0;
+                }else{
+                    return level1>level2?-1:1;
+                }
+            }else{
+                return this.bm25>o.bm25?-1:1;
+            }
+        }else{
+            return this.count>o.count?-1:1;
+        }
+
     }
 }

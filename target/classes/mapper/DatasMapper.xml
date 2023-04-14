@@ -94,7 +94,7 @@
     </update>
     <select id="getDataRelevance" resultType="com.searchengine.entity.Data">
 
-        SELECT data.*,tb1.count, tb1.bm25 FROM(
+        SELECT data.*,tb1.count as count, tb1.bm25 as bm25 FROM(
                          SELECT data_id,COUNT(data_id) as count ,sum(bm25) as bm25 from
                              (
                                  ${sql}
@@ -105,7 +105,7 @@
         where tb1.data_id=data.id;
     </select>
     <select id="getDataRelevanceLimit" resultType="com.searchengine.entity.Data">
-    SELECT data.*,tb2.count, tb2.bm25 FROM(
+    SELECT data.*,tb2.count as count, tb2.bm25 as bm25 FROM(
         SELECT data_id,COUNT(data_id) as count ,sum(bm25) as bm25
             from ( ${sql1} ) tb1
             GROUP BY data_id ORDER BY COUNT(data_id) desc,SUM(bm25) desc Limit 1000 )

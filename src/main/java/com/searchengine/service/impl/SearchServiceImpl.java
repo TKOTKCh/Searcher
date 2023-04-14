@@ -41,10 +41,12 @@ public class SearchServiceImpl implements SearchService {
     public static HashSet<String> stopWordsSet;
     public static Map<String,String>provinces_map;
     public static Map<String,String>brief_pro_map;
+    public static Map<String,Integer>profession_map;
+    public static JiebaSegmenter segmenter;
 
     String []provinces={"黑龙江省","吉林省","辽宁省","上海市","江苏省","浙江省","安徽省","福建省","江西省","山东省","台湾省","北京市","天津市","山西省","河北省","内蒙古自治区","河南省","湖北省","湖南省","广东省","广西壮族自治区","海南省","香港特别行政区","澳门特别行政区","四川省","贵州省","云南省","重庆市","西藏自治区","陕西省","甘肃省","青海省","宁夏回族自治区","新疆维吾尔自治区"};
     String []brief_pro={"黑龙江","吉林","辽宁","上海","江苏","浙江","安徽","福建","江西","山东","台湾","北京","天津","山西","河北","内蒙古","河南","湖北","湖南","广东","广西","海南","香港","澳门","四川","贵州","云南","重庆","西藏","陕西","甘肃","青海","宁夏","新疆"};
-    //    String []professions={""};
+    String []professions={"农业","工商业","科技","教育","文化","民生"};
     @PostConstruct
     public void init() throws IOException {
         List<Segment> segmentations = segmentDao.getAllSegByTableName("segment_datatitle");
@@ -62,15 +64,24 @@ public class SearchServiceImpl implements SearchService {
             String fileName="/jieba/datatitle.txt";
             loadIDFMap(idfMap, this.getClass().getResourceAsStream(fileName));
         }
+        if(profession_map==null){
+            profession_map=new LinkedHashMap<>();
+            for(int i=0;i<professions.length;i++){
+                profession_map.put(professions[i],1);
+            }
+        }
+        if(provinces_map==null||brief_pro_map==null){
+            provinces_map=new LinkedHashMap<String,String>();
+            brief_pro_map=new LinkedHashMap<String,String>();
+            for(int i=0;i<provinces.length;i++){
+                provinces_map.put(provinces[i],brief_pro[i]);
+                brief_pro_map.put(brief_pro[i],provinces[i]);
+            }
+        }
 
-//        if(provinces_map==null||brief_pro_map==null){
-//            provinces_map=new LinkedHashMap<String,String>();
-//            brief_pro_map=new LinkedHashMap<String,String>();
-//            for(int i=0;i<provinces.length;i++){
-//                provinces_map.put(provinces[i],brief_pro[i]);
-//                brief_pro_map.put(brief_pro[i],provinces[i]);
-//            }
-//        }
+        if(segmenter==null){
+            segmenter = new JiebaSegmenter();
+        }
     }
 
     // 搜索业务
@@ -246,25 +257,32 @@ public class SearchServiceImpl implements SearchService {
         content=content.replace("政策","");
 
         String position = null;
-        if (id != null && id != "") {
+        String profession=null;
+        if (id != null && !id.equals("") ) {
             String str = (String) redisUtil.get("login-userObj-" + id);
             User user = JSONObject.parseObject(str, User.class);
             position = user.getAddress();
+            profession=user.getCareer();
+        }
+        if(content.equals("")){
+            Map<String , Object> result = new HashMap<>();
+            result.put("data", null);
+            result.put("count", 0);
         }
 
-
-//        JiebaSegmenter segmenter = new JiebaSegmenter();
-//        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
-
         List<QueryKeyword> qks= PythonSocket.getKeyWord(content);
+        if(qks.size()==0){
+            List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+            for(SegToken seg:segTokens){
+                qks.add(new QueryKeyword(seg.word.trim(),1));
+            }
+        }
         if(position!=null&&!position.equals("")){
             int flag=0;
-            for(int i=0;i<provinces.length;i++){
-                if(content.contains(provinces[i])||content.contains(brief_pro[i])){
+            for(QueryKeyword qk:qks){
+                String word=qk.getWord();
+                if(brief_pro_map.containsKey(word)||provinces_map.containsKey(word)){
                     flag=1;
-                    if(position!=provinces[i]&&position!=brief_pro[i]){
-                        qks.add(new QueryKeyword(position,0.1));
-                    }
                     break;
                 }
             }
@@ -272,9 +290,22 @@ public class SearchServiceImpl implements SearchService {
                 qks.add(new QueryKeyword(position,0.3));
             }
         }
-//        if(profession!=null&&!profession.equals("")){
-//            qks.add(new QueryKeyword(profession,0.3));
-//        }
+        if(profession!=null&&!profession.equals("")){
+            String[] professionList=profession.split("#");
+            int flag=0;
+            for(QueryKeyword qk:qks){
+                String word=qk.getWord();
+                if(profession_map.containsKey(word)){
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag==0){
+                for(String str:professionList){
+                    qks.add(new QueryKeyword(str,0.3));
+                }
+            }
+        }
         boolean flag = true;
 
         //检测关键词是否已经出现过，针对北京北京北京上海这样的搜索记录等价于北京上海
@@ -299,11 +330,6 @@ public class SearchServiceImpl implements SearchService {
             if(stopWordsSet.contains(segword)){
                 continue;
             }
-//            if(idfMap.containsKey(segword)){
-//                if (idfMap.get(segword)<=1.5){
-//                    continue;
-//                }
-//            }
             // 获取segId
             int segId = segment.getId();
             if (seghasht.containsKey(segId)) {
@@ -360,7 +386,7 @@ public class SearchServiceImpl implements SearchService {
                 dataResult = datas.subList(startIndex, datas.size()-1);
             }
         }
-
+        Collections.sort(dataResult);
         System.out.println();
         Map<String , Object> result = new HashMap<>();
         result.put("data", dataResult);

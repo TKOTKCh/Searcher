@@ -18,6 +18,7 @@ com\searchengine\common\Constants.class
 com\searchengine\service\impl\DataServiceImpl.class
 com\searchengine\controller\DataManagementController.class
 com\searchengine\dao\StatisticDao.class
+com\searchengine\entity\Data$1.class
 com\searchengine\entity\StatisticHistory.class
 com\searchengine\entity\UserQuery.class
 com\searchengine\controller\RecordController$4.class

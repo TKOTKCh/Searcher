@@ -40,6 +40,8 @@ public interface DataDao extends BaseMapper<Data> {
 
     //增加点击量
     boolean addCount(@Param("id")Integer id);
+
+    boolean addData(Data data);
     //获得热门数据
     List<Data> getHotdata();
 
