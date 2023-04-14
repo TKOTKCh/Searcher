@@ -37,13 +37,13 @@ public class SearchController {
     private DataService dataService;
 
     // 通过分词的方式去搜索
-    @GetMapping("/search")
-    public Result searchBySegment(@Param("tableName")String tableName, @RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) throws IOException {
-//        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,null,null,null,null,null);
-
-        return Result.success(dataByScore);
-    }
+//    @GetMapping("/search")
+//    public Result searchBySegment(@Param("tableName")String tableName, @RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) throws IOException {
+////        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
+//        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,null,null,null,null,null);
+//
+//        return Result.success(dataByScore);
+//    }
 //    @RequestParam("position")String position,
 //    @RequestParam("profession")String profession
     @GetMapping("/search_condition")
@@ -54,12 +54,10 @@ public class SearchController {
             @RequestParam("province") String province,
             @RequestParam("type") String type,
             @RequestParam("year") String year,
-            @RequestParam("position")String position,
-            @RequestParam("profession")String profession
+            @RequestParam("uid") String uid
     ) throws IOException{
-        System.out.println("here");
 //        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year,position,profession);
+        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid);
 
         return Result.success(dataByScore);
     }

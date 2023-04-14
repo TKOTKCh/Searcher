@@ -7,8 +7,10 @@ import com.searchengine.dao.SegmentDao;
 import com.searchengine.entity.Data;
 import com.searchengine.entity.QueryKeyword;
 import com.searchengine.entity.Segment;
+import com.searchengine.entity.User;
 import com.searchengine.service.SearchService;
 import com.searchengine.utils.PythonSocket;
+import com.searchengine.utils.RedisUtil_db0;
 import com.searchengine.utils.Trie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class SearchServiceImpl implements SearchService {
 
     @Autowired
     private SegmentDao segmentDao;
+
+    @Autowired
+    private RedisUtil_db0 redisUtil;
 
     private Trie trie;
     public static HashMap<String,Double> idfMap;
@@ -120,7 +125,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Map<String , Object> getDataByScore(String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String position,String profession) throws IOException {
+    public Map<String , Object> getDataByScore(String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id) throws IOException {
 //        String segmentname = "segment_" + tableName;
 //        int offset = pageSize * (pageNum - 1);
 //        StringBuilder sb = new StringBuilder();
@@ -233,9 +238,13 @@ public class SearchServiceImpl implements SearchService {
         int offset = pageSize * (pageNum - 1);
         StringBuilder sb = new StringBuilder();
 
+
         content=content.replace("医保","医疗保险");
         content=content.replace("环保","环境保护");
         content=content.replace("政策","");
+
+        User user = (User) redisUtil.get("login-userObj-id");
+        String position = user.getAddress();
 
 //        JiebaSegmenter segmenter = new JiebaSegmenter();
 //        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
