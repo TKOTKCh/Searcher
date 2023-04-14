@@ -1,5 +1,7 @@
 package com.searchengine.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
 import com.searchengine.dao.DataDao;
@@ -243,8 +245,13 @@ public class SearchServiceImpl implements SearchService {
         content=content.replace("环保","环境保护");
         content=content.replace("政策","");
 
-        User user = (User) redisUtil.get("login-userObj-id");
-        String position = user.getAddress();
+        String position = null;
+        if (id != null && id != "") {
+            String str = (String) redisUtil.get("login-userObj-" + id);
+            User user = JSONObject.parseObject(str, User.class);
+            position = user.getAddress();
+        }
+
 
 //        JiebaSegmenter segmenter = new JiebaSegmenter();
 //        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);

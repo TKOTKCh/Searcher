@@ -37,6 +37,7 @@ com\searchengine\utils\SocketUtil.class
 com\searchengine\common\Result.class
 com\searchengine\entity\DataSegment.class
 com\searchengine\entity\RecordSeg.class
+com\searchengine\common\RespEnum.class
 com\searchengine\controller\SegmentationController.class
 com\searchengine\dao\DataDao.class
 com\searchengine\utils\Trie.class
