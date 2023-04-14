@@ -27,7 +27,12 @@ public class Result {
         return new Result(code,message,null);
     }
 
+
     public static Result fail(){
         return new Result(Constants.CODE_500,"系统错误",null);
+    }
+
+    public static Result fail(RespEnum tokenError) {
+        return new Result(tokenError.getCode(), tokenError.getMessage(),null);
     }
 }

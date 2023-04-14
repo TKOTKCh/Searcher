@@ -1,5 +1,6 @@
 package com.searchengine.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +16,7 @@ import com.searchengine.utils.JwtUtil;
 import com.searchengine.utils.RedisUtil_db0;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,9 +46,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     private RedisUtil_db0 redisUtil;
 
     @Override
-    public String checkToken(String username) {
-        User user = userDao.queryOne(username);
-        String token = (String) redisUtil.get("login" + user.getId());
+    public String checkToken(String id) {
+        String token = (String) redisUtil.get("login-token-" + id);
         return token;
     }
 
@@ -83,7 +84,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             rs.put("id", id);
             rs.put("message", "success");
 
-//            redisUtil.set("login" + detailsUser.getId(), jwt, 60 * 60 * 6); //6小时
+            String userJson = JSONObject.toJSONString(detailsUser);
+            redisUtil.set("login-userObj-" + detailsUser.getId(), userJson, 60 * 60 * 6); //6小时
+            redisUtil.set("login-token-" + detailsUser.getId(), jwt, 60 * 60 * 6); //6小时
+
             return rs;
         } else {
             rs.put("message", "failure");
