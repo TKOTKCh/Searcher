@@ -15,6 +15,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -64,9 +65,26 @@ public class MyRedisConfig {
         return poolConfig;
     }
 
-    @Bean(name = "redisTemplate0")
+    @Bean
     public StringRedisTemplate getRedisTemplate7(){
         return getStringRedisTemplate(db0);
+    }
+
+    @Bean(name = "redisTemplate0")
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+
+        //key序列化
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        //value序列化
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        //hash类型value序列化
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        //注入连接工厂
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        return redisTemplate;
     }
 
     @Bean(name = "redisTemplate1")

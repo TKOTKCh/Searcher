@@ -1,5 +1,6 @@
 package com.searchengine.dao;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.searchengine.entity.Data;
 import com.searchengine.entity.Record;
@@ -52,4 +53,6 @@ public interface DataDao extends BaseMapper<Data> {
     List<Data>getDataRelevanceLimit(@Param("sql1")String sql1,@Param("sql2")String sql2);
 
     int getNumberOfData();
+
+    void increDataByID(@Param("id") String id);
 }

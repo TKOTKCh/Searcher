@@ -57,7 +57,9 @@ public class SearchController {
             @RequestParam("uid") String uid
     ) throws IOException{
 //        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid);
+        Map<String ,Object> dataByScore = searchService.getDataByScore(
+                tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid
+        );
 
         return Result.success(dataByScore);
     }

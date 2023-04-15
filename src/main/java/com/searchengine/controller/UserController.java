@@ -146,7 +146,5 @@ public class UserController {
         double time=System.currentTimeMillis();
         userService.addUserQuery(userid,query,time);
         return Result.success();
-
-
     }
 }

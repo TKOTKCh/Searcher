@@ -26,6 +26,11 @@
         update statistic_history set value=#{value} where `key`=#{key}
     </update>
 
+    <update id="increTotalClick">
+        update statistic_history set value=value+1 where `key`='total_click'
+
+    </update>
+
     <select id="getRecordByKey" resultType="com.searchengine.entity.StatisticHistory" >
         select * from statistic_history where `key`=#{key}
     </select>

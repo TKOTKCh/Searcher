@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "statistic") // 一般mybatis plus会根据 类名 找 表名
 @ToString
-public class StatisticHistory {
+public class StatisticHistory implements Serializable {
 
     String key;
     String value;

@@ -9,6 +9,12 @@
         <result column="url" property="url"></result>
         <result column="caption" property="caption"></result>
     </resultMap>
+
+    <update id="increDataByID">
+        update databrief set count=count+1 where id=#{id}
+
+    </update>
+
     <select id="selectAllRecords" resultType="com.searchengine.entity.Record">
         select * from data
     </select>

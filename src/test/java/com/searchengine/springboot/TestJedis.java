@@ -14,7 +14,7 @@ public class TestJedis {
 
     @Test
     public void test() {
-        System.out.println(redisUtil.get("login2")); ;
+        System.out.println(redisUtil.get("zjx")); ;
     }
 
 }

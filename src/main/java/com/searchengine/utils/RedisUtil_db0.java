@@ -1,14 +1,13 @@
 package com.searchengine.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -123,11 +122,26 @@ public class RedisUtil_db0 {
         }
     }
 
+    public boolean setJSON(String key, Object value, long time) {
+        String json = JSONObject.toJSONString(value);
+        try {
+            if (time > 0) {
+                redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+            } else {
+                set(key, value);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * 递增
      * @param key 键
      * @param delta 要增加几(大于0)
-     * @return
+     * @return 增加后的值
      */
     public long incr(String key, long delta) {
         if (delta < 0) {
@@ -528,4 +542,5 @@ public class RedisUtil_db0 {
             return 0;
         }
     }
+
 }

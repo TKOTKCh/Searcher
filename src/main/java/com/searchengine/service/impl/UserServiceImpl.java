@@ -8,20 +8,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.searchengine.dao.StatisticDao;
 import com.searchengine.dao.UserDao;
 import com.searchengine.entity.LoginUser;
-import com.searchengine.entity.StatisticHistory;
 import com.searchengine.entity.TreeNode;
 import com.searchengine.entity.User;
+import com.searchengine.rabbitmq.MQSender;
 import com.searchengine.service.UserService;
 import com.searchengine.utils.JwtUtil;
 import com.searchengine.utils.RedisUtil_db0;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.annotation.Inherited;
 import java.util.*;
 
 @Service
@@ -39,8 +36,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Autowired
     private StatisticService statisticService;
 
-    @Autowired
-    private StatisticDao statisticDao;
 
     @Autowired
     private RedisUtil_db0 redisUtil;
@@ -62,8 +57,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public int register(User user) {
 //        user.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        statisticService.addUserCount();
-        return userDao.insertOne(user);
+        int res = userDao.insertOne(user);
+        statisticService.addOneUserCount();
+        return res;
     }
 
     @Override

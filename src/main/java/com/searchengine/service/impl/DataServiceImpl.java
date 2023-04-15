@@ -1,5 +1,6 @@
 package com.searchengine.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,6 +14,7 @@ import com.searchengine.dao.StatisticDao;
 import com.searchengine.dto.RecordDto;
 import com.searchengine.entity.*;
 import com.searchengine.entity.Record;
+import com.searchengine.rabbitmq.MQSender;
 import com.searchengine.service.RecordSegService;
 import com.searchengine.service.DataService;
 import com.searchengine.service.SegmentService;
@@ -344,13 +346,23 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
         return false;
     }
 
+    @Autowired
+    private MQSender mqSender;
+
     @Override
     //增加点击量
     public boolean addCount(Integer id){
         try {
+            long incr = redisUtil.incr("total-click", 1);
+            StatisticHistory statisticHistory = new StatisticHistory("total_click", String.valueOf(incr) );
+            mqSender.sendClickMsg(JSONObject.toJSONString(statisticHistory));
 
-            dataDao.addCount(id);
-            statisticService.addCurrentClick();
+            String todayDate = statisticService.getTodayDate();
+            long todayClick = redisUtil.incr("click-"+todayDate, 1);
+            StatisticHistory todayClickMsg = new StatisticHistory(todayDate,String.valueOf(todayClick) );
+            mqSender.sendClickMsg(JSONObject.toJSONString(todayClickMsg));
+
+            mqSender.sendDataClickCountMsg(id.toString());
 
             return true;
         } catch (Exception e) {

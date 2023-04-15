@@ -10,7 +10,9 @@ import com.searchengine.service.impl.StatisticService;
 import com.searchengine.utils.RedisUtil_db0;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,15 +21,17 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("statistic")
-public class StatisticController {
+public class StatisticController{
 
     @Autowired
     StatisticService statisticService;
+    @Autowired
+    RedisUtil_db0 redisUtil;
 
 
     @GetMapping("today_click")
     public Result getTodayClick() {
-        StatisticHistory todayClick = statisticService.getTodayClick();
+        StatisticHistory todayClick = (StatisticHistory) redisUtil.get("click-"+statisticService.getTodayDate());
         return Result.success(todayClick);
     }
 
@@ -36,4 +40,6 @@ public class StatisticController {
 
         return Result.success(statisticService.getAllStatistic());
     }
+
+
 }
