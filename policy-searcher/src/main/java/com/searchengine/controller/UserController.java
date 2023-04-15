@@ -1,6 +1,7 @@
 package com.searchengine.controller;
 
 import com.searchengine.common.Constants;
+import com.searchengine.common.RespEnum;
 import com.searchengine.common.Result;
 import com.searchengine.dao.UserDao;
 import com.searchengine.entity.User;
@@ -87,12 +88,12 @@ public class UserController {
     //判断token是否还存在
     @GetMapping(value = "/survival")
     @ResponseBody
-    public Result checkJJwt(@RequestParam("token") String token, @RequestParam("username") String username) {
-        String tokenInRedis = userService.checkToken(username);
+    public Result checkJJwt(@RequestParam("token") String token, @RequestParam("id") String id) {
+        String tokenInRedis = userService.checkToken(id);
         if (token.equals(tokenInRedis)) {
             return Result.success();
         } else {
-            return Result.fail();
+            return Result.fail(RespEnum.TOKEN_ERROR);
         }
     }
 

@@ -116,7 +116,7 @@
           新增政策
         </div>
 
-        <div v-show="curpage==3" style="width: 100%;padding: 20px">
+        <div v-show="curpage==3" style="width: 100%;padding-top: 20px">
           <div class="part1">
             <div  style="display: flex;margin-top: 20px;margin-bottom: 40px">
               <h3 style="font-size: 24px">
@@ -127,7 +127,7 @@
               <div>
                 <el-table
                     :key="Math.random()"
-
+                    height="500"
                     :data="tableData.filter(data => !search || data.username.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 80% ">
                   <el-table-column
@@ -143,11 +143,11 @@
                       prop="sex">
                   </el-table-column>
                   <el-table-column
-                      label="职业"
+                      label="偏好"
                       prop="career">
                   </el-table-column>
                   <el-table-column
-                      label="地区"
+                      label="所在地"
                       prop="address">
                   </el-table-column>
                   <el-table-column
@@ -211,12 +211,12 @@ export default {
     }
   },
   created() {
-    this.user = JSON.parse(window.localStorage.getItem("access"));
+    this.user = JSON.parse(window.localStorage.getItem("admin_access"));
     if (this.user != null) {
       this.check = true;
       console.log(this.user)
     }
-    // this.bodyScale()
+    this.bodyScale()
     this.getUser()
     this.getStatistic()
   },
@@ -309,7 +309,7 @@ export default {
       } else {
         if (t != 1) {   // 如果进行了缩放，也就是不是1
           let c = document.querySelector('body')
-          c.style.zoom = -0.62 * t + 1.60;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
+          c.style.zoom = -0.62 * t + 1.68;   // 就去修改页面的缩放比例，这个公式我自己算的，不准确，勉强。
         }
       }
     },

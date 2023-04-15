@@ -5,7 +5,7 @@ spring:
   resources:
     static-locations: file:${web.upload-path}
   redis:
-    host: 127.0.0.1
+    host: 123.249.41.125
     port: 6379
     database:
       db0: 0

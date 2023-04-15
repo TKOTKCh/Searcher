@@ -68,7 +68,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          <el-form-item label="地区" prop="address">
+          <el-form-item label="所在地" prop="address">
 <!--            <el-input-->
 <!--                type="text"-->
 <!--                placeholder="请输入地址"-->
@@ -114,21 +114,25 @@ export default {
   data() {
     return {
       options: [{
-        value: '医疗',
-        label: '医疗'
-      }, {
         value: '农业',
         label: '农业'
       }, {
-        value: '金融',
-        label: '金融'
+        value: '工商业',
+        label: '工商业'
       }, {
-        value: '政治',
-        label: '政治'
+        value: '科技',
+        label: '科技'
       }, {
-        value: '体育',
-        label: '体育'
-      }],
+        value: '教育',
+        label: '教育'
+      }, {
+        value: '文化',
+        label: '文化'
+      },
+        {
+          value: '民生',
+          label: '民生'
+        }],
 
       provinces: [{value: '北京市',label: '北京市'},
     {value: '上海市',label: '上海市'},
@@ -288,7 +292,7 @@ export default {
                     setTimeout(() => {
                       //设置延迟执行
                       _this.$router.replace({ path: "/login" });
-                    }, 3000);
+                    }, 1000);
                   } else if (message == "failure") {
                     _this.$message({
                       message: "异常错误，请稍后再试",

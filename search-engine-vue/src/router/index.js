@@ -33,7 +33,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     var _this = this;
     if(to.meta.requireAuth ){
-        if(JSON.parse(window.localStorage.getItem("access"))==null){
+        if(JSON.parse(window.localStorage.getItem("admin_access"))==null){
             console.log('没有登录')
             router.push({path: '/ad_login',query: {}})
             next()

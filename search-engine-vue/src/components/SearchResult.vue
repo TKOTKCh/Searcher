@@ -170,6 +170,7 @@
             <div class="input" style="text-align: center;margin-top: 2%;margin-bottom: 2%">
               <!--            :popper-append-to-body="false"-->
               <el-autocomplete v-model="search_word" style=""
+                               maxlength="50"
                                :fetch-suggestions="querySearchAsync" @select="handleSelect"
                                placeholder="请输入搜索内容" prefix-icon="el-icon-search"
                                @keyup.enter.native="search">
@@ -187,10 +188,6 @@
           </div>
         </el-row>
         <el-col
-            v-loading="loading"
-            element-loading-text="拼命加载中"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="rgb(255 255 255)"
         >
           <div style="display: flex;background-color:rgba(203,180,134,.2);height: 60px;margin-bottom: 1%" >
             <el-col :span="2" id="gen">
@@ -219,7 +216,12 @@
             <!-- 搜索结果 -->
 
             <!--          第一类-->
-            <el-col :span="10" v-if="picture_text == 1" v-loading="loading">
+            <el-col :span="10" v-if="picture_text == 1" style="overflow: hidden"
+                    v-loading="loading"
+                    element-loading-text="拼命加载中"
+                    element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgb(255 255 255)"
+            >
               <div style="margin-bottom: 25px;display: flex;
                     font-size: 15px;
                     border-bottom: solid 1px #eee;">
@@ -278,32 +280,14 @@
                   "
                   >
                     <div style="display: flex; align-items: center;width: 900px">
-                      <!-- 收藏按钮 -->
-                      <!--                    <el-button-->
-                      <!--                        @click="addToFavorite(item)"-->
-                      <!--                        style="margin-right: 10px;"-->
-                      <!--                        icon="el-icon-star-off" circle-->
-                      <!--                    ></el-button>-->
-
-
-                      <span class="tag">{{item.POLICY_TYPE}}</span>
-                      <!--                    a标签中 作者本身写的 有匹配的挑战Title-->
-                      <!--                    <a-->
-                      <!--                        :href="item.url"-->
-                      <!--                        target="_blank"-->
-                      <!--                        style="white-space: nowrap; word-break: break-all"-->
-                      <!--                    >-->
-                      <!--                      <h3 v-html="lightFn(item.caption, search_word_not_contain_filter)"></h3>-->
-                      <!--                    </a>-->
-                      <!--                    <h3 @click="seach">{{item.POLICY_TITLE}}</h3>-->
-                      <!--                    <el-link style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)">{{item.POLICY_TITLE}}</el-link>-->
+                      <span class="tag" ref="attrRef">{{item.POLICY_TYPE}}</span>
                       <el-link class="title_caption" :underline='false' v-html="lightFn(item.POLICY_TITLE,search_word_not_contain_filter)" style="font-weight: bolder;font-size: 20px" target="_blank" @click="intoContent(item)"></el-link>
                     </div>
-                    <div class="article_caption" style="margin-left: 80px;">
+                    <div class="article_caption"  style="margin-left: 50px">
                       <!--                    <p class="article_caption">{{item.POLICY_BODY}}</p>-->
                       {{item.POLICY_BODY}}
                     </div>
-                    <div style="margin-left: 80px;margin-top: 10px;margin-bottom: 10px">
+                    <div style="margin-left: 50px;margin-top: 10px;margin-bottom: 10px">
                       <small class="small_time">发布机构: {{item.PUB_AGENCY}}</small>
                       <small class="small_time" style="margin-left: 20px">发布时间: {{item.PUB_TIME}}</small>
                     </div>
@@ -567,7 +551,7 @@ export default {
       his:[],
       hisbuffer:'',
       loading: false,
-      user: "",
+      user: '',
       check: false,
       search_word: "",
       search_word1: "",
@@ -697,7 +681,7 @@ export default {
       window.localStorage.removeItem("access");
       setTimeout(() => {
                       location.reload();
-                    }, 3000);
+                    }, 1000);
     },
     lightFn(originStr, target) {
       return originStr.replace(
@@ -731,6 +715,11 @@ export default {
         this.$message.error("上传头像图片大小不能超过 2MB!");
       }
       return isJPG && isLt2M;
+    },
+    label_off(){
+      let mag='margin-left:' + this.$refs.attrRef.offsetWidth +'px;'
+      console.log(mag)
+      return mag
     },
     intoContent(item){
       axios
@@ -813,82 +802,90 @@ export default {
     },
 
     async search() {
-      this.loading=true;
-      console.log('进入异步搜索');
-      this.pageNum = 1;
-      let outer = this;
-      this.search_word1 = this.search_word;
-      this.search_word_not_contain_filter = this.search_word
-      var filter = /^-.*?$/
-      var strs = this.search_word_not_contain_filter.trim().split(/\s+/)
-      var idx =  -1;
-      for (let i = 0; i < strs.length; i++) {
-        if (filter.test(strs[i])) {
-          idx = this.search_word_not_contain_filter.indexOf(strs[i])
-          break;
+      if(this.search_word==''){
+        this.$message({
+          message: "请输入搜索词",
+          type: "warning",
+        });
+      }
+      else{
+        this.loading=true;
+        console.log('进入异步搜索');
+        this.pageNum = 1;
+        let outer = this;
+        this.search_word1 = this.search_word;
+        this.search_word_not_contain_filter = this.search_word
+        var filter = /^-.*?$/
+        var strs = this.search_word_not_contain_filter.trim().split(/\s+/)
+        var idx =  -1;
+        for (let i = 0; i < strs.length; i++) {
+          if (filter.test(strs[i])) {
+            idx = this.search_word_not_contain_filter.indexOf(strs[i])
+            break;
+          }
         }
-      }
-      if (idx != -1) {
-        this.search_word_not_contain_filter = this.search_word_not_contain_filter
-            .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
-      }
-
-      if(this.check){
-        axios
-            .get(
-                "http://localhost:8081/user/addUserQuery?userid=" + this.user.id
-                + "&query=" + this.search_word
-            )
-            .then((response) => (console.log(response)));
-      }
-
-      //开始搜索逻辑
-      this.$router.push({
-        path: "/search",
-        query: {
-          word: this.search_word,
-          province:this.province,
-        },
-      });
-      // window.location.reload();
-
-      if(this.place!='全部'){
-        await axios
-            .get(
-                "http://localhost:8081/bm25/search_condition?keyword=" +
-                this.search_word + "&tableName=" + this.tableName +
-                "&pageNum=1" + "&province=" + this.place +"&type=" + this.type+"&year="+this.time
-            )
-            .then((response) => (outer.info = response.data));
-      }else{
-        await axios
-            .get(
-                "http://localhost:8081/bm25/search_condition?keyword=" +
-                this.search_word + "&tableName=" + this.tableName +
-                "&pageNum=1" + "&province=" +"&type=" + this.type+"&year="+this.time
-            )
-            .then((response) => (outer.info = response.data));
-      }
-
-      if (this.info.data&&this.info.data&&this.info.data.count!=0) {
-        this.imgAndCaption = []
-        this.recordsNum = this.info.data.count;
-        for (let i = 0; i < this.info.data.data.length; i++) {
-          this.imgAndCaption.push({
-            id:this.info.data.data[i].id,
-            POLICY_TITLE: this.info.data.data[i].policyTitle,
-            PUB_AGENCY:this.info.data.data[i].pubAgency,
-            PUB_TIME:this.info.data.data[i].pubTime,
-            POLICY_TYPE:this.info.data.data[i].policyType,
-            POLICY_BODY:this.info.data.data[i].policyBody,
-          });
+        if (idx != -1) {
+          this.search_word_not_contain_filter = this.search_word_not_contain_filter
+              .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
         }
-      } else {
-        this.imgAndCaption = [];
-        this.recordsNum = 0;
-      }
-      this.getHis()
-      this.loading=false;
+
+        if(this.check){
+          axios
+              .get(
+                  "http://localhost:8081/user/addUserQuery?userid=" + this.user.id
+                  + "&query=" + this.search_word
+              )
+              .then((response) => (console.log(response)));
+        }
+
+        //开始搜索逻辑
+        this.$router.push({
+          path: "/search",
+          query: {
+            word: this.search_word,
+            province:this.province,
+          },
+        });
+        // window.location.reload();
+        let userid='';
+        if(this.check){userid=this.user.id}
+        if(this.place!='全部'){
+          await axios
+              .get(
+                  "http://localhost:8081/bm25/search_condition?keyword=" +
+                  this.search_word + "&tableName=" + this.tableName +
+                  "&pageNum=1" + "&province=" + this.place +"&type=" + this.type+"&year="+this.time+"&uid="+userid
+              )
+              .then((response) => (outer.info = response.data));
+        }else{
+          await axios
+              .get(
+                  "http://localhost:8081/bm25/search_condition?keyword=" +
+                  this.search_word + "&tableName=" + this.tableName +
+                  "&pageNum=1" + "&province=" +"&type=" + this.type+"&year="+this.time+"&uid="+userid
+              )
+              .then((response) => (outer.info = response.data));
+        }
+
+        if (this.info.data&&this.info.data&&this.info.data.count!=0) {
+          this.imgAndCaption = []
+          this.recordsNum = this.info.data.count;
+          for (let i = 0; i < this.info.data.data.length; i++) {
+            this.imgAndCaption.push({
+              id:this.info.data.data[i].id,
+              POLICY_TITLE: this.info.data.data[i].policyTitle,
+              PUB_AGENCY:this.info.data.data[i].pubAgency,
+              PUB_TIME:this.info.data.data[i].pubTime,
+              POLICY_TYPE:this.info.data.data[i].policyType,
+              POLICY_BODY:this.info.data.data[i].policyBody,
+            });
+          }
+        } else {
+          this.imgAndCaption = [];
+          this.recordsNum = 0;
+        }
+        this.getHis()
+        this.loading=false;}
     },
 
     async searchRelated(word) {
@@ -900,66 +897,6 @@ export default {
       });
       location.reload();
     },
-
-    async getFirstPage_b() {
-      this.recordsNum = this.$route.query.recordsNum;
-      this.search_word = this.$route.query.word;
-      this.search_word1 = this.$route.query.word;
-
-      // 以下代码用于查询结果中过滤词不变红
-      this.search_word_not_contain_filter = this.search_word
-      var filter = /^-.*?$/
-      var strs = this.search_word_not_contain_filter.trim().split(/\s+/)
-      var idx =  -1;
-      for (let i = 0; i < strs.length; i++) {
-        if (filter.test(strs[i])) {
-          idx = this.search_word_not_contain_filter.indexOf(strs[i])
-          break;
-        }
-      }
-      if (idx != -1) {
-        this.search_word_not_contain_filter = this.search_word_not_contain_filter
-            .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
-      }
-      //发送搜索请求
-      let outer = this;
-      await axios
-        .get(
-          "http://localhost:8081/bm25/search_condition?keyword=" +
-            this.search_word + "&tableName=" + this.tableName +
-            "&pageNum=1" + "&province=" +"&type="+"&year="
-        )
-        .then((response) => (outer.info = response.data));
-
-      // 输出搜索记录
-      if(this.check){
-        axios
-            .get(
-                "http://localhost:8081/user/addUserQuery?userid=" + this.user.id
-                + "&query=" + this.search_word
-            )
-            .then((response) => (console.log(response)));
-      }
-
-      if (this.info.data&&this.info.data.count!=0) {
-        this.imgAndCaption = []
-        this.recordsNum = this.info.data.count;
-        for (let i = 0; i < this.info.data.data.length; i++) {
-          this.imgAndCaption.push({
-            id:this.info.data.data[i].id,
-            POLICY_TITLE: this.info.data.data[i].policyTitle,
-            PUB_AGENCY:this.info.data.data[i].pubAgency,
-            PUB_TIME:this.info.data.data[i].pubTime,
-            POLICY_TYPE:this.info.data.data[i].policyType,
-            POLICY_BODY:this.info.data.data[i].policyBody,
-          });
-        }
-      } else {
-        this.imgAndCaption = [];
-        this.recordsNum = 0;
-      }
-    },
-
     async getFirstPage() {
       this.loading=true;
       this.recordsNum = this.$route.query.recordsNum;
@@ -984,6 +921,8 @@ export default {
       }
       //发送搜索请求
       let outer = this;
+      let userid='';
+      if(this.check){userid=this.user.id}
       await axios
           .get(
               "http://localhost:8081/bm25/search_condition",{
@@ -994,7 +933,7 @@ export default {
                   province:'',
                   type:'',
                   year:'',
-                  user:this.user
+                  uid:userid
                 }
               }
           )
@@ -1086,12 +1025,14 @@ export default {
     async handleCurrentChange(val) {
       this.loading=true;
       let outer = this;
+      let userid='';
+      if(this.check){userid=this.user.id}
       if(this.place!='全部'){
         await axios
             .get(
                 "http://localhost:8081/bm25/search_condition?keyword=" +
                 this.search_word + "&tableName=" + this.tableName +
-                "&pageNum="+val + "&province=" + this.place +"&type=" + this.type+"&year="+this.time
+                "&pageNum="+val + "&province=" + this.place +"&type=" + this.type+"&year="+this.time+"&uid="+userid
             )
             .then((response) => (outer.info = response.data));
       }else{
@@ -1099,7 +1040,7 @@ export default {
             .get(
                 "http://localhost:8081/bm25/search_condition?keyword=" +
                 this.search_word + "&tableName=" + this.tableName +
-                "&pageNum="+val + "&province=" +"&type=" + this.type+"&year="+this.time
+                "&pageNum="+val + "&province=" +"&type=" + this.type+"&year="+this.time+"&uid="+userid
             )
             .then((response) => (outer.info = response.data));
       }
@@ -1356,7 +1297,7 @@ a {
   background: #d5c39e;
 }
 .title_caption{
-  width: 750px;
+  width: 650px;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-line-clamp: 1;
@@ -1366,8 +1307,7 @@ a {
 }
 
 .article_caption{
-
-  width: 750px;
+  width: 650px;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-line-clamp: 2;

@@ -1,9 +1,9 @@
 <template>
   <el-container style="width: 100%">
     <el-menu mode="horizontal"  style="background-color:#cbb486;" >
-      <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>
-      <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>
-      <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger">政务公开</el-menu-item>
+<!--      <el-menu-item index="1" style="margin-left: 42%;color: white;font-weight: bolder;font-size: larger" >首页</el-menu-item>-->
+<!--      <el-menu-item index="2" style="color: white;font-weight: bolder;font-size: larger">要闻动态</el-menu-item>-->
+      <el-menu-item index="3" style="color: white;font-weight: bolder;font-size: larger"></el-menu-item>
     </el-menu>
     <!--    头部-->
     <div class="little_button" style="float: right;margin-right: 10px">
@@ -183,7 +183,7 @@ export default {
       window.localStorage.removeItem("access");
       setTimeout(() => {
         location.reload();
-      }, 3000);
+      }, 1000);
     },
     bodyScale() {
       let t = window.devicePixelRatio   // 获取下载的缩放 125% -> 1.25    150% -> 1.5

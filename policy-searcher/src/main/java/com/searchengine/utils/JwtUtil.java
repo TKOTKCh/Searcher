@@ -22,10 +22,10 @@ public class JwtUtil {
      *
      * @param jwtSec    jwt秘钥 此秘钥一定要保留好在服务端, 不能暴露出去, 否则sign就可以被伪造, 如果对接多个客户端建议改造成多个
      * @param ttlMillis jwt过期时间(毫秒)
-     * @param username  用户名 可根据需要传递的信息添加更多, 因为浏览器get传参url限制，不建议放置过多的参数
+     * @param id  用户名 可根据需要传递的信息添加更多, 因为浏览器get传参url限制，不建议放置过多的参数
      * @return
      */
-    public static String createJWT(String jwtSec, long ttlMillis, String username) {
+    public static String createJWT(String jwtSec, long ttlMillis, String id) {
         // 指定签名的时候使用的签名算法，也就是header那部分
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -35,7 +35,7 @@ public class JwtUtil {
 
         // 创建payload的私有声明（根据特定的业务需要添加）
         Map<String, Object> claims = new HashMap<String, Object>();
-        claims.put("username", username);
+        claims.put("id", id);
 
         // 添加payload声明
         // 设置jwt的body
@@ -47,7 +47,7 @@ public class JwtUtil {
                 // iat: jwt的签发时间
                 .setIssuedAt(now)
                 // 代表这个JWT的主体，即它的所有人，这个是一个json格式的字符串
-                .setSubject(username)
+                .setSubject(id)
                 // 设置签名使用的签名算法和签名使用的秘钥
                 .signWith(signatureAlgorithm, jwtSec.getBytes(StandardCharsets.UTF_8));
         if (ttlMillis >= 0) {

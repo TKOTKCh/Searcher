@@ -77,6 +77,7 @@
     background-color: rgba(255,255,255,.6);
     border-radius: 4px 0 0 4px!important;
     box-shadow: 0 0 0px 5px rgba(225,225,225,0.3)!important;"
+                         maxlength="50"
                          :fetch-suggestions="querySearchAsync" @select="handleSelect"
                          placeholder="请输入想要了解的政策" prefix-icon="el-icon-search"
                          @keyup.enter.native="search">
@@ -259,7 +260,7 @@ export default {
       window.localStorage.removeItem("access");
       setTimeout(() => {
         location.reload();
-      }, 3000);
+      }, 1000);
     },
     search() {
 
@@ -273,13 +274,19 @@ export default {
       // }
 
       // 需要请求数据来显示
-      this.$router.push({
+      if(this.search_word==''){
+        this.$message({
+          message: "请输入搜索词",
+          type: "warning",
+        });
+      }
+      else{this.$router.push({
         path: "/search",
         query: {
           word: this.search_word,
           recordsNum: this.recordsNum,
         },
-      });
+      });}
     },
   },
 };

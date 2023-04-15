@@ -85,7 +85,7 @@ export default {
               })
               .then(function (ressponse) {
                 if (ressponse.data.data == "admin login successfully") {
-                  localStorage.setItem("access", JSON.stringify(ressponse.data.data));
+                  localStorage.setItem("admin_access", JSON.stringify(ressponse.data.data));
                   _this.$message({
                     message: "登录成功",
                     type: "success",
@@ -93,7 +93,7 @@ export default {
                   setTimeout(() => {
                     //设置延迟执行
                     _this.$router.push({ path: "/administrator" });
-                  }, 3000);
+                  }, 1000);
                 } else {
                   _this.$message.error({
                     message: "登录失败",

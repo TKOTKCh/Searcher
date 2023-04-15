@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface UserService  {
 
-    String checkToken(String username);
+    String checkToken(String id);
 
     boolean checkUserName(String username);
 

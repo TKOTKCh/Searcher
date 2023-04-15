@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +37,15 @@ public class SearchController {
     private DataService dataService;
 
     // 通过分词的方式去搜索
-    @GetMapping("/search")
-    public Result searchBySegment(@Param("tableName")String tableName, @RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) {
-//        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,null,null,null);
-
-        return Result.success(dataByScore);
-    }
-
+//    @GetMapping("/search")
+//    public Result searchBySegment(@Param("tableName")String tableName, @RequestParam("keyword") String keyword, @RequestParam("pageNum") int pageNum) throws IOException {
+////        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
+//        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,null,null,null,null,null);
+//
+//        return Result.success(dataByScore);
+//    }
+//    @RequestParam("position")String position,
+//    @RequestParam("profession")String profession
     @GetMapping("/search_condition")
     public Result searchBySegmentAndConditions(
             @Param("tableName")String tableName,
@@ -51,11 +53,11 @@ public class SearchController {
             @RequestParam("pageNum") int pageNum,
             @RequestParam("province") String province,
             @RequestParam("type") String type,
-            @RequestParam("year") String year
-    ) {
-        System.out.println("here");
+            @RequestParam("year") String year,
+            @RequestParam("uid") String uid
+    ) throws IOException{
 //        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year);
+        Map<String ,Object> dataByScore = searchService.getDataByScore(tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid);
 
         return Result.success(dataByScore);
     }

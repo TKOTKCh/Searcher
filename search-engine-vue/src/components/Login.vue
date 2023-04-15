@@ -95,7 +95,7 @@ export default {
                 setTimeout(() => {
                   //设置延迟执行
                   _this.$router.replace({ path: "/" });
-                }, 3000);
+                }, 1000);
               } else {
                 _this.$message.error({
                   message: "登录失败",
