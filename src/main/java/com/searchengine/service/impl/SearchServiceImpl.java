@@ -1,6 +1,5 @@
 package com.searchengine.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
@@ -16,6 +15,8 @@ import com.searchengine.utils.PythonSocket;
 import com.searchengine.utils.RedisUtil_db0;
 import com.searchengine.utils.Trie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -138,17 +141,47 @@ public class SearchServiceImpl implements SearchService {
         return dataList;
     }
 
-    public void addUserQuery(Integer userid,String query) {
-        double time=System.currentTimeMillis();
-        userService.addUserQuery(userid,query,time);
-    }
 
-//    public Map<String , Object> getDataByScoreAndAddQuery() {
-//        String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id
+//    public Map<String , Object> getDataByScoreAndAddQuery(
+//            String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id
+//    ) throws IOException, ExecutionException, InterruptedException {
+//
+//        long start = System.currentTimeMillis();
+//
+//        Future<Map<String, Object>> task1 = this.getDataByScore(
+//                tableName, content, pageSize,  pageNum, province, type, year, id
+//        );
+//
+//        Future<String> task2 = this.addUserQuery(Integer.valueOf(id),content);
+//
+//        while(true) {
+//            if(task1.isDone() && task2.isDone()) {
+//                // 三个任务都调用完成，退出循环等待
+//                break;
+//            }
+//            Thread.sleep(100);
+//        }
+//
+//        long end = System.currentTimeMillis();
+//
+//        System.out.println("任务全部完成，总耗时：" + (end - start) + "毫秒");
+//
+//        return task1.get();
 //    }
 
+    public AsyncResult<String >  addUserQuery(Integer userid,String query) {
+        try {
+            double time = System.currentTimeMillis();
+            userService.addUserQuery(userid, query, time);
+            return new AsyncResult<>("success") ;
+        } catch (Exception e) {
+            return new AsyncResult<>("fail");
+        }
+
+    }
     @Override
-    public Map<String , Object> getDataByScore(
+    @Async
+    public AsyncResult<Map<String, Object>>  getDataByScore(
             String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id
     ) throws IOException {
 //        String segmentname = "segment_" + tableName;
@@ -282,8 +315,8 @@ public class SearchServiceImpl implements SearchService {
             result.put("count", 0);
         }
 
-        List<QueryKeyword> qks= PythonSocket.getKeyWord(content);
-        if(qks.size()==0){
+        List<QueryKeyword> qks = new ArrayList<>();
+        if( qks.size()==0){
             List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
             for(SegToken seg:segTokens){
                 qks.add(new QueryKeyword(seg.word.trim(),1));
@@ -386,7 +419,6 @@ public class SearchServiceImpl implements SearchService {
             datas=dataDao.getDataRelevance(sql);
         }
 
-
         int startIndex = pageSize * (pageNum - 1);
         int endIndex = startIndex + pageSize;
         List<Data> dataResult=new LinkedList<>();
@@ -398,11 +430,11 @@ public class SearchServiceImpl implements SearchService {
             }
         }
         Collections.sort(dataResult);
-        System.out.println();
         Map<String , Object> result = new HashMap<>();
         result.put("data", dataResult);
         result.put("count", datas.size());
-        return result;
+        System.out.println(content);
+        return new AsyncResult<>(result);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.searchengine.utils.Trie;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +22,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 @RestController
 @Slf4j
@@ -59,6 +63,7 @@ public class SearchController {
 
 //    @RequestParam("profession")String profession
     @GetMapping("/search_condition")
+    @Async
     public Result searchBySegmentAndConditions(
             @Param("tableName")String tableName,
             @RequestParam("keyword") String keyword,
@@ -67,16 +72,28 @@ public class SearchController {
             @RequestParam("type") String type,
             @RequestParam("year") String year,
             @RequestParam("uid") String uid
-    ) throws IOException{
+    ) throws IOException, ExecutionException, InterruptedException {
 
         if (tableName == null || "".equals(tableName)) {
             tableName = "datatitle";
         }
-//        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
-        Map<String ,Object> dataByScore = searchService.getDataByScore(
+
+
+        Future<Map<String, Object>> task = searchService.getDataByScore(
                 tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid
         );
-        return Result.success(dataByScore);
+//                tableName, content, pageSize,  pageNum, province, type, year, id
+//        );
+//        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
+
+
+        while(true) {
+            if(task.isDone()) {
+                // 三个任务都调用完成，退出循环等待
+                break;
+            }
+        }
+        return Result.success(task.get());
     }
 
     @GetMapping("/test")
