@@ -82,6 +82,8 @@ public class MyRedisConfig {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
+        redisTemplate.setStringSerializer(new StringRedisSerializer());
+
         //注入连接工厂
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;

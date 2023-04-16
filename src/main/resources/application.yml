@@ -5,7 +5,7 @@ spring:
   resources:
     static-locations: file:${web.upload-path}
   redis:
-    host: 123.249.41.125
+    host: 82.157.54.117
     port: 6379
     database:
       db0: 0
@@ -16,12 +16,17 @@ spring:
       max-idle: 3
       min-idle: 0
       max-wait: -1
-    password: 123456
+    password: 123
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://82.157.54.117:3306/policy?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&serverTimezone=GMT%2B8
+    username: policy
+    password: 2023Bjtu
 
   #RabbitMQ
   rabbitmq:
     #服务器
-    host: node1
+    host: 82.157.54.117
     #用户名
     username: guest
     #密码
@@ -35,7 +40,7 @@ spring:
         #消费者最小数量
         concurrency: 10
         #消费者最大数量
-        max-concurrency: 10
+        max-concurrency: 20
         #限制消费者每次只能处理一条消息，处理完在继续下一条消息
         prefetch: 1
         #启动是默认启动容器
@@ -54,3 +59,18 @@ spring:
         max-interval: 10000ms
         #重试的间隔乘数，比如配2。0  第一等10s 第二次等20s 第三次等40s
         multiplier: 1
+
+
+
+server:
+  port: 8081
+
+
+
+
+
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.searchengine.entity
+

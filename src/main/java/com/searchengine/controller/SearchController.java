@@ -73,6 +73,7 @@ public class SearchController {
             @RequestParam("year") String year,
             @RequestParam("uid") String uid
     ) throws IOException, ExecutionException, InterruptedException {
+        System.out.println("___________here_____________");
 
         if (tableName == null || "".equals(tableName)) {
             tableName = "datatitle";

@@ -73,7 +73,7 @@ public class StatisticService implements InitializingBean {
 
     public Map<String, Object> getAllStatistic() {
         List<StatisticHistory> latest7Click = (List<StatisticHistory>) redisUtil.get("click-7-days-" + todayDate);
-        StatisticHistory userCount = (StatisticHistory) redisUtil.get("user-count");
+        Integer userCount =(Integer)  redisUtil.get("user-count");
         Integer numberOfData = (Integer) redisUtil.get("data-num");
         Integer totalClick = (Integer) redisUtil.get("total-click");
         StatisticHistory todayClick = (StatisticHistory) redisUtil.get("click-" + this.todayDate);

@@ -14,7 +14,9 @@ public class TestJedis {
 
     @Test
     public void test() {
-        System.out.println(redisUtil.get("zjx")); ;
+        redisUtil.set("zjx", new User());
+        User zjx = (User) redisUtil.get("zjx");
+        System.out.println(zjx);
     }
 
 }
