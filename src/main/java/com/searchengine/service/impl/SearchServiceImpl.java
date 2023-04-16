@@ -11,6 +11,7 @@ import com.searchengine.entity.QueryKeyword;
 import com.searchengine.entity.Segment;
 import com.searchengine.entity.User;
 import com.searchengine.service.SearchService;
+import com.searchengine.service.UserService;
 import com.searchengine.utils.PythonSocket;
 import com.searchengine.utils.RedisUtil_db0;
 import com.searchengine.utils.Trie;
@@ -29,12 +30,12 @@ public class SearchServiceImpl implements SearchService {
 
     @Autowired
     private DataDao dataDao;
-
     @Autowired
     private SegmentDao segmentDao;
-
     @Autowired
     private RedisUtil_db0 redisUtil;
+    @Autowired
+    private UserService userService;
 
     private Trie trie;
     public static HashMap<String,Double> idfMap;
@@ -137,8 +138,19 @@ public class SearchServiceImpl implements SearchService {
         return dataList;
     }
 
+    public void addUserQuery(Integer userid,String query) {
+        double time=System.currentTimeMillis();
+        userService.addUserQuery(userid,query,time);
+    }
+
+//    public Map<String , Object> getDataByScoreAndAddQuery() {
+//        String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id
+//    }
+
     @Override
-    public Map<String , Object> getDataByScore(String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id) throws IOException {
+    public Map<String , Object> getDataByScore(
+            String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id
+    ) throws IOException {
 //        String segmentname = "segment_" + tableName;
 //        int offset = pageSize * (pageNum - 1);
 //        StringBuilder sb = new StringBuilder();
@@ -373,7 +385,6 @@ public class SearchServiceImpl implements SearchService {
         }else{
             datas=dataDao.getDataRelevance(sql);
         }
-
 
 
         int startIndex = pageSize * (pageNum - 1);

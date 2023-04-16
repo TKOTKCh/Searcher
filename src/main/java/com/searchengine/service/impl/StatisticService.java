@@ -3,6 +3,7 @@ package com.searchengine.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.searchengine.dao.DataDao;
 import com.searchengine.dao.StatisticDao;
+import com.searchengine.entity.Data;
 import com.searchengine.entity.StatisticHistory;
 import com.searchengine.rabbitmq.MQSender;
 import com.searchengine.utils.RedisUtil_db0;
@@ -77,6 +78,8 @@ public class StatisticService implements InitializingBean {
         Integer totalClick = (Integer) redisUtil.get("total-click");
         StatisticHistory todayClick = (StatisticHistory) redisUtil.get("click-" + this.todayDate);
 
+
+
         HashMap<String, Object> rs = new HashMap();
         rs.put("todayClick", todayClick);
         rs.put("seven_days", latest7Click);
@@ -99,6 +102,10 @@ public class StatisticService implements InitializingBean {
 
     public String getTodayDate() {
         return this.todayDate;
+    }
+
+    public List<Data> getHotData() {
+        return  (List<Data>) redisUtil.get("hot");
     }
 
     @Override
@@ -141,5 +148,8 @@ public class StatisticService implements InitializingBean {
 
         Integer totalClick = new Integer(statisticDao.getRecordByKey("total_click").getValue());
         redisUtil.set("total-click", totalClick);
+
+        List<Data> hotData = dataDao.getHotdata();
+        redisUtil.set("hot", hotData);
     }
 }

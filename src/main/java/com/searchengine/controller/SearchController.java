@@ -1,11 +1,15 @@
 package com.searchengine.controller;
 
 import com.searchengine.common.Result;
+import com.searchengine.dao.DataDao;
 import com.searchengine.entity.Data;
 import com.searchengine.entity.Segment;
 import com.searchengine.service.DataService;
 import com.searchengine.service.SearchService;
+import com.searchengine.service.UserService;
 import com.searchengine.service.impl.SearchServiceImpl;
+import com.searchengine.service.impl.StatisticService;
+import com.searchengine.utils.RedisUtil_db0;
 import com.searchengine.utils.Trie;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
@@ -32,9 +36,16 @@ public class SearchController {
 
     @Autowired
     private SearchService searchService;
-
     @Autowired
     private DataService dataService;
+    @Autowired
+    private StatisticService statisticService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private DataDao dataDao;
+    @Autowired
+    private RedisUtil_db0 redisUtil;
 
     // 通过分词的方式去搜索
 //    @GetMapping("/search")
@@ -45,6 +56,7 @@ public class SearchController {
 //        return Result.success(dataByScore);
 //    }
 //    @RequestParam("position")String position,
+
 //    @RequestParam("profession")String profession
     @GetMapping("/search_condition")
     public Result searchBySegmentAndConditions(
@@ -56,11 +68,14 @@ public class SearchController {
             @RequestParam("year") String year,
             @RequestParam("uid") String uid
     ) throws IOException{
+
+        if (tableName == null || "".equals(tableName)) {
+            tableName = "datatitle";
+        }
 //        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
         Map<String ,Object> dataByScore = searchService.getDataByScore(
                 tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid
         );
-
         return Result.success(dataByScore);
     }
 
@@ -77,16 +92,27 @@ public class SearchController {
 
     @GetMapping("/hot")
     public Result getHotdata() {
-        //获取当前热搜，每两小时更新一次
-        double time=System.currentTimeMillis()/1000;
-        if(dataService.judgeUpdate(time)==true){
-            dataService.updateHotdata();
+        try {
+            //获取当前热搜，每两小时更新一次
+            double time = System.currentTimeMillis() / 1000;
+            if (dataService.judgeUpdate(time) == true) {
+                dataService.updateHotdata();
+                List<Data> hotData = dataDao.getHotdata();
+                redisUtil.set("hot", hotData);
+                return Result.success(hotData);
+            }
+
+            return Result.success(statisticService.getHotData());
+        } catch (Exception e) {
+            return Result.fail();
         }
-        return Result.success( dataService.getHotdata());
+
     }
 
     @PostMapping("/count")
     public Result addCount(@RequestParam("id") Integer  id) {
         return Result.success( dataService.addCount(id));
     }
+
+
 }
