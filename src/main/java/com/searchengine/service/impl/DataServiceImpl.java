@@ -286,23 +286,11 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     }
 
     @Override
-    public IPage<Data> findPage(Integer pageNum, Integer pageSize, String username, String email, String phone, String address) {
+    public IPage<Data> findPage(Integer pageNum, Integer pageSize) {
         IPage<Data> page = new Page<>(pageNum, pageSize);
 
         QueryWrapper<Data> queryWrapper = new QueryWrapper<>();
-        if (!"".equals(username)) {
-            queryWrapper.like("username", username);
-        }
-        if (!"".equals(email)) {
-            queryWrapper.like("email", email);
-        }
-        if (!"".equals(phone)) {
-            queryWrapper.like("phone", phone);
-        }
-        if (!"".equals(address)) {
-            queryWrapper.like("address", address);
-        }
-        queryWrapper.orderByDesc("uid");
+        queryWrapper.orderByDesc("id");
         IPage<Data> userPage = this.page(page, queryWrapper);
         return userPage;
     }

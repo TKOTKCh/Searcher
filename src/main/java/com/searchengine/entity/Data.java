@@ -1,5 +1,6 @@
 package com.searchengine.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -27,8 +28,12 @@ public class Data implements Comparable<Data>{
     private String city;
     private String policySource;
     private String pubTimeYear;
+
+    @TableField(exist = false)
     private Integer count=0;//政策在对应搜索词中匹配到的关键词个数
+    @TableField(exist = false)
     private double bm25=0;//政策在对应搜索词中的bm25值
+    @TableField(exist = false)
     private double score=0.0;
 
     public static Map<String,Integer>hasht=new LinkedHashMap<String,Integer>() {{

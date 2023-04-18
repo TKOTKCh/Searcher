@@ -76,7 +76,7 @@ public class StatisticService implements InitializingBean {
         Integer userCount =(Integer)  redisUtil.get("user-count");
         Integer numberOfData = (Integer) redisUtil.get("data-num");
         Integer totalClick = (Integer) redisUtil.get("total-click");
-        StatisticHistory todayClick = (StatisticHistory) redisUtil.get("click-" + this.todayDate);
+        Integer todayClick = (Integer) redisUtil.get("click-" + this.todayDate);
 
 
 

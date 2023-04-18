@@ -118,7 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         if (!"".equals(address)) {
             queryWrapper.like("address", address);
         }
-        queryWrapper.orderByDesc("uid");
+        queryWrapper.orderByDesc("id");
         IPage<User> userPage = this.page(page, queryWrapper);
         return userPage;
     }
@@ -155,6 +155,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         Map<String, String> rs = new HashMap<>();
         //用户认证
         LoginUser userDetails = (LoginUser) userDetailsService.loadAdminByUsername(user.getUsername());
+        System.out.println(userDetails);
         //判断认证是否通过
         if (user.getPassword().equals(userDetails.getPassword())) {
             //认证通过

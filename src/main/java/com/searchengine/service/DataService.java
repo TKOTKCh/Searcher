@@ -27,7 +27,7 @@ public interface DataService {
 
     List<Data> getSomeDatas(int limit, int offset);
 
-    IPage<Data> findPage(Integer pageNum, Integer pageSize, String username, String email, String phone, String address);
+    IPage<Data> findPage(Integer pageNum, Integer pageSize);
 
     List<Data> getHotdata() ;
     boolean updateHotdata();

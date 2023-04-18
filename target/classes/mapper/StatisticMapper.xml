@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--绑定一个对应的Dao/Map接口-->
+<mapper namespace="com.searchengine.dao.StatisticDao">
+
+    <insert id="put">
+        insert into statistic_history(`key`,value) values(#{key},#{value})
+    </insert>
+
+    <update id="setKeyVal">
+        update statistic_history set value=#{value} where `key`=#{key}
+    </update>
+
+    <update id="setUserCount">
+        update statistic_history set value=#{value} where `key`='user_count'
+    </update>
+
+    <update id="setTotalClick">
+        update statistic_history set value=#{value} where `key`='total_click'
+    </update>
+
+
+    <update id="setTodayClick">
+        update statistic_history set value=#{value} where `key`=#{key}
+    </update>
+
+    <update id="increTotalClick">
+        update statistic_history set value=value+1 where `key`='total_click'
+
+    </update>
+
+    <select id="getRecordByKey" resultType="com.searchengine.entity.StatisticHistory" >
+        select * from statistic_history where `key`=#{key}
+    </select>
+</mapper>

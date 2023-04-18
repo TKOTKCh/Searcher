@@ -19,10 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("data")
 public class DataManagementController {
-
     @Resource
     private DataServiceImpl dataService;
-
     @PostMapping("/insertOrUpdate")
     public Result insertOrUpdate(@RequestBody Data data) {
 
@@ -41,12 +39,9 @@ public class DataManagementController {
 
     @RequestMapping("/page")
     public Result findPage(@RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize,
-                           @RequestParam(defaultValue = "") String username,  //不加default 如果输入框都是“”，则会报错
-                           @RequestParam(defaultValue = "") String email,
-                           @RequestParam(defaultValue = "") String phone,
-                           @RequestParam(defaultValue = "") String address) {
-        IPage<Data> page = dataService.findPage(pageNum, pageSize, username, email, phone, address);
+                           @RequestParam Integer pageSize
+                           ) {
+        IPage<Data> page = dataService.findPage(pageNum, pageSize);
         return Result.success(page);
     }
 
@@ -63,9 +58,5 @@ public class DataManagementController {
         return Result.success(dataService.removeBatchByIds(ids));
     }
 
-    @GetMapping("statistic")
-    public Result getStatisticData() {
-        return Result.success();
-    }
 
 }

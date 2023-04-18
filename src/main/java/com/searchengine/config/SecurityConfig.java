@@ -48,9 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/bm25/search",
                         "/bm25/search_condition",
                         "/user/login",
-                        "/user/*",
+                        "/user/**",
                         "/",
-                        "/user/logout",
                         "/user/register",
                         "/search_test",
                         "/related_word",
@@ -62,13 +61,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/deleteTreeNode",
                         "/addTreeNode",
                         "/prefix_word",
-                        "/user/getLastQuery",
-                        "/statistic/*",
+                        "/statistic/**",
                         "/bm25/count",
+                        "/bm25/search_condition",
                         "/user/getByUid/*",
                         "/user/delete/*",
-                        "/bm25/search_condition",
-                        "/user/addUserQuery").permitAll()//不拦截这些路径
+                        "/user/addUserQuery",
+//                        "/user/admin_login/",
+                        "/user/getLastQuery",
+                        "/user/logout",
+                        "/data/**"
+                ).permitAll()//不拦截这些路径
                 .anyRequest().authenticated();
     }
 }
