@@ -47,6 +47,10 @@ public interface DataService {
                     String province,
                     String city,
                     String policySource,
-                    String pubTimeYear
+                    Integer pubTimeYear
                     );
+
+    boolean addDataByFile(
+            String filePath
+    );
 }

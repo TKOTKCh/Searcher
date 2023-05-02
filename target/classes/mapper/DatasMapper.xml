@@ -114,6 +114,52 @@
     </select>
 
     <select id="getNumberOfData" resultType="java.lang.Integer">
-        select count(*) from data
+        select dataCount from statistic_data
     </select>
+    <update id="updateNumberOfData">
+        update statistic_data set dataCount=dataCount+#{num}
+    </update>
+
+
+<!--    insert into data(policyId,-->
+<!--    policyTitle,-->
+<!--    policyGrade,-->
+<!--    pubAgencyId,-->
+<!--    pubAgency,-->
+<!--    pubAgencyFullname,-->
+<!--    pubNumber,-->
+<!--    pubTime,-->
+<!--    policyType,-->
+<!--    policyBody,-->
+<!--    province,-->
+<!--    city,-->
+<!--    policySource,-->
+<!--    pubTimeYear) values(-->
+<!--    #{policyId},-->
+<!--    #{policyTitle},-->
+<!--    #{policyGrade},-->
+<!--    #{pubAgencyId},-->
+<!--    #{pubAgency},-->
+<!--    #{pubAgencyFullnam},-->
+<!--    #{pubNumber},-->
+<!--    #{pubTime},-->
+<!--    #{policyType},-->
+<!--    #{province},-->
+<!--    #{city},-->
+<!--    #{policySource},-->
+<!--    #{pubTimeYear}-->
+<!--    )-->
+    <insert id="addData">
+        insert into data(policyId,
+                        ) values(
+                        #{policyId},
+                        )
+    </insert>
+
+    <select id="getTitleTotalLength" resultType="java.lang.Integer">
+        select titleTotalLength from statistic_data
+    </select>
+    <update id="updateTitleTotalLength">
+        update statistic_data set titleTotalLength=titleTotalLength+#{length}
+    </update>
 </mapper>

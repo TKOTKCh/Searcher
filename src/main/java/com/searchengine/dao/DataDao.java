@@ -42,7 +42,21 @@ public interface DataDao extends BaseMapper<Data> {
     //增加点击量
     boolean addCount(@Param("id")Integer id);
 
-    boolean addData(Data data);
+    //添加政策
+    boolean addData(@Param("policyId")Integer policyId,
+                    @Param("policyTitle")String policyTitle,
+                    @Param("policyGrade")String policyGrade,
+                    @Param("pubAgencyId")String pubAgencyId,
+                    @Param("pubAgency")String pubAgency,
+                    @Param("pubAgencyFullname")String pubAgencyFullname,
+                    @Param("pubNumber")String pubNumber,
+                    @Param("pubTime")String pubTime,
+                    @Param("policyType")String policyType,
+                    @Param("policyBody")String policyBody,
+                    @Param("province")String province,
+                    @Param("city")String city,
+                    @Param("policySource")String policySource,
+                    @Param("pubTimeYear")Integer pubTimeYear);
     //获得热门数据
     List<Data> getHotdata();
 
@@ -52,7 +66,12 @@ public interface DataDao extends BaseMapper<Data> {
     //得到政策与搜索词之间的相关性，带筛选的,用于search搜索的打分模块
     List<Data>getDataRelevanceLimit(@Param("sql1")String sql1,@Param("sql2")String sql2);
 
+    //从statistic_data表中获得政策总数
     int getNumberOfData();
-
+    void updateNumberOfData(@Param("num") Integer num);
     void increDataByID(@Param("id") String id);
+
+    //从statistic_data表中获得政策title的总长度
+    int getTitleTotalLength();
+    void updateTitleTotalLength(@Param("length") double length);
 }

@@ -58,5 +58,41 @@ public class DataManagementController {
         return Result.success(dataService.removeBatchByIds(ids));
     }
 
-
+    @RequestMapping("/addData")
+    public Result addData(@RequestParam Integer policyId,
+                          @RequestParam String policyTitle,
+                          @RequestParam String policyGrade,
+                          @RequestParam String pubAgencyId,
+                          @RequestParam String pubAgency,
+                          @RequestParam String pubAgencyFullname,
+                          @RequestParam String pubNumber,
+                          @RequestParam String pubTime,
+                          @RequestParam String policyType,
+                          @RequestParam String policyBody,
+                          @RequestParam String province,
+                          @RequestParam String city,
+                          @RequestParam String policySource,
+                          @RequestParam Integer pubTimeYear
+    ) {
+        dataService.addData(policyId,
+                policyTitle,
+                policyGrade,
+                pubAgencyId,
+                pubAgency,
+                pubAgencyFullname,
+                pubNumber,
+                pubTime,
+                policyType,
+                policyBody,
+                province,
+                city,
+                policySource,
+                pubTimeYear);
+        return Result.success();
+    }
+    @RequestMapping("/addDataByFile")
+    public Result addDataByFile(@RequestParam String FilePath) {
+        dataService.addDataByFile(FilePath);
+        return Result.success();
+    }
 }

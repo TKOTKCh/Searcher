@@ -7,10 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
-import com.searchengine.dao.DataDao;
-import com.searchengine.dao.RecordSegDao;
-import com.searchengine.dao.SegmentDao;
-import com.searchengine.dao.StatisticDao;
+import com.opencsv.CSVReader;
+import com.searchengine.dao.*;
 import com.searchengine.dto.RecordDto;
 import com.searchengine.entity.*;
 import com.searchengine.entity.Record;
@@ -19,13 +17,16 @@ import com.searchengine.service.RecordSegService;
 import com.searchengine.service.DataService;
 import com.searchengine.service.SegmentService;
 import com.searchengine.utils.RedisUtil_db0;
+import com.searchengine.utils.jieba.keyword.BM25;
 import com.searchengine.utils.jieba.keyword.Keyword;
 import com.searchengine.utils.jieba.keyword.TFIDFAnalyzer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileReader;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -51,6 +52,8 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
     private RecordSegService recordSegService;
 
     @Autowired
+    private DataSegmentDao dataSegmentDao;
+    @Autowired
     private RedisUtil_db0 redisUtil;
 
     //记录上次更新的时间
@@ -59,6 +62,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
 
     TFIDFAnalyzer tfidfAnalyzer=new TFIDFAnalyzer();
     JiebaSegmenter segmenter = new JiebaSegmenter();
+    BM25 bm25=new BM25(1.2,0.75);
     @Override
     public List<Record> queryAllRecord() {
         return dataDao.selectAllRecords();
@@ -220,64 +224,224 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
                            String province,
                            String city,
                            String policySource,
-                           String pubTimeYear){
-//        int id=dataDao.getNumberOfData()+1;
-//        String content=policyId+policyTitle+policyGrade+pubAgencyId+pubAgency+pubAgencyFullname+pubNumber+pubTime+policyType+policyBody+province+city+
-//                policySource+pubTimeYear;
-//        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
-//        List<Keyword> keywords = tfidfAnalyzer.analyze(content,20,"datatitle");
-//        Map<String, DataSegment> segmentMap = new HashMap<>();
-//        // 获取到所有的 segment 分词
-//        List<Segment> segments = segmentService.getAllSeg("segment_datatitle");
-//
-//        // 将分词按照 word->id 的方式放入 map
-//        // 其实就是键值对，不过这里的Key是word，因为我们建立的是倒排索引
-//        Map<String, Integer> wordToId = new HashMap<>();
-//        for (Segment seg : segments) {
-//            wordToId.put(seg.getWord(), seg.getId());
-//        }
-//        for (SegToken segToken : segTokens) {
-//            String seg = segToken.word;
-//
-//
-//            // 不在 segment 表中的分词，去掉
-//            if (!wordToId.containsKey(seg)) continue;
-//
-//            int segId = wordToId.get(seg);
-//            int dataId = id;
-//            double tfidf = 0;
-//
-//            // 如果是 tfidf 值最高的topn个关键词之一，就将 tf 值保存起来
-//            for (Keyword v : keywords) {
-//                if (v.getName().equals(seg)) {
-//                    tfidf = v.getTfidfvalue();
-//                    break;
-//                }
-//            }
-//            if (tfidf==0){
-//                continue;
-//            }
-//            if (!segmentMap.containsKey(seg)){
-//                int count = 1;
-//                double tf;
-//                double idf;
-//                if (TFIDFAnalyzer.idfMap.containsKey(seg)){
-//                    idf=TFIDFAnalyzer.idfMap.get(seg);
-//                    tf=tfidf/idf;
-//                }else{
-//                    idf=TFIDFAnalyzer.idfMedian;
-//                    tf=tfidf/idf;
-//                }
-//                double L=content.length()*1.0/totallength;
-//                double bm=bm25.cal(idf,tf,L);
-//                segmentMap.put(seg, new DataSegment(dataId, segId, tf,idf,bm, count));
-//            } else {
-//                DataSegment dataSegment = segmentMap.get(seg);
-//                int count = dataSegment.getCount();
-//                dataSegment.setCount(++count);
-//                segmentMap.put(seg, dataSegment);
-//            }
-//        }
+                           Integer pubTimeYear){
+        int id=dataDao.getNumberOfData()+1;
+        double totallength=dataDao.getTitleTotalLength();
+        String content=policyId+policyTitle+policyGrade+pubAgencyId+pubAgency+pubAgencyFullname+pubNumber+pubTime+policyType+policyBody+province+city+
+                policySource+pubTimeYear;
+        List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+        List<Keyword> keywords = tfidfAnalyzer.analyze(content,20,"datatitle");
+        Map<String, DataSegment> segmentMap = new HashMap<>();
+        // 获取到所有的 segment 分词
+        List<Segment> segments = segmentService.getAllSeg("segment_datatitle");
+        Map<Integer, List<DataSegment>> dataSegmentListMap = new HashMap<>(1);
+        int cnt=0;
+        // 将分词按照 word->id 的方式放入 map
+        // 其实就是键值对，不过这里的Key是word，因为我们建立的是倒排索引
+        Map<String, Integer> wordToId = new HashMap<>();
+        for (Segment seg : segments) {
+            wordToId.put(seg.getWord(), seg.getId());
+        }
+        for (SegToken segToken : segTokens) {
+            String seg = segToken.word;
+
+
+            // 不在 segment 表中的分词，去掉
+            if (!wordToId.containsKey(seg)) continue;
+
+            int segId = wordToId.get(seg);
+            int dataId = id;
+            double tfidf = 0;
+
+            // 如果是 tfidf 值最高的topn个关键词之一，就将 tf 值保存起来
+            for (Keyword v : keywords) {
+                if (v.getName().equals(seg)) {
+                    tfidf = v.getTfidfvalue();
+                    break;
+                }
+            }
+            if (tfidf==0){
+                continue;
+            }
+            if (!segmentMap.containsKey(seg)){
+                int count = 1;
+                double tf;
+                double idf;
+                if (TFIDFAnalyzer.idfMap.containsKey(seg)){
+                    idf=TFIDFAnalyzer.idfMap.get(seg);
+                    tf=tfidf/idf;
+                }else{
+                    idf=TFIDFAnalyzer.idfMedian;
+                    tf=tfidf/idf;
+                }
+                double L=content.length()*1.0/totallength;
+                double bm=bm25.cal(idf,tf,L);
+                segmentMap.put(seg, new DataSegment(dataId, segId, tf,idf,bm, count));
+            } else {
+                DataSegment dataSegment = segmentMap.get(seg);
+                int count = dataSegment.getCount();
+                dataSegment.setCount(++count);
+                segmentMap.put(seg, dataSegment);
+            }
+            // 将Segment放入DataSegment表中，但是按照Segment的Id来区分放入哪一张DataSegment表, idx就是区分键
+            for (DataSegment dataSegment : segmentMap.values()) {
+                int tempsegId = dataSegment.getSegId();
+                int idx = tempsegId % 1000;
+                List list = dataSegmentListMap.getOrDefault(idx, new ArrayList<>());
+                list.add(dataSegment);
+                dataSegmentListMap.put(idx, list);
+                cnt++;
+            }
+        }
+        // 最后通过 dataSegmentList 来创建所有的 DataSegment 表：data_seg_relation
+        if (cnt > 0) {
+            for (Integer idx : dataSegmentListMap.keySet()) {
+                String tableName = "datatitle"+"_seg_relation_" + idx;
+                dataSegmentDao.initRelationTable(dataSegmentListMap.get(idx), tableName);
+            }
+        }
+        dataDao.addData(policyId,
+                policyTitle,
+                policyGrade,
+                pubAgencyId,
+                pubAgency,
+                pubAgencyFullname,
+                pubNumber,
+                pubTime,
+                policyType,
+                policyBody,
+                province,
+                city,
+                policySource,
+                pubTimeYear);
+        dataDao.updateNumberOfData(1);
+        dataDao.updateTitleTotalLength(content.length());
+        return true;
+    }
+    @Override
+    public boolean addDataByFile(String filePath){
+        int id=dataDao.getNumberOfData()+1;
+        double totallength=dataDao.getTitleTotalLength();
+        Map<String, DataSegment> segmentMap = new HashMap<>();
+        // 获取到所有的 segment 分词
+        List<Segment> segments = segmentService.getAllSeg("segment_datatitle");
+
+        List< List<String> > data = new ArrayList<>();//list of lists to store data
+        // 将分词按照 word->id 的方式放入 map
+        // 其实就是键值对，不过这里的Key是word，因为我们建立的是倒排索引
+        Map<String, Integer> wordToId = new HashMap<>();
+        for (Segment seg : segments) {
+            wordToId.put(seg.getWord(), seg.getId());
+        }
+        try
+        {
+            FileReader fr = new FileReader(filePath);
+            CSVReader reader = new CSVReader(fr);
+
+            String[] lineData = reader.readNext();
+            //Reading until we run out of lines
+            while(lineData != null)
+            {
+                data.add(Arrays.asList(lineData));
+                lineData = reader.readNext();
+            }
+            reader.close();
+        }
+        catch(Exception e)
+        {
+            System.out.print(e);
+        }
+        for (List<String> temp:data){
+            if(!StringUtils.isNumeric(temp.get(0))||!StringUtils.isNumeric(temp.get(temp.size()-1))){
+                continue ;
+            }
+            String content="";
+            for (int i=0;i<temp.size();i++){
+                if(i!=9){
+                    content+=temp.get(i);
+                }
+            }
+            List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+            List<Keyword> keywords = tfidfAnalyzer.analyze(content,20,"datatitle");
+            int cnt=0;
+            Map<Integer, List<DataSegment>> dataSegmentListMap = new HashMap<>(1);
+            for (SegToken segToken : segTokens) {
+                String seg = segToken.word;
+
+
+                // 不在 segment 表中的分词，去掉
+                if (!wordToId.containsKey(seg)) continue;
+
+                int segId = wordToId.get(seg);
+                int dataId = id;
+                double tfidf = 0;
+
+                // 如果是 tfidf 值最高的topn个关键词之一，就将 tf 值保存起来
+                for (Keyword v : keywords) {
+                    if (v.getName().equals(seg)) {
+                        tfidf = v.getTfidfvalue();
+                        break;
+                    }
+                }
+                if (tfidf==0){
+                    continue;
+                }
+                if (!segmentMap.containsKey(seg)){
+                    int count = 1;
+                    double tf;
+                    double idf;
+                    if (TFIDFAnalyzer.idfMap.containsKey(seg)){
+                        idf=TFIDFAnalyzer.idfMap.get(seg);
+                        tf=tfidf/idf;
+                    }else{
+                        idf=TFIDFAnalyzer.idfMedian;
+                        tf=tfidf/idf;
+                    }
+                    double L=content.length()*1.0/totallength;
+                    double bm=bm25.cal(idf,tf,L);
+                    segmentMap.put(seg, new DataSegment(dataId, segId, tf,idf,bm, count));
+                } else {
+                    DataSegment dataSegment = segmentMap.get(seg);
+                    int count = dataSegment.getCount();
+                    dataSegment.setCount(++count);
+                    segmentMap.put(seg, dataSegment);
+                }
+                // 将Segment放入DataSegment表中，但是按照Segment的Id来区分放入哪一张DataSegment表, idx就是区分键
+                for (DataSegment dataSegment : segmentMap.values()) {
+                    int tempsegId = dataSegment.getSegId();
+                    int idx = tempsegId % 1000;
+                    List list = dataSegmentListMap.getOrDefault(idx, new ArrayList<>());
+                    list.add(dataSegment);
+                    dataSegmentListMap.put(idx, list);
+                    cnt++;
+                }
+            }
+            if (cnt > 0) {
+                for (Integer idx : dataSegmentListMap.keySet()) {
+                    String tableName = "datatitle"+"_seg_relation_" + idx;
+                    dataSegmentDao.initRelationTable(dataSegmentListMap.get(idx), tableName);
+                }
+            }
+
+            dataDao.addData(Integer.parseInt(temp.get(0)),
+                    temp.get(1),
+                    temp.get(2),
+                    temp.get(3),
+                    temp.get(4),
+                    temp.get(5),
+                    temp.get(6),
+                    temp.get(7),
+                    temp.get(8),
+                    temp.get(9),
+                    temp.get(10),
+                    temp.get(11),
+                    temp.get(12),
+                    Integer.parseInt(temp.get(13)));
+            id++;
+            totallength+=content.length();
+            dataDao.updateNumberOfData(1);
+            dataDao.updateTitleTotalLength(content.length());
+        }
         return true;
     }
     @Override
