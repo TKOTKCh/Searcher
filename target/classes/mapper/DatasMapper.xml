@@ -121,38 +121,37 @@
     </update>
 
 
-<!--    insert into data(policyId,-->
-<!--    policyTitle,-->
-<!--    policyGrade,-->
-<!--    pubAgencyId,-->
-<!--    pubAgency,-->
-<!--    pubAgencyFullname,-->
-<!--    pubNumber,-->
-<!--    pubTime,-->
-<!--    policyType,-->
-<!--    policyBody,-->
-<!--    province,-->
-<!--    city,-->
-<!--    policySource,-->
-<!--    pubTimeYear) values(-->
-<!--    #{policyId},-->
-<!--    #{policyTitle},-->
-<!--    #{policyGrade},-->
-<!--    #{pubAgencyId},-->
-<!--    #{pubAgency},-->
-<!--    #{pubAgencyFullnam},-->
-<!--    #{pubNumber},-->
-<!--    #{pubTime},-->
-<!--    #{policyType},-->
-<!--    #{province},-->
-<!--    #{city},-->
-<!--    #{policySource},-->
-<!--    #{pubTimeYear}-->
-<!--    )-->
+
     <insert id="addData">
-        insert into data(policyId,
+        insert into data(policy_id,
+            policy_Title,
+            policy_Grade,
+            pub_Agency_Id,
+            pub_Agency,
+            pub_Agency_Fullname,
+            pub_Number,
+            pub_Time,
+            pub_Time_Year,
+            policy_Type,
+            policy_Body,
+            province,
+            city,
+            policy_Source
                         ) values(
                         #{policyId},
+                        #{policyTitle},
+            #{policyGrade},
+            #{pubAgencyId},
+            #{pubAgency},
+            #{pubAgencyFullName},
+            #{pubNumber},
+            #{pubTime},
+            #{pubTimeYear},
+            #{policyType},
+            #{policyBody},
+            #{province},
+            #{city},
+            #{policySource}
                         )
     </insert>
 

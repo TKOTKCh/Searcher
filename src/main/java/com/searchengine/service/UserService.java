@@ -17,8 +17,6 @@ public interface UserService  {
 
     Map<String, String> login(User user);
 
-
-
     User getUserByName(String username);
 
     List<TreeNode> getFavorite(String username);

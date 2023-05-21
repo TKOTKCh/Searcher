@@ -9,6 +9,7 @@ import com.searchengine.service.DataService;
 import com.searchengine.service.impl.DataServiceImpl;
 import com.searchengine.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -91,8 +92,9 @@ public class DataManagementController {
         return Result.success();
     }
     @RequestMapping("/addDataByFile")
-    public Result addDataByFile(@RequestParam String FilePath) {
-        dataService.addDataByFile(FilePath);
+    public Result addDataByFile(@RequestParam("fileObj") MultipartFile formData) {
+        dataService.addDataByFile(formData);
+        System.out.println(formData.getOriginalFilename());
         return Result.success();
     }
 }

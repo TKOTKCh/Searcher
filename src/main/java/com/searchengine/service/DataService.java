@@ -5,6 +5,7 @@ import com.searchengine.dto.RecordDto;
 import com.searchengine.entity.Data;
 import com.searchengine.entity.Record;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,6 @@ public interface DataService {
                     );
 
     boolean addDataByFile(
-            String filePath
+            MultipartFile file
     );
 }

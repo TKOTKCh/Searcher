@@ -25,8 +25,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -247,7 +250,9 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
 
 
             // 不在 segment 表中的分词，去掉
-            if (!wordToId.containsKey(seg)) continue;
+            if (!wordToId.containsKey(seg)) {
+                continue;
+            }
 
             int segId = wordToId.get(seg);
             int dataId = id;
@@ -319,7 +324,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
         return true;
     }
     @Override
-    public boolean addDataByFile(String filePath){
+    public boolean addDataByFile(MultipartFile file){
         int id=dataDao.getNumberOfData()+1;
         double totallength=dataDao.getTitleTotalLength();
         Map<String, DataSegment> segmentMap = new HashMap<>();
@@ -335,8 +340,8 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
         }
         try
         {
-            FileReader fr = new FileReader(filePath);
-            CSVReader reader = new CSVReader(fr);
+            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
+            CSVReader reader = new CSVReader(br);
 
             String[] lineData = reader.readNext();
             //Reading until we run out of lines
@@ -357,6 +362,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
             }
             String content="";
             for (int i=0;i<temp.size();i++){
+
                 if(i!=9){
                     content+=temp.get(i);
                 }
@@ -370,7 +376,9 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
 
 
                 // 不在 segment 表中的分词，去掉
-                if (!wordToId.containsKey(seg)) continue;
+                if (!wordToId.containsKey(seg)) {
+                    continue;
+                }
 
                 int segId = wordToId.get(seg);
                 int dataId = id;
@@ -423,6 +431,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
                 }
             }
 
+            System.out.println(temp);
             dataDao.addData(Integer.parseInt(temp.get(0)),
                     temp.get(1),
                     temp.get(2),

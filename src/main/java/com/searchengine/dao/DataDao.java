@@ -48,7 +48,7 @@ public interface DataDao extends BaseMapper<Data> {
                     @Param("policyGrade")String policyGrade,
                     @Param("pubAgencyId")String pubAgencyId,
                     @Param("pubAgency")String pubAgency,
-                    @Param("pubAgencyFullname")String pubAgencyFullname,
+                    @Param("pubAgencyFullName")String pubAgencyFullname,
                     @Param("pubNumber")String pubNumber,
                     @Param("pubTime")String pubTime,
                     @Param("policyType")String policyType,
