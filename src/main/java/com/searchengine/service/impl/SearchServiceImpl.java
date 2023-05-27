@@ -181,7 +181,7 @@ public class SearchServiceImpl implements SearchService {
     }
     @Override
     @Async
-    public AsyncResult<Map<String, Object>>  getDataByScore(
+    public Map<String, Object>  getDataByScore(
             String tableName, String content, int pageSize, int pageNum,String province,String type,String year,String id
     ) throws IOException {
 //        String segmentname = "segment_" + tableName;
@@ -316,8 +316,9 @@ public class SearchServiceImpl implements SearchService {
         }
 
         List<QueryKeyword> qks = new ArrayList<>();
+        List<SegToken> segTokens=null;
         if( qks.size()==0){
-            List<SegToken> segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
+            segTokens = segmenter.process(content, JiebaSegmenter.SegMode.INDEX);
             for(SegToken seg:segTokens){
                 qks.add(new QueryKeyword(seg.word.trim(),1));
             }
@@ -430,11 +431,16 @@ public class SearchServiceImpl implements SearchService {
             }
         }
         Collections.sort(dataResult);
+
+
         Map<String , Object> result = new HashMap<>();
         result.put("data", dataResult);
         result.put("count", datas.size());
+        if (segTokens != null) {
+            result.put("segments", segTokens);
+        }
         System.out.println(content);
-        return new AsyncResult<>(result);
+        return result;
     }
 
     @Override

@@ -80,7 +80,7 @@ public class SearchController {
         }
 
 
-        Future<Map<String, Object>> task = searchService.getDataByScore(
+        Map<String, Object> task = searchService.getDataByScore(
                 tableName, keyword, resultNumInOnePage, pageNum,province,type,year,uid
         );
 //                tableName, content, pageSize,  pageNum, province, type, year, id
@@ -88,13 +88,13 @@ public class SearchController {
 //        List<Data> data = searchService.getDataByKeyword(tableName, keyword, resultNumInOnePage, pageNum);
 
 
-        while(true) {
-            if(task.isDone()) {
-                // 三个任务都调用完成，退出循环等待
-                break;
-            }
-        }
-        return Result.success(task.get());
+//        while(true) {
+//            if(task.isDone()) {
+//                // 三个任务都调用完成，退出循环等待
+//                break;
+//            }
+//        }
+        return Result.success(task);
     }
 
     @GetMapping("/test")
