@@ -46,7 +46,7 @@ public class Data implements Comparable<Data>{
     public int compareTo(Data o)
     {
         if(this.count==o.count){
-            if(this.bm25==this.bm25){
+            if(this.bm25==o.bm25){
                 String[]list1=this.pubTime.split("/");
                 String[]list2=o.pubTime.split("/");
                 for(int i=0;i<list1.length;i++){

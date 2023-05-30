@@ -6,11 +6,13 @@ import com.searchengine.dao.StatisticDao;
 import com.searchengine.entity.Data;
 import com.searchengine.entity.StatisticHistory;
 import com.searchengine.rabbitmq.MQSender;
+import com.searchengine.utils.DateUtil;
 import com.searchengine.utils.RedisUtil_db0;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.rmi.CORBA.Util;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -38,16 +40,6 @@ public class StatisticService implements InitializingBean {
         }
     }
 
-    public boolean addCurrentClick() {
-        String today = statisticDao.getRecordByKey(this.todayDate).getValue();
-        statisticDao.setTodayClick(this.todayDate, strPlusOne(today));
-
-        String total = statisticDao.getRecordByKey("total_click").getValue();
-        statisticDao.setTotalClick(strPlusOne(total));
-
-        return true;
-    }
-
 
     public int addUserCountToDB() {
         String currentNum = statisticDao.getRecordByKey("user_count").getValue();
@@ -72,12 +64,11 @@ public class StatisticService implements InitializingBean {
     }
 
     public Map<String, Object> getAllStatistic() {
-        List<StatisticHistory> latest7Click = (List<StatisticHistory>) redisUtil.get("click-7-days-" + todayDate);
+        List<StatisticHistory> latest7Click = (List<StatisticHistory>) redisUtil.get("click-7-days-" + DateUtil.getTodayDate());
         Integer userCount =(Integer)  redisUtil.get("user-count");
         Integer numberOfData = (Integer) redisUtil.get("data-num");
         Integer totalClick = (Integer) redisUtil.get("total-click");
-        Integer todayClick = (Integer) redisUtil.get("click-" + this.todayDate);
-
+        Integer todayClick = (Integer) redisUtil.get("click-" + DateUtil.getTodayDate());
 
 
         HashMap<String, Object> rs = new HashMap();
@@ -100,19 +91,13 @@ public class StatisticService implements InitializingBean {
 
     }
 
-    public String getTodayDate() {
-        return this.todayDate;
-    }
-
     public List<Data> getHotData() {
         return  (List<Data>) redisUtil.get("hot");
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        this.todayDate = simpleDateFormat.format(date);
+        this.todayDate = DateUtil.getTodayDate();
 
         StatisticHistory todayClick = statisticDao.getRecordByKey(this.todayDate);
         if (todayClick == null) {

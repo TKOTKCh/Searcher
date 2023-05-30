@@ -11,6 +11,7 @@ com\searchengine\dao\UserDao.class
 com\searchengine\utils\RedisUtil_db0.class
 com\searchengine\common\Constants.class
 com\searchengine\controller\DataManagementController.class
+com\searchengine\utils\DateUtil.class
 com\searchengine\dao\StatisticDao.class
 com\searchengine\entity\Data$1.class
 com\searchengine\entity\StatisticHistory.class
@@ -47,6 +48,7 @@ com\searchengine\utils\JwtUtil.class
 com\searchengine\controller\RecordController$3.class
 com\searchengine\service\TService.class
 com\searchengine\service\impl\SegmentServiceImpl$1.class
+com\searchengine\service\impl\SearchServiceImpl$1.class
 com\searchengine\entity\Segment.class
 com\searchengine\entity\Role.class
 com\searchengine\service\impl\RecordSegServiceImpl.class

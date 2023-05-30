@@ -437,6 +437,12 @@ public class SearchServiceImpl implements SearchService {
         result.put("data", dataResult);
         result.put("count", datas.size());
         if (segTokens != null) {
+            segTokens.sort(new Comparator<SegToken>() {
+                @Override
+                public int compare(SegToken o1, SegToken o2) {
+                    return o1.word.trim().length() > o2.word.trim().length()?-1:1;
+                }
+            });
             result.put("segments", segTokens);
         }
         System.out.println(content);

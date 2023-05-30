@@ -16,6 +16,7 @@ import com.searchengine.rabbitmq.MQSender;
 import com.searchengine.service.RecordSegService;
 import com.searchengine.service.DataService;
 import com.searchengine.service.SegmentService;
+import com.searchengine.utils.DateUtil;
 import com.searchengine.utils.RedisUtil_db0;
 import com.searchengine.utils.jieba.keyword.BM25;
 import com.searchengine.utils.jieba.keyword.Keyword;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -518,7 +520,7 @@ public class DataServiceImpl extends ServiceImpl<DataDao, Data> implements DataS
             StatisticHistory statisticHistory = new StatisticHistory("total_click", String.valueOf(incr) );
             mqSender.sendClickMsg(JSONObject.toJSONString(statisticHistory));
 
-            String todayDate = statisticService.getTodayDate();
+            String todayDate = DateUtil.getTodayDate();
             long todayClick = redisUtil.incr("click-"+todayDate, 1);
             StatisticHistory todayClickMsg = new StatisticHistory(todayDate,String.valueOf(todayClick) );
             mqSender.sendClickMsg(JSONObject.toJSONString(todayClickMsg));
